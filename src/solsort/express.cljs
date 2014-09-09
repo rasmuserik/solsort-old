@@ -19,7 +19,5 @@
   (.use (.session express #js{:secret session-secret}))
   (.use (.static express "html")))
 
-
-
 (defn shutdown []
   (go (.close http-server)))
