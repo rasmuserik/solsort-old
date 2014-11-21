@@ -8,10 +8,12 @@
     "connect-flash": "^0.1.1",
     "express": "3.x.x",
     "glob": "^4.0.5",
+    "nodejs-externs": "^0.10.0",
     "nodewebkit": "^0.10.1-1",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0",
-    "request": "^2.40.0"
+    "request": "^2.40.0",
+    "xhr2": "^0.1.0"
   },
   "main": "server.html"
 }

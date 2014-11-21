@@ -6,6 +6,8 @@
    [solsort.util]
    ))
 
+(.log js/console "main hello")
+
 (declare watcher)
 (def running (atom true))
 
@@ -22,7 +24,7 @@
 
 (def watcher (.watch (js/require "fs") "build/server.js" reload))
 
-(defn log [& a] (set! (.-innerHTML js/document.body) (str (js/Date.) " " (js/JSON.stringify (clj->js a)) "<br>" (.-innerHTML js/document.body))))
+(defn log [& a] (.log js/console a))
 
 (log "starting")
 
@@ -38,7 +40,7 @@
 
 #_(def fs (js/require "fs"))
 
-(go (dorun (map log (<! (find-solsort-repos)))))
+;(go (dorun (map log (<! (find-solsort-repos)))))
 #_(go (do-seq
      [name (<! (find-solsort-repos))]
      (.log js/console name)
