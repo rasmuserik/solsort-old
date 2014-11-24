@@ -4,8 +4,12 @@
     <title>solsort server</title>
   </head>
   <body>
-    <script src="build/goog/base.js"></script>
-    <script src="build/server.js"></script>
-    <script>goog.require("solsort.server");</script>
+    <script src="build/debug/goog/base.js"></script>
+    <script src="build/debug/debug.js"></script>
+    <script>
+      setTimeout(0, function() { 
+          console.log('here');
+          goog.require("solsort.server"); });
+    </script>
   </body>
 </html>

@@ -3,6 +3,11 @@
   (:require
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+(defn parse-json-or-nil [str]
+  (try
+    (js/JSON.parse str)
+    (catch :default _ nil)))
+
 (defn http-req
   ([url params] (throw "not implemented"))
   ([url]
