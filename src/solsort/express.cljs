@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+#_(
 (.log js/console "express hello")
 (def express (js/require "express"))
 (def app (express))
@@ -23,3 +24,5 @@
 
 (defn shutdown []
   (go (.close http-server)))
+
+)

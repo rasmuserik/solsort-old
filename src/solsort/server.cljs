@@ -2,11 +2,31 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]
+   [solsort.node :refer [exec]]
+   ))
+
+(defn parse-json-or-nil [str]
+  (try
+    (js/JSON.parse str)
+    (catch :default _ nil)))
+(go
+  (.log js/console "main hello")
+  (.log js/console (parse-json-or-nil (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'"))))
+
+ "ssh uccorganism@93.165.158.107 'killall VBoxHeadless; launchctl load Library/LaunchAgents/apiserver.plist; launchctl start apiserver'"
+
+  (<! (timeout 1000))
+  (.log js/console "main hello2")
+ )
+
+#_(
+(ns solsort.server
+  (:require-macros [cljs.core.async.macros :refer [go alt!]])
+  (:require
+   [cljs.core.async :refer [>! <! chan put! take! timeout close!]]
    [solsort.express]
    [solsort.util]
    ))
-
-(.log js/console "main hello")
 
 (declare watcher)
 (def running (atom true))
@@ -45,3 +65,5 @@
      [name (<! (find-solsort-repos))]
      (.log js/console name)
      ))
+
+)

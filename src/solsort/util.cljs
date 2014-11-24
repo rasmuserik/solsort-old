@@ -3,7 +3,6 @@
   (:require
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
-
 (defn http-req
   ([url params] (throw "not implemented"))
   ([url]
