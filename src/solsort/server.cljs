@@ -10,17 +10,28 @@
 (def commands (atom {}))
 (defn register [cmd f] (swap! commands assoc cmd f))
 
+(print "hello")
 (register "manager" solsort.manager.start)
+(register "relvis-server" solsort.relvis-server.start)
 
-(apply (or (get @commands (get js/process.argv 2))
+(def arg
+(or
+ (and js/process (get js/process.argv 2))
+ (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
+
+(print arg)
+
+(apply (or (get @commands arg)
             (fn []
                    (print "possible arguments:")
                    (doall (map (fn [[a b]] (print a)) @commands)))))
 
 
 
-
 #_(
+
+(.reload js/location)
+
 (ns solsort.server
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require

@@ -4,3 +4,4 @@ notes
 .nrepl-port 
 target/
 .nrepl-port
+tmp/
