@@ -3,6 +3,7 @@
   (:require
     [solsort.node :refer [exec eachLines]]
     [solsort.indexeddb :as idb]
+    [solsort.evildb :as edb]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -15,6 +16,7 @@
 
 (defn relvis-server []
   (go
+    (<! (edb/init))
     (let [dbFn (fn [db]
                  (if (.contains (.-objectStoreNames db) "loan-lids")
                    (.deleteObjectStore db "loan-lids"))
@@ -51,9 +53,10 @@
               (recur lines (<! lines) lid (conj loans loan) cnt)
               (do
                 (if prevLid
-                  (<! (idb/singlePut db "loan-lids" prevLid (clj->js loans)))
+                  ;(<! (idb/singlePut db "loan-lids" prevLid (clj->js loans)))
+                  (<! (edb/store prevLid (clj->js loans)))
                   )
-                (if (= 0 (rem cnt 1000))
+                (if (= 0 (rem cnt 100000))
                    (print cnt))
                 (recur lines (<! lines) lid [] (inc cnt))
                 ))
