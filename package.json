@@ -2,7 +2,7 @@
   "name": "solsort.cljs",
   "version": "0.1.0-SNAPSHOT",
   "scripts": {
-    "start": "nodewebkit"
+    "start": "xvfb-run nodewebkit"
   },
   "dependencies": {
     "connect-flash": "^0.1.1",

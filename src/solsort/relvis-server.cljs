@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
    [solsort.node :refer [exec eachLines]]
+   [solsort.indexeddb :as idb]
    [solsort.util :refer [parse-json-or-nil]]
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -31,4 +32,5 @@
 
 (defn start []
   (print "starting visual relation server")
+  (idb/hello)
   (relvis-server))
