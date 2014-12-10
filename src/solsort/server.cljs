@@ -11,7 +11,6 @@
 (def commands (atom {}))
 (defn register [cmd f] (swap! commands assoc cmd f))
 
-(print "hello")
 (register "manager" solsort.manager.start)
 (register "relvis-server" solsort.relvis-server.start)
 
