@@ -1,7 +1,7 @@
 (ns solsort.util
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-   [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
+    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (defn parse-json-or-nil [str]
   (try

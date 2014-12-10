@@ -1,7 +1,7 @@
 (ns solsort.node
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-   [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
+    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (defn exec [cmd]
   (let [c (chan)]
@@ -33,10 +33,10 @@
                      (>! c (str (aget lines i) "\n"))
                      (recur (inc i))))))
              (.resume stream)
-           )
-         ))
+             )
+           ))
     (.on stream "close"
          (fn []
            (put! c @buf)
            (close! c)))
-  c))
+    c))
