@@ -1,7 +1,7 @@
 (ns solsort.relvis-server
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-   [solsort.node :refer [exec]]
+   [solsort.node :refer [exec eachLines]]
    [solsort.util :refer [parse-json-or-nil]]
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -17,9 +17,16 @@
      (if (not (.existsSync fs "tmp/coloans-by-lid.csv"))
        (do (print "generating tmp/coloans-by-lid.csv")
          (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
+     (loop [lines (eachLines "tmp/coloans.csv")
+            line (<! lines)]
+       (if line
+         (do
+           ;(.log js/console "here" line)
+           (recur lines (<! lines)))
+         ))
+      (print "done preparing data for relvis-server")
      )))
 
 (defn start []
   (print "starting visual relation server")
-  (relvis-server)
-  )
+  (relvis-server))

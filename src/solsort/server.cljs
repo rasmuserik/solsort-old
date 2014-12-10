@@ -3,6 +3,7 @@
   (:require
    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]
    [solsort.manager]
+   [solsort.relvis-server]
    ))
 
 (enable-console-print!)
