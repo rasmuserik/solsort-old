@@ -12,11 +12,13 @@
     (go
      (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
      (if (not (.existsSync fs "tmp/coloans.csv"))
-       (do (print "generating coloans.csv")
+       (do (print "generating coloans.csv" (js/Date.))
          (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv")))))
      (if (not (.existsSync fs "tmp/coloans-by-lid.csv"))
-       (do (print "generating tmp/coloans-by-lid.csv")
+       (do (print "generating tmp/coloans-by-lid.csv" (js/Date.))
          (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
+
+     (print "traversing coloans" (js/Date.))
      (loop [lines (eachLines "tmp/coloans.csv")
             line (<! lines)]
        (if line
@@ -24,7 +26,7 @@
            ;(.log js/console "here" line)
            (recur lines (<! lines)))
          ))
-      (print "done preparing data for relvis-server")
+      (print "done preparing data for relvis-server" (js/Date.))
      )))
 
 (defn start []
