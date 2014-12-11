@@ -13,6 +13,39 @@
     (.put db obj #(close! c))
     c))
 
+(defn iterateLines [prefix fname swap]
+  (go
+    (let [ids (atom #js[])]
+      (loop [lines (eachLines fname)
+             line (<! lines)
+             prevLid nil
+             loans []
+             cnt 0
+             amount 0
+             ]
+        ; whoops lid should be loan vice versa, anyhow want to make this generic/replace it with function so fix that later
+        (if line
+          (let
+            [lineParts (.split line ",")
+             lid (.trim (str (aget lineParts (if swap 1 0))))
+             loan (.trim (str (aget lineParts (if swap 0 1))))
+             ]
+            (if (= lid prevLid)
+              (recur lines (<! lines) lid (conj loans loan) cnt (inc amount))
+              (do
+                (if prevLid
+                  (do
+                  (<! (edb/store (str prefix prevLid) (clj->js loans)))
+                  (.push @ids prevLid)
+                  ))
+                (if (= 0 (rem cnt 100000))
+                   (print cnt))
+                (recur lines (<! lines) lid [] (inc cnt) 1)
+                ))
+          )))
+      (<! (edb/commit))
+      @ids)))
+
 (defn relvis-server []
   (go
     (<! (edb/init))
@@ -26,31 +59,9 @@
             (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
       (print "traversing coloans" (js/Date.))
-      (loop [lines (eachLines "tmp/coloans.csv")
-             line (<! lines)
-             prevLid nil
-             loans []
-             cnt 0
-             ]
-        ; whoops lid should be loan vice versa, anyhow want to make this generic/replace it with function so fix that later
-        (if line
-          (let
-            [lineParts (.split line ",")
-             lid (.trim (str (aget lineParts 0)))
-             loan (.trim (str (aget lineParts 1)))
-             ]
-            (if (= lid prevLid)
-              (recur lines (<! lines) lid (conj loans loan) cnt)
-              (do
-                (if prevLid
-                  (<! (edb/store prevLid (clj->js loans)))
-                  )
-                (if (= 0 (rem cnt 100000))
-                   (print cnt))
-                (recur lines (<! lines) lid [] (inc cnt))
-                ))
-          )))
-      (<! (edb/commit))
+      (print "added " (.-length (<! (iterateLines "p" "tmp/coloans.csv" false))) " elements")
+      (print "traversing coloans-by-lid" (js/Date.))
+      (print "added " (.-length (<! (iterateLines "l" "tmp/coloans-by-lid.csv" true))) " elements")
       (print "done preparing data for relvis-server" (js/Date.))
       )))
 

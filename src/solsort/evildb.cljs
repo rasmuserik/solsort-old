@@ -42,8 +42,12 @@
         objStore (.objectStore trans "keyvals")]
     (loop [ids (js/Object.keys @cache)]
       (if (< 0 (.-length ids))
-        (let [id (.pop ids)]
-          (.put objStore (aget @cache id) id)
+        (let [id (.pop ids)
+          req (.put objStore (aget @cache id) id)]
+          (set! (.-onerror trans)  
+                (fn [e]
+                  (print e)
+                  (close! c)))
           (recur ids))))
     (reset! cacheCount 0)
     (reset! cache #js{})
