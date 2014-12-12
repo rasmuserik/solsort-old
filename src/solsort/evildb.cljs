@@ -39,23 +39,7 @@
       (<! c))))
 
 
-
-
-(defn fetch [storage id]
-  (let [c (chan 1)
-        id (str storage ":" id)]
-    (if (aget @cache id)
-      (put! c (aget @cache id))
-      (let [trans (.transaction @db #js["keyvals"] "readonly")
-            objStore (.objectStore trans "keyvals")
-            req (.get objStore id)]
-        (set! (.-onsuccess req) 
-              (fn []
-                (if (.-result req)
-                  (put! c (.-result req))
-                  (close! c))))
-        (set! (.-onerror req) #(close! c))))
-    c))
+(defn fetch [storage id] (go (aget (<! (multifetch storage #js[id])) id)))
 
 (defn commit []
   (let [c (chan 1)
