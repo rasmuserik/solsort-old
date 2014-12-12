@@ -15,7 +15,7 @@
 
 (defn iterateLines [prefix fname swap]
   (go
-    (let [ids (atom #js[])]
+    (let [ids (atom #js{})]
       (loop [lines (eachLines fname)
              line (<! lines)
              prevLid nil
@@ -33,16 +33,17 @@
             (if (= lid prevLid)
               (recur lines (<! lines) lid (conj loans loan) cnt (inc amount))
               (do
-                (if prevLid
+                (if (and prevLid
+                         (< 2 (count loans)))
                   (do
-                  (<! (edb/store (str prefix prevLid) (clj->js loans)))
-                  (.push @ids prevLid)
-                  ))
+                    (<! (edb/store prefix prevLid (clj->js loans)))
+                    (aset @ids prevLid amount)
+                    ))
                 (if (= 0 (rem cnt 100000))
-                   (print cnt))
-                (recur lines (<! lines) lid [] (inc cnt) 1)
+                  (print cnt))
+                (recur lines (<! lines) lid [] (inc cnt) 0)
                 ))
-          )))
+            )))
       (<! (edb/commit))
       @ids)))
 
@@ -59,10 +60,24 @@
             (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
       (print "traversing coloans" (js/Date.))
-      (print "added " (.-length (<! (iterateLines "p" "tmp/coloans.csv" false))) " elements")
+      (print "added " (.-length (js/Object.keys (<! (iterateLines "p" "tmp/coloans.csv" false)))) " elements")
       (print "traversing coloans-by-lid" (js/Date.))
-      (print "added " (.-length (<! (iterateLines "l" "tmp/coloans-by-lid.csv" true))) " elements")
-      (print "done preparing data for relvis-server" (js/Date.))
+      (let [lidCount (<! (iterateLines "l" "tmp/coloans-by-lid.csv" true))
+            lids (js/Object.keys lidCount)
+            ]
+        (loop [i 0]
+          (if (< i (.-length lids))
+            (let [lid (aget lids i)
+                  patrons (<! (edb/fetch "l" lid))
+                  coloans (<! (edb/multifetch "p" (or patrons #js[])))
+                  ]
+              (if (= 0 (rem i 1000))
+                ;(print i lid (aget lidCount lid) patrons coloans))
+                (print i (.-length lids) lid (aget lidCount lid)))
+              (recur (inc i)))))
+
+        (print "done preparing data for relvis-server" (js/Date.))
+        )
       )))
 
 (defn start []

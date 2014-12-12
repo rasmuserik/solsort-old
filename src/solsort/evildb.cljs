@@ -21,8 +21,29 @@
 (def cache (atom #js{}))
 (def cacheCount (atom 0))
 
-(defn fetch [id]
+(defn multifetch [storage ids]
   (let [c (chan 1)]
+    (go
+      (<! (commit))
+      (let [result (atom #js{})
+            trans (.transaction @db #js["keyvals"] "readonly")
+            objStore (.objectStore trans "keyvals")]
+        (loop [i 0]
+          (if (< i (.-length ids))
+            (let [id (aget ids i)
+                  req (.get objStore (str storage ":" id))]
+              (set! (.-onsuccess req) #(if (.-result req) (aset @result id (.-result req))))
+
+              (recur (inc i)))))
+        (set! (.-oncomplete trans)  #(put! c @result)))
+      (<! c))))
+
+
+
+
+(defn fetch [storage id]
+  (let [c (chan 1)
+        id (str storage ":" id)]
     (if (aget @cache id)
       (put! c (aget @cache id))
       (let [trans (.transaction @db #js["keyvals"] "readonly")
@@ -43,7 +64,7 @@
     (loop [ids (js/Object.keys @cache)]
       (if (< 0 (.-length ids))
         (let [id (.pop ids)
-          req (.put objStore (aget @cache id) id)]
+              req (.put objStore (aget @cache id) id)]
           (set! (.-onerror trans)  
                 (fn [e]
                   (print e)
@@ -55,10 +76,10 @@
     (set! (.-onerror trans)  #(close! c))
     c))
 
-(defn store [id value]
-  (if (< @cacheCount 1000)
-    (go
-      (aset @cache id value)
-      (swap! cacheCount inc))
-    (commit)))
+(defn store [storage id value]
+  (aset @cache (str storage ":" id) value)
+  (swap! cacheCount inc)
+  (if (< 1000 @cacheCount)
+    (commit)
+    (go)))
 
