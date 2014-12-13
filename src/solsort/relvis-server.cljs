@@ -3,6 +3,7 @@
   (:require
     [solsort.node :refer [exec eachLines]]
     [solsort.evildb :as edb]
+    [solsort.keyval-db :as kvdb]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -70,6 +71,8 @@
             (let [lid (aget lids i)
                   patrons (<! (edb/fetch "l" lid))
                   coloans (<! (edb/multifetch "p" (or patrons #js[])))
+                  ; TODO calculate coloans and store to databas
+                  ; TODO database need to have separate object stores for performance
                   ]
               (if (= 0 (rem i 1000))
                 ;(print i lid (aget lidCount lid) patrons coloans))
@@ -82,4 +85,5 @@
 
 (defn start []
   (print "starting visual relation server")
+  (kvdb/tryout)
   (relvis-server))
