@@ -58,7 +58,7 @@
     (print (<! (fetch "a" "blah")))
     (print (<! (multifetch "a" #js["foo" "bar" "baz"])))))
 
-(def comment)
+(def comments-below nil)
 (comment
 
 
