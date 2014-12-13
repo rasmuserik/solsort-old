@@ -51,6 +51,7 @@
 
 (defn multifetch [storage ids] 
   (go 
+    (<! (ensure-store storage))
     (<! (commit storage))
     (let [c (chan)
           result (atom #js{})
@@ -71,7 +72,7 @@
     (if (< 1000 (count (@stores storage))) (<! (commit storage)))
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
-    ))
+    value))
 
 (defn tryout []
   (go

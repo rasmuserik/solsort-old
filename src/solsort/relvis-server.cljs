@@ -15,6 +15,7 @@
 
 (defn iterateLines [prefix fname swap]
   (go
+    (print 'traversing prefix)
     (let [ids (atom #js{})]
       (loop [lines (eachLines fname)
              line (<! lines)
@@ -58,12 +59,21 @@
         (do (print "generating tmp/coloans-by-lid.csv" (js/Date.))
             (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
-      (print "traversing coloans" (js/Date.))
-      (print "added " (.-length (js/Object.keys (<! (iterateLines "patrons" "tmp/coloans.csv" false)))) " elements")
-      (print "traversing coloans-by-lid" (js/Date.))
-      (let [lidCount (<! (iterateLines "lids" "tmp/coloans-by-lid.csv" true))
+      (if (not (<! (kvdb/fetch "patrons" "000001")))
+        (do
+          (print "traversing coloans" (js/Date.))
+          (print "added " (.-length (js/Object.keys (<! (iterateLines "patrons" "tmp/coloans.csv" false)))) " elements")))
+      (if (not (<! (kvdb/fetch "lid-count" "all")))
+        (let [lidCount (<! (iterateLines "lids" "tmp/coloans-by-lid.csv" true))]
+          (print "no lid-count")
+          (<! (kvdb/store "lid-count" "all" (js/JSON.stringify lidCount)))
+          (print "lids" lidCount)
+          )
+        (print "has lid-count"))
+      (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch "lid-count" "all")) "{}"))
             lids (js/Object.keys lidCount)
             ]
+        (print "generating coloans")
         (loop [i 0]
           (if (< i (.-length lids))
             (let [lid (aget lids i)
@@ -72,6 +82,7 @@
                   ; TODO calculate coloans and store to databas
                   ; TODO database need to have separate object stores for performance
                   ]
+                  (print coloans)
               (if (= 0 (rem i 1000))
                 ;(print i lid (aget lidCount lid) patrons coloans))
                 (print i (.-length lids) lid (aget lidCount lid)))
