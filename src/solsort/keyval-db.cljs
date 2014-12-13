@@ -49,7 +49,16 @@
 (defn multifetch [storage ids] 
   (go 
     (<! (commit storage))
-    #js{}))
+    (let [c (chan)
+          result (atom #js{})
+          transaction (.transaction @db #js[storage] "readonly")
+          object-store (.objectStore transaction storage)]
+      (doall (for [id ids]
+               (let [request (.get object-store id)]
+                 (set! (.-onsuccess request) 
+                       (fn [] (aset @result id (.-result request)))))))
+      (set! (.-oncomplete transaction)  (fn [] (put! c @result)))
+      (<! c))))
 (defn fetch [storage id] 
   (go (aget (<! (multifetch storage #js[id])) id)))
 (defn store [storage id value] 
