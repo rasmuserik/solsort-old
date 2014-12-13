@@ -2,7 +2,6 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.node :refer [exec eachLines]]
-    [solsort.evildb :as edb]
     [solsort.keyval-db :as kvdb]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
@@ -37,7 +36,7 @@
                 (if (and prevLid
                          (< 2 (count loans)))
                   (do
-                    (<! (edb/store prefix prevLid (clj->js loans)))
+                    (<! (kvdb/store prefix prevLid (clj->js loans)))
                     (aset @ids prevLid amount)
                     ))
                 (if (= 0 (rem cnt 100000))
@@ -45,12 +44,11 @@
                 (recur lines (<! lines) lid [] (inc cnt) 0)
                 ))
             )))
-      (<! (edb/commit))
+      (<! (kvdb/commit prefix))
       @ids)))
 
 (defn relvis-server []
   (go
-    (<! (edb/init))
     (let [fs (js/require "fs")]
       (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
       (if (not (.existsSync fs "tmp/coloans.csv"))
@@ -61,16 +59,16 @@
             (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
       (print "traversing coloans" (js/Date.))
-      (print "added " (.-length (js/Object.keys (<! (iterateLines "p" "tmp/coloans.csv" false)))) " elements")
+      (print "added " (.-length (js/Object.keys (<! (iterateLines "patrons" "tmp/coloans.csv" false)))) " elements")
       (print "traversing coloans-by-lid" (js/Date.))
-      (let [lidCount (<! (iterateLines "l" "tmp/coloans-by-lid.csv" true))
+      (let [lidCount (<! (iterateLines "lids" "tmp/coloans-by-lid.csv" true))
             lids (js/Object.keys lidCount)
             ]
         (loop [i 0]
           (if (< i (.-length lids))
             (let [lid (aget lids i)
-                  patrons (<! (edb/fetch "l" lid))
-                  coloans (<! (edb/multifetch "p" (or patrons #js[])))
+                  patrons (<! (kvdb/fetch "lids" lid))
+                  coloans (<! (kvdb/multifetch "patrons" (or patrons #js[])))
                   ; TODO calculate coloans and store to databas
                   ; TODO database need to have separate object stores for performance
                   ]
@@ -85,5 +83,4 @@
 
 (defn start []
   (print "starting visual relation server")
-  (kvdb/tryout)
   (relvis-server))

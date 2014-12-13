@@ -68,6 +68,7 @@
 
 (defn store [storage id value] 
   (go
+    (if (< 1000 (count (@stores storage))) (<! (commit storage)))
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
     ))
