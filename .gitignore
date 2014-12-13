@@ -5,3 +5,4 @@ notes
 target/
 .nrepl-port
 tmp/
+*.swp
