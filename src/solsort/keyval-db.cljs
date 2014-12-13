@@ -13,7 +13,7 @@
     (if @db (.close @db))
     ; BUG/WARNING  not multientrant
     (let [c (chan)
-          store-list (read-string (.getItem js/localStorage "keyval-db"))
+          store-list (seq (read-string (.getItem js/localStorage "keyval-db")))
           req (.open js/indexedDB "keyval-db" (inc (count store-list)))
           ]
       (set! (.-onupgradeneeded req)
@@ -21,6 +21,7 @@
                (doall (for [store store-list]
                         (if (not (.contains (.-objectStoreNames db) store))
                           (.createObjectStore db store))))))
+      (set! (.-onerror req) #(js/console.log 'error %))
       (set! (.-onsuccess req) 
             #(do 
                (reset! db (.-result (.-target %)))
@@ -29,11 +30,10 @@
 (defn ensure-store [storage]
   (go
     (if (not (@stores storage)) 
-      (do
+      (let [store-list (read-string (or (.getItem js/localStorage "keyval-db") "#{}"))]
         (swap! stores assoc storage {})
-        (.setItem js/localStorage "keyval-db" (str (keys @stores)))
+        (.setItem js/localStorage "keyval-db" (str (conj store-list storage)))
         (<! (open-db))))))
-
 (defn commit [storage]
   (if (< 0 (count (@stores storage)))
     (let [c (chan 1)
@@ -56,19 +56,20 @@
   (go
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
-    (print stores)
     ))
 (defn tryout []
   (go
+    (print 'HERE (seq #js[1 2 3 4]))
     (<! (store :a "foo" "bar"))
     (<! (store :a "blah" "foop"))
     (<! (store :a "quux" "quuz"))
     (<! (store "b" "foo" "bar"))
     (<! (store "b" "bar" "baz"))
     (<! (store "b" "baz" "quux"))
+    (print 'HERE2 (seq #js[1 2 3 4]))
     (print "stored")
-    (print (<! (fetch :a "blah")))
-    (print (<! (multifetch "b" #js["foo" "bar" "baz"])))))
+    (print "A" (<! (fetch :a "blah")))
+    (print "B" (<! (multifetch "b" #js["foo" "bar" "baz"])))))
 
 (def comments-below nil)
 (comment
