@@ -73,6 +73,7 @@
       (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch "lid-count" "all")) "{}"))
             lids (js/Object.keys lidCount)
             ]
+        (aset js/window "lidCount" lidCount)
         (print "generating coloans")
         (loop [i 0]
           (if (< i (.-length lids))
@@ -81,8 +82,15 @@
                   coloans (<! (kvdb/multifetch "patrons" (or patrons #js[])))
                   ; TODO calculate coloans and store to databas
                   ; TODO database need to have separate object stores for performance
+                  weighted 
+                    (map identity ; (fn [[weight lid cnt]] {:lid lid :weight (- weight)})
+                    (take 100
+                    (sort 
+                      (map 
+                        (fn [[a b]] [(/ (- b) (js/Math.log (+ 10 (or (aget lidCount b) 0)))) a b (aget lidCount b)])
+                        (seq (frequencies (flatten (vals (js->clj coloans)))))))))
                   ]
-                  (print coloans)
+              (print weighted)
               (if (= 0 (rem i 1000))
                 ;(print i lid (aget lidCount lid) patrons coloans))
                 (print i (.-length lids) lid (aget lidCount lid)))
