@@ -32,12 +32,24 @@
       (do
         (swap! stores assoc storage {})
         (.setItem js/localStorage "keyval-db" (str (keys @stores)))
-        (<! (open-db))
-        (print "storage" storage "missing")))
-    (print (keys @stores))
-    ))
+        (<! (open-db))))))
+
+(defn commit [storage]
+  (if (< 0 (count (@stores storage)))
+    (let [c (chan 1)
+          trans (.transaction @db #js[storage] "readwrite")
+          objStore (.objectStore trans storage)]
+      (doall (for [[k v] (@stores storage)]
+               (.put objStore v k)))
+      (set! (.-oncomplete trans)  #(put! c true))
+      (set! (.-onerror trans)  #(do (print "commit error") (close! c)))
+      (swap! stores assoc storage {})
+      c)
+    (go)))
 (defn multifetch [storage ids] 
-  (go #js{}))
+  (go 
+    (<! (commit storage))
+    #js{}))
 (defn fetch [storage id] 
   (go (aget (<! (multifetch storage #js[id])) id)))
 (defn store [storage id value] 
@@ -48,15 +60,15 @@
     ))
 (defn tryout []
   (go
-    (<! (store "a" "foo" "bar"))
-    (<! (store "a" "blah" "foop"))
-    (<! (store "a" "quux" "quuz"))
+    (<! (store :a "foo" "bar"))
+    (<! (store :a "blah" "foop"))
+    (<! (store :a "quux" "quuz"))
     (<! (store "b" "foo" "bar"))
     (<! (store "b" "bar" "baz"))
     (<! (store "b" "baz" "quux"))
     (print "stored")
-    (print (<! (fetch "a" "blah")))
-    (print (<! (multifetch "a" #js["foo" "bar" "baz"])))))
+    (print (<! (fetch :a "blah")))
+    (print (<! (multifetch "b" #js["foo" "bar" "baz"])))))
 
 (def comments-below nil)
 (comment
