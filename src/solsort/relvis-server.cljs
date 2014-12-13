@@ -51,6 +51,8 @@
 (defn relvis-server []
   (go
     (let [fs (js/require "fs")]
+      (print 'incnil (inc nil))
+      (print (js/Object.keys #js{:foo 1 :bar 1}))
       (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
       (if (not (.existsSync fs "tmp/coloans.csv"))
         (do (print "generating coloans.csv" (js/Date.))
@@ -59,18 +61,16 @@
         (do (print "generating tmp/coloans-by-lid.csv" (js/Date.))
             (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
-      (if (not (<! (kvdb/fetch "patrons" "000001")))
+      (if (not (<! (kvdb/fetch :patrons "000001")))
         (do
           (print "traversing coloans" (js/Date.))
-          (print "added " (.-length (js/Object.keys (<! (iterateLines "patrons" "tmp/coloans.csv" false)))) " elements")))
-      (if (not (<! (kvdb/fetch "lid-count" "all")))
-        (let [lidCount (<! (iterateLines "lids" "tmp/coloans-by-lid.csv" true))]
+          (print "added " (.-length (js/Object.keys (<! (iterateLines :patrons "tmp/coloans.csv" false)))) " elements")))
+      (if (not (<! (kvdb/fetch :lid-count "all")))
+        (let [lidCount (<! (iterateLines :lids "tmp/coloans-by-lid.csv" true))]
           (print "no lid-count")
-          (<! (kvdb/store "lid-count" "all" (js/JSON.stringify lidCount)))
-          (print "lids" lidCount)
-          )
+          (<! (kvdb/store :lid-count "all" (js/JSON.stringify lidCount))))
         (print "has lid-count"))
-      (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch "lid-count" "all")) "{}"))
+      (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch :lid-count "all")) "{}"))
             lids (js/Object.keys lidCount)
             ]
         (aset js/window "lidCount" lidCount)
@@ -78,19 +78,27 @@
         (loop [i 0]
           (if (< i (.-length lids))
             (let [lid (aget lids i)
-                  patrons (<! (kvdb/fetch "lids" lid))
-                  coloans (<! (kvdb/multifetch "patrons" (or patrons #js[])))
-                  ; TODO calculate coloans and store to databas
-                  ; TODO database need to have separate object stores for performance
-                  weighted 
-                    (map identity ; (fn [[weight lid cnt]] {:lid lid :weight (- weight)})
-                    (take 100
-                    (sort 
-                      (map 
-                        (fn [[a b]] [(/ (- b) (js/Math.log (+ 10 (or (aget lidCount b) 0)))) a b (aget lidCount b)])
-                        (seq (frequencies (flatten (vals (js->clj coloans)))))))))
+                  patrons (or (<! (kvdb/fetch :lids lid)) #js[])
+                  coloans (or (<! (kvdb/multifetch :patrons patrons)) #js{})
+                  result (atom #js{})
                   ]
-              (print weighted)
+              (doall (for [patron (seq patrons)]
+                       (doall (for [coloan (seq (aget coloans patron))]
+                                (aset @result coloan (inc (or (aget @result coloan) 0)))))))
+              (<! (kvdb/store 
+                    :related lid
+                    (clj->js
+                      (map 
+                        (fn [[weight lid dnt total]] {:lid lid :weight (bit-or (- (* weight 100)) 0)})
+                        (take 
+                          100
+                          (sort
+                            (map 
+                              (fn [[lid cnt total]] 
+                                [(- (/ cnt (js/Math.log (+ 20 total)))) lid cnt total])
+                              (filter (fn [[lid cnt total]] (< 2 cnt))
+                                      (for [lid (seq (js/Object.keys @result))] 
+                                        [lid (aget @result lid) (aget lidCount lid)])))))))))
               (if (= 0 (rem i 1000))
                 ;(print i lid (aget lidCount lid) patrons coloans))
                 (print i (.-length lids) lid (aget lidCount lid)))
