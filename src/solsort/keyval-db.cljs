@@ -8,20 +8,23 @@
 (def stores (atom {}))
 (def db (atom nil))
 
-
 (defn open-db []
-  (go))
+  (go
+    (if @db (.close @db))
+    ; BUG/WARNING  not multientrant
+    #_(let [c (chan)
+          req (.open js/indexedDB "keyval-db" (inc (count (keys stores))))])
+    ))
+
 (defn ensure-store [storage]
   (go
     (if (not (@stores storage)) 
       (do
         (swap! stores assoc storage {})
         (<! (open-db))
-      (print "storage" storage "missing")))
+        (print "storage" storage "missing")))
     (print (keys @stores))
     ))
-
-
 
 (defn multifetch [storage ids] (go #js{}))
 (defn fetch [storage id] (go (aget (<! (multifetch storage #js[id])) id)))
@@ -31,7 +34,6 @@
     (print stores)
     (<! (ensure-store storage))
     ))
-
 (defn tryout []
   (go
     (<! (store "a" "foo" "bar"))
@@ -44,7 +46,8 @@
     (print (<! (fetch "a" "blah")))
     (print (<! (multifetch "a" #js["foo" "bar" "baz"])))))
 
-#_(
+(def comment)
+(comment
    (def db (atom nil))
    (defn init [] 
      (let [c (chan)]
