@@ -27,6 +27,7 @@
                (reset! db (.-result (.-target %)))
                (close! c)))
       (<! c))))
+
 (defn ensure-store [storage]
   (go
     (if (not (@stores storage)) 
@@ -34,6 +35,7 @@
         (swap! stores assoc storage {})
         (.setItem js/localStorage "keyval-db" (str (conj store-list storage)))
         (<! (open-db))))))
+
 (defn commit [storage]
   (if (< 0 (count (@stores storage)))
     (let [c (chan 1)
@@ -46,6 +48,7 @@
       (swap! stores assoc storage {})
       c)
     (go)))
+
 (defn multifetch [storage ids] 
   (go 
     (<! (commit storage))
@@ -59,13 +62,16 @@
                        (fn [] (aset @result id (.-result request)))))))
       (set! (.-oncomplete transaction)  (fn [] (put! c @result)))
       (<! c))))
+
 (defn fetch [storage id] 
   (go (aget (<! (multifetch storage #js[id])) id)))
+
 (defn store [storage id value] 
   (go
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
     ))
+
 (defn tryout []
   (go
     (print 'HERE (seq #js[1 2 3 4]))
@@ -79,75 +85,3 @@
     (print "stored")
     (print "A" (<! (fetch :a "blah")))
     (print "B" (<! (multifetch "b" #js["foo" "bar" "baz"])))))
-
-(def comments-below nil)
-(comment
-
-
-
-
-
-  (def db (atom nil))
-  (defn init [] 
-    (let [c (chan)]
-      (let [req (.open js/indexedDB "evildb" 1)]
-        (set! (.-onupgradeneeded req)
-              #(let [db (.-result (.-target %))]
-                 (if (.contains (.-objectStoreNames db) "keyvals")
-                   (.deleteObjectStore db "keyvals"))
-                 (.createObjectStore db "keyvals")))
-        (set! (.-onsuccess req) 
-              #(do 
-                 (reset! db (.-result (.-target %)))
-                 (close! c))))
-      c))
-
-  (def cache (atom #js{}))
-  (def cacheCount (atom 0))
-
-  (defn multifetch [storage ids]
-    (let [c (chan 1)]
-      (go
-        (<! (commit))
-        (let [result (atom #js{})
-              trans (.transaction @db #js["keyvals"] "readonly")
-              objStore (.objectStore trans "keyvals")]
-          (loop [i 0]
-            (if (< i (.-length ids))
-              (let [id (aget ids i)
-                    req (.get objStore (str storage ":" id))]
-                (set! (.-onsuccess req) #(if (.-result req) (aset @result id (.-result req))))
-
-                (recur (inc i)))))
-          (set! (.-oncomplete trans)  #(put! c @result)))
-        (<! c))))
-
-
-  (defn fetch [storage id] (go (aget (<! (multifetch storage #js[id])) id)))
-
-  (defn commit []
-    (let [c (chan 1)
-          trans (.transaction @db #js["keyvals"] "readwrite")
-          objStore (.objectStore trans "keyvals")]
-      (loop [ids (js/Object.keys @cache)]
-        (if (< 0 (.-length ids))
-          (let [id (.pop ids)
-                req (.put objStore (aget @cache id) id)]
-            (set! (.-onerror trans)  
-                  (fn [e]
-                    (print e)
-                    (close! c)))
-            (recur ids))))
-      (reset! cacheCount 0)
-      (reset! cache #js{})
-      (set! (.-oncomplete trans)  #(put! c true))
-      (set! (.-onerror trans)  #(close! c))
-      c))
-
-  (defn store [storage id value]
-    (aset @cache (str storage ":" id) value)
-    (swap! cacheCount inc)
-    (if (< 1000 @cacheCount)
-      (commit)
-      (go)))
-  )
