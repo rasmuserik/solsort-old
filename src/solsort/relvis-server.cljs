@@ -35,7 +35,7 @@
               (recur lines (<! lines) lid (conj loans loan) cnt (inc amount))
               (do
                 (if (and prevLid
-                         (< 2 (count loans)))
+                         (< 1 (count loans)))
                   (do
                     (<! (kvdb/store prefix prevLid (clj->js loans)))
                     (aset @ids prevLid amount)
@@ -48,11 +48,13 @@
       (<! (kvdb/commit prefix))
       @ids)))
 
-(defn relvis-server []
+(defn start-server []
   (go
+  (print 'server-start)))
+(defn prepare-data []
+  (go
+      (if (not (<! (kvdb/fetch :related "10000467")))
     (let [fs (js/require "fs")]
-      (print 'incnil (inc nil))
-      (print (js/Object.keys #js{:foo 1 :bar 1}))
       (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
       (if (not (.existsSync fs "tmp/coloans.csv"))
         (do (print "generating coloans.csv" (js/Date.))
@@ -78,7 +80,7 @@
         (loop [i 0]
           (if (< i (.-length lids))
             (let [lid (aget lids i)
-                  patrons (or (<! (kvdb/fetch :lids lid)) #js[])
+                  patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 3000)
                   coloans (or (<! (kvdb/multifetch :patrons patrons)) #js{})
                   result (atom #js{})
                   ]
@@ -100,14 +102,12 @@
                                       (for [lid (seq (js/Object.keys @result))] 
                                         [lid (aget @result lid) (aget lidCount lid)])))))))))
               (if (= 0 (rem i 1000))
-                ;(print i lid (aget lidCount lid) patrons coloans))
                 (print i (.-length lids) lid (aget lidCount lid)))
               (recur (inc i)))))
-
-        (print "done preparing data for relvis-server" (js/Date.))
-        )
-      )))
+        (print "done preparing data for relvis-server" (js/Date.)))))))
 
 (defn start []
+  (go
+  (<! (prepare-data))
   (print "starting visual relation server")
-  (relvis-server))
+  (<! (start-server))))
