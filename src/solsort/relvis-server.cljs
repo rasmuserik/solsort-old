@@ -50,64 +50,64 @@
 
 (defn start-server []
   (go
-  (print 'server-start)))
+    (print 'server-start)))
 (defn prepare-data []
   (go
-      (if (not (<! (kvdb/fetch :related "10000467")))
-    (let [fs (js/require "fs")]
-      (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
-      (if (not (.existsSync fs "tmp/coloans.csv"))
-        (do (print "generating coloans.csv" (js/Date.))
-            (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv")))))
-      (if (not (.existsSync fs "tmp/coloans-by-lid.csv"))
-        (do (print "generating tmp/coloans-by-lid.csv" (js/Date.))
-            (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
+    (if (not (<! (kvdb/fetch :related "10000467")))
+      (let [fs (js/require "fs")]
+        (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
+        (if (not (.existsSync fs "tmp/coloans.csv"))
+          (do (print "generating coloans.csv" (js/Date.))
+              (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv")))))
+        (if (not (.existsSync fs "tmp/coloans-by-lid.csv"))
+          (do (print "generating tmp/coloans-by-lid.csv" (js/Date.))
+              (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv"))))
 
-      (if (not (<! (kvdb/fetch :patrons "000001")))
-        (do
-          (print "traversing coloans" (js/Date.))
-          (print "added " (.-length (js/Object.keys (<! (iterateLines :patrons "tmp/coloans.csv" false)))) " elements")))
-      (if (not (<! (kvdb/fetch :lid-count "all")))
-        (let [lidCount (<! (iterateLines :lids "tmp/coloans-by-lid.csv" true))]
-          (print "no lid-count")
-          (<! (kvdb/store :lid-count "all" (js/JSON.stringify lidCount))))
-        (print "has lid-count"))
-      (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch :lid-count "all")) "{}"))
-            lids (js/Object.keys lidCount)
-            ]
-        (aset js/window "lidCount" lidCount)
-        (print "generating coloans")
-        (loop [i 0]
-          (if (< i (.-length lids))
-            (let [lid (aget lids i)
-                  patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 3000)
-                  coloans (or (<! (kvdb/multifetch :patrons patrons)) #js{})
-                  result (atom #js{})
-                  ]
-              (doall (for [patron (seq patrons)]
-                       (doall (for [coloan (seq (aget coloans patron))]
-                                (aset @result coloan (inc (or (aget @result coloan) 0)))))))
-              (<! (kvdb/store 
-                    :related lid
-                    (clj->js
-                      (map 
-                        (fn [[weight lid dnt total]] {:lid lid :weight (bit-or (- (* weight 100)) 0)})
-                        (take 
-                          100
-                          (sort
-                            (map 
-                              (fn [[lid cnt total]] 
-                                [(- (/ cnt (js/Math.log (+ 20 total)))) lid cnt total])
-                              (filter (fn [[lid cnt total]] (< 2 cnt))
-                                      (for [lid (seq (js/Object.keys @result))] 
-                                        [lid (aget @result lid) (aget lidCount lid)])))))))))
-              (if (= 0 (rem i 1000))
-                (print i (.-length lids) lid (aget lidCount lid)))
-              (recur (inc i)))))
-        (print "done preparing data for relvis-server" (js/Date.)))))))
+        (if (not (<! (kvdb/fetch :patrons "000001")))
+          (do
+            (print "traversing coloans" (js/Date.))
+            (print "added " (.-length (js/Object.keys (<! (iterateLines :patrons "tmp/coloans.csv" false)))) " elements")))
+        (if (not (<! (kvdb/fetch :lid-count "all")))
+          (let [lidCount (<! (iterateLines :lids "tmp/coloans-by-lid.csv" true))]
+            (print "no lid-count")
+            (<! (kvdb/store :lid-count "all" (js/JSON.stringify lidCount))))
+          (print "has lid-count"))
+        (let [lidCount (js/JSON.parse (or (<! (kvdb/fetch :lid-count "all")) "{}"))
+              lids (js/Object.keys lidCount)
+              ]
+          (aset js/window "lidCount" lidCount)
+          (print "generating coloans")
+          (loop [i 0]
+            (if (< i (.-length lids))
+              (let [lid (aget lids i)
+                    patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 3000)
+                    coloans (or (<! (kvdb/multifetch :patrons patrons)) #js{})
+                    result (atom #js{})
+                    ]
+                (doall (for [patron (seq patrons)]
+                         (doall (for [coloan (seq (aget coloans patron))]
+                                  (aset @result coloan (inc (or (aget @result coloan) 0)))))))
+                (<! (kvdb/store 
+                      :related lid
+                      (clj->js
+                        (map 
+                          (fn [[weight lid dnt total]] {:lid lid :weight (bit-or (- (* weight 100)) 0)})
+                          (take 
+                            100
+                            (sort
+                              (map 
+                                (fn [[lid cnt total]] 
+                                  [(- (/ cnt (js/Math.log (+ 20 total)))) lid cnt total])
+                                (filter (fn [[lid cnt total]] (< 2 cnt))
+                                        (for [lid (seq (js/Object.keys @result))] 
+                                          [lid (aget @result lid) (aget lidCount lid)])))))))))
+                (if (= 0 (rem i 1000))
+                  (print i (.-length lids) lid (aget lidCount lid)))
+                (recur (inc i)))))
+          (print "done preparing data for relvis-server" (js/Date.)))))))
 
 (defn start []
   (go
-  (<! (prepare-data))
-  (print "starting visual relation server")
-  (<! (start-server))))
+    (<! (prepare-data))
+    (print "starting visual relation server")
+    (<! (start-server))))
