@@ -50,10 +50,26 @@
       @ids)))
 
 (defn start-server []
+    (if (not config/nodejs)
+      (throw "error: not on node"))
   (go
+    (let [c (chan)
+          http (js/require "http")
+          server-function (fn [req res] 
+                            (.log js/console (.-url req))
+                            (.end res "hello"))
+          server (.createServer http server-function)
+          ]
+      (.listen server 1337)
+      (print "starting server on port 1337")
+      )
+
+
     (if config/nodejs (print 'on-node))
     (print 'server-start)))
 (defn prepare-data []
+  (if (not config/nodejs)
+    (throw "error: not on node"))
   (go
     (if (not (<! (kvdb/fetch :related "10000467")))
       (let [fs (js/require "fs")]

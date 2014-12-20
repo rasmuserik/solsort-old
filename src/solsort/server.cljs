@@ -16,7 +16,7 @@
 
 (def arg
   (or
-    (and js/process (get js/process.argv 2))
+    (and js/window.process (get js/window.process.argv 2))
     (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
 
 (print arg)
