@@ -3,6 +3,7 @@
   (:require
     [solsort.node :refer [exec eachLines]]
     [solsort.keyval-db :as kvdb]
+    [solsort.config :as config]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -50,6 +51,7 @@
 
 (defn start-server []
   (go
+    (if config/nodejs (print 'on-node))
     (print 'server-start)))
 (defn prepare-data []
   (go
