@@ -5,6 +5,7 @@
     [solsort.keyval-db :as kvdb]
     [solsort.config :as config]
     [solsort.util :refer [parse-json-or-nil]]
+    [clojure.string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def data-path "../_visual_relation_server")
@@ -49,22 +50,35 @@
       (<! (kvdb/commit prefix))
       @ids)))
 
+(defn path-split [string]
+  (let [[path param] (.split string "?")
+        path-parts (filter #(< 0 (.-length %)) (seq (.split path "/")))
+        params (into {} (map #(split % #"=" 2) (split param "&")))
+        ]
+    [(butlast path-parts) (last path-parts) params]))
+
+
+(defn http-serve [req res]
+  (go
+    (let [[path id params] (path-split (.-url req))
+          related (<! (kvdb/fetch :related id)) ]
+      (print related)
+  (.log js/console (.-url req))
+  (print (path-split (.-url req)))
+  (.end res (str (params "callback") "(" (js/JSON.stringify related) ")")))))
+
+
 (defn start-server []
-    (if (not config/nodejs)
-      (throw "error: not on node"))
+  (if (not config/nodejs)
+    (throw "error: not on node"))
   (go
     (let [c (chan)
           http (js/require "http")
-          server-function (fn [req res] 
-                            (.log js/console (.-url req))
-                            (.end res "hello"))
-          server (.createServer http server-function)
+          server (.createServer http http-serve)
           ]
       (.listen server 1337)
       (print "starting server on port 1337")
       )
-
-
     (if config/nodejs (print 'on-node))
     (print 'server-start)))
 (defn prepare-data []
@@ -109,14 +123,14 @@
                       :related lid
                       (clj->js
                         (map 
-                          (fn [[weight lid dnt total]] {:lid lid :weight (bit-or (- (* weight 100)) 0)})
+                          (fn [[weight lid dnt total]] {:lid lid :weight (bit-or (- (* weight 1000)) 0)})
                           (take 
                             100
                             (sort
                               (map 
                                 (fn [[lid cnt total]] 
-                                  [(- (/ cnt (js/Math.log (+ 20 total)))) lid cnt total])
-                                (filter (fn [[lid cnt total]] (< 2 cnt))
+                                  [(- (/ cnt (js/Math.log (+ 10 total)))) lid cnt total])
+                                (filter (fn [[lid cnt total]] (< 1 cnt))
                                         (for [lid (seq (js/Object.keys @result))] 
                                           [lid (aget @result lid) (aget lidCount lid)])))))))))
                 (if (= 0 (rem i 1000))
