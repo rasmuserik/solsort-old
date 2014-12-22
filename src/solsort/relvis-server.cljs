@@ -57,16 +57,12 @@
         ]
     [(butlast path-parts) (last path-parts) params]))
 
-
 (defn http-serve [req res]
   (go
     (let [[path id params] (path-split (.-url req))
           related (<! (kvdb/fetch :related id)) ]
-      (print related)
-  (.log js/console (.-url req))
-  (print (path-split (.-url req)))
-  (.end res (str (params "callback") "(" (js/JSON.stringify related) ")")))))
-
+      (.setHeader res "Content-Type" "application/javascript")
+      (.end res (str (params "callback") "(" (js/JSON.stringify related) ")")))))
 
 (defn start-server []
   (if (not config/nodejs)
@@ -81,6 +77,7 @@
       )
     (if config/nodejs (print 'on-node))
     (print 'server-start)))
+
 (defn prepare-data []
   (if (not config/nodejs)
     (throw "error: not on node"))
