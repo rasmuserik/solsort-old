@@ -4,6 +4,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]
     [solsort.manager]
     [solsort.relvis-server]
+    [solsort.webserver]
     ))
 
 (enable-console-print!)
@@ -13,6 +14,11 @@
 
 (register "manager" solsort.manager.start)
 (register "relvis-server" solsort.relvis-server.start)
+(print "blah")
+(register "hello" (fn [] (solsort.webserver/add "hello" (fn [info] 
+                                                          (print 'muyhaha)
+                                                          (go info)))))
+(solsort.webserver/add :default #(go :default))
 
 (def arg
   (or

@@ -3,6 +3,7 @@
   (:require
     [solsort.node :refer [exec eachLines]]
     [solsort.keyval-db :as kvdb]
+    [solsort.webserver :as webserver]
     [solsort.config :as config]
     [solsort.util :refer [parse-json-or-nil]]
     [clojure.string :refer [split]]
@@ -139,4 +140,6 @@
   (go
     (<! (prepare-data))
     (print "starting visual relation server")
-    (<! (start-server))))
+    (<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
+   ; (<! (start-server))
+    ))
