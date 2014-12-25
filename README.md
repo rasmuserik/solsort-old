@@ -36,4 +36,12 @@ Applications
   - cordova iOS etc.  - chrome extension
   - opera extension
 
+# View types
+
+- html
+- releated graph - d3-force
+- map - Leaflet
+- canvas
+- webgl
+
 # Release log
