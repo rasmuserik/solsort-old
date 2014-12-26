@@ -27,11 +27,8 @@
           extension (if (< 0 split-pos) (.slice id (inc split-pos)) "")
           info {:path path :filename filename :extension extension :params params}
           ]
-      (print 'here)
       (.setHeader res "Content-Type" "application/javascript")
-      (print 'here2)
       (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")"))
-      (print 'here3)
       )))
 
 ;(<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
@@ -45,9 +42,7 @@
           ]
       (.listen server 1337)
       (print "starting server on port 1337")
-      )
-    (if config/nodejs (print 'on-node))
-    (print 'server-start)))
+      )))
 
 (defn add [path f]
   (if (not @initialised)
@@ -56,5 +51,4 @@
       (start-server)))
   (go
     (swap! services assoc path f)
-    (print 'HERRE)
     true))

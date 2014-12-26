@@ -14,7 +14,6 @@
 
 (register "manager" solsort.manager.start)
 (register "relvis-server" solsort.relvis-server.start)
-(print "blah")
 (register "hello" (fn [] (solsort.webserver/add "hello" (fn [info] 
                                                           (print 'muyhaha)
                                                           (go info)))))

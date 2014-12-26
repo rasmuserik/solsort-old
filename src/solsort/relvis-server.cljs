@@ -11,11 +11,6 @@
 
 (def data-path "../_visual_relation_server")
 
-(defn pput [db obj]
-  (let [c (chan)]
-    (.put db obj #(close! c))
-    c))
-
 (defn iterateLines [prefix fname swap]
   (go
     (print 'traversing prefix)
@@ -51,40 +46,13 @@
       (<! (kvdb/commit prefix))
       @ids)))
 
-(defn path-split [string]
-  (let [[path param] (.split string "?")
-        path-parts (filter #(< 0 (.-length %)) (seq (.split path "/")))
-        params (into {} (map #(split % #"=" 2) (split param "&")))
-        ]
-    [(butlast path-parts) (last path-parts) params]))
-
-(defn http-serve [req res]
-  (go
-    (let [[path id params] (path-split (.-url req))
-          related (<! (kvdb/fetch :related id)) ]
-      (.setHeader res "Content-Type" "application/javascript")
-      (.end res (str (params "callback") "(" (js/JSON.stringify related) ")")))))
-
-(defn start-server []
-  (if (not config/nodejs)
-    (throw "error: not on node"))
-  (go
-    (let [c (chan)
-          http (js/require "http")
-          server (.createServer http http-serve)
-          ]
-      (.listen server 1337)
-      (print "starting server on port 1337")
-      )
-    (if config/nodejs (print 'on-node))
-    (print 'server-start)))
-
 (defn prepare-data []
   (if (not config/nodejs)
     (throw "error: not on node"))
   (go
-    (if (not (<! (kvdb/fetch :related "10000467")))
+    (if true ;(not (<! (kvdb/fetch :related "10000467")))
       (let [fs (js/require "fs")]
+        (print 'prepare-data)
         (if (not (.existsSync fs "tmp")) (<! (exec "mkdir tmp")))
         (if (not (.existsSync fs "tmp/coloans.csv"))
           (do (print "generating coloans.csv" (js/Date.))
@@ -138,8 +106,7 @@
 
 (defn start []
   (go
+    (<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
     (<! (prepare-data))
     (print "starting visual relation server")
-    (<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
-   ; (<! (start-server))
     ))
