@@ -34,7 +34,8 @@
       (let [store-list (read-string (or (.getItem js/localStorage "keyval-db") "#{}"))]
         (swap! stores assoc storage {})
         (.setItem js/localStorage "keyval-db" (str (conj store-list storage)))
-        (<! (open-db))))))
+        (<! (open-db)))
+      (while (not @db) (<! (timeout 100))))))
 
 (defn commit [storage]
   (if (< 0 (count (@stores storage)))
@@ -65,7 +66,9 @@
       (<! c))))
 
 (defn fetch [storage id] 
-  (go (aget (<! (multifetch storage #js[id])) id)))
+  (go 
+    (aget (<! (multifetch storage #js[id])) id)
+    ))
 
 (defn store [storage id value] 
   (go

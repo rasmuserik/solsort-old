@@ -13,13 +13,11 @@
                )))
     c))
 
-(defn eachLines [filename]
+(defn each-lines [filename]
   (let
     [c (chan 1)
      buf (atom "")
-     fs (js/require "fs")
-     stream (.createReadStream fs filename)
-     ]
+     stream (.createReadStream (js/require "fs") filename)]
     (.on stream "data"
          (fn [data]
            (.pause stream)

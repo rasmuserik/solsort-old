@@ -1,7 +1,7 @@
 (ns solsort.relvis-server
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.node :refer [exec eachLines]]
+    [solsort.node :refer [exec each-lines]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.config :as config]
@@ -10,12 +10,12 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def data-path "../_visual_relation_server")
-
+;(def fs (if (config/nodejs) (js/require "fs")))
 (defn iterateLines [prefix fname swap]
   (go
     (print 'traversing prefix)
     (let [ids (atom #js{})]
-      (loop [lines (eachLines fname)
+      (loop [lines (each-lines fname)
              line (<! lines)
              prevLid nil
              loans []
@@ -45,6 +45,39 @@
             )))
       (<! (kvdb/commit prefix))
       @ids)))
+
+(defn generate-coloans-by-lid-csv []
+  (go
+    (print "ensuring tmp/coloans-by-lid.csv")
+    (if (not (.existsSync (js/require "fs") "tmp/coloans-by-lid.csv"))
+      (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv")))))
+
+(defn generate-coloans-csv []
+  (go
+    (print "ensuring tmp/coloans.csv")
+    (if (not (.existsSync (js/require "fs") "tmp/coloans.csv"))
+      (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv"))))))
+
+(defn make-tmp-dir []
+  (go 
+    (if (not (.existsSync (js/require "fs") "tmp")) 
+      (<! (exec "mkdir tmp")))))
+
+(defn prepare-data-2 []
+  (if (not config/nodejs) (throw "error: not on node"))
+  (go
+    (<! (make-tmp-dir))
+    (<! (generate-coloans-csv))
+    (<! (generate-coloans-by-lid-csv))
+    (print 'counting-lines)
+    (print 'line-count
+           (loop [input (each-lines "tmp/coloans.csv")
+                  current-line (<! input)
+                  line-count 0]
+             (if current-line
+               (recur input (<! input) (inc line-count))
+               line-count)))
+    ))
 
 (defn prepare-data []
   (if (not config/nodejs)
@@ -107,6 +140,6 @@
 (defn start []
   (go
     (<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
-    (<! (prepare-data))
+    (<! (prepare-data-2))
     (print "starting visual relation server")
     ))
