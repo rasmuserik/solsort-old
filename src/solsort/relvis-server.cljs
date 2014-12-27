@@ -1,13 +1,13 @@
 (ns solsort.relvis-server
-  (:require-macros [cljs.core.async.macros :refer [go alt!]])
+  (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.node :refer [exec each-lines]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.config :as config]
     [solsort.util :refer [parse-json-or-nil]]
-    [clojure.string :refer [split]]
-    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
+    [clojure.string :as string :refer [split]]
+    [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (def data-path "../_visual_relation_server")
 ;(def fs (if (config/nodejs) (js/require "fs")))
@@ -45,39 +45,6 @@
             )))
       (<! (kvdb/commit prefix))
       @ids)))
-
-(defn generate-coloans-by-lid-csv []
-  (go
-    (print "ensuring tmp/coloans-by-lid.csv")
-    (if (not (.existsSync (js/require "fs") "tmp/coloans-by-lid.csv"))
-      (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv")))))
-
-(defn generate-coloans-csv []
-  (go
-    (print "ensuring tmp/coloans.csv")
-    (if (not (.existsSync (js/require "fs") "tmp/coloans.csv"))
-      (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv"))))))
-
-(defn make-tmp-dir []
-  (go 
-    (if (not (.existsSync (js/require "fs") "tmp")) 
-      (<! (exec "mkdir tmp")))))
-
-(defn prepare-data-2 []
-  (if (not config/nodejs) (throw "error: not on node"))
-  (go
-    (<! (make-tmp-dir))
-    (<! (generate-coloans-csv))
-    (<! (generate-coloans-by-lid-csv))
-    (print 'counting-lines)
-    (print 'line-count
-           (loop [input (each-lines "tmp/coloans.csv")
-                  current-line (<! input)
-                  line-count 0]
-             (if current-line
-               (recur input (<! input) (inc line-count))
-               line-count)))
-    ))
 
 (defn prepare-data []
   (if (not config/nodejs)
@@ -136,6 +103,116 @@
                   (print i (.-length lids) lid (aget lidCount lid)))
                 (recur (inc i)))))
           (print "done preparing data for relvis-server" (js/Date.)))))))
+
+(defn generate-coloans-by-lid-csv []
+  (go
+    (print "ensuring tmp/coloans-by-lid.csv")
+    (if (not (.existsSync (js/require "fs") "tmp/coloans-by-lid.csv"))
+      (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv")))))
+
+(defn generate-coloans-csv []
+  (go
+    (print "ensuring tmp/coloans.csv")
+    (if (not (.existsSync (js/require "fs") "tmp/coloans.csv"))
+      (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv"))))))
+
+(defn make-tmp-dir []
+  (go 
+    (if (not (.existsSync (js/require "fs") "tmp")) 
+      (<! (exec "mkdir tmp")))))
+
+(defn print-channel [c]
+  (go (loop [msg (<! c)]
+        (if msg (do (print msg) (recur (<! c)))))))
+
+(defn kvdb-store-channel [db c]
+  (go-loop 
+    [key-val (<! c)]
+    (if key-val
+      (let [[k v] key-val]
+        (<! (kvdb/store db k (clj->js v)))
+        (recur (<! c)))
+      (kvdb/commit db))))
+
+(defn by-first [xf]
+  (let [prev-key (atom nil)
+        values (atom '())]
+    (fn 
+      ([result] 
+       (print 'done)
+       (if (< 0 (count @values)) 
+         (do
+           (xf result [@prev-key @values])
+           (reset! values '())))
+       (xf result))
+      ([result input]
+       (if (= (first input) @prev-key)
+         (swap! values conj (rest input))
+         (do 
+           (if (< 0 (count @values)) (xf result [@prev-key @values]))
+           (reset! prev-key (first input))
+           (reset! values (list (rest input)))))))))
+
+(defn transducer-status [s]
+  (fn [xf]
+    (let [prev-time (atom 0)
+          cnt (atom 0)]
+      (fn 
+        ([result input]
+         (swap! cnt inc)
+         (if (< 5000 (- (.now js/Date) @prev-time))
+           (do
+             (reset! prev-time (.now js/Date))
+             (print s @cnt)))
+         (xf result input))))))
+
+(def group-lines-by-first
+  (comp
+    by-first
+    (map (fn [[k v]] [k (map (fn [[s]] (string/trim s)) v)]))))
+(defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
+
+(defn transduce-file-to-db [file-name db-name transducer]
+  (let [c (chan 1 transducer)]
+    (pipe (each-lines file-name) c)
+    (kvdb-store-channel db-name c)))
+
+(defn prepare-data-2 []
+  (if (not config/nodejs) (throw "error: not on node"))
+  (go
+    (<! (make-tmp-dir))
+    (<! (generate-coloans-csv))
+    (<! (generate-coloans-by-lid-csv))
+
+    (if (not (<! (kvdb/fetch :loan-count "000001")))
+      (<! (transduce-file-to-db
+            "tmp/coloans-by-lid.csv" :loan-count
+            (comp
+              (map #(string/split % #","))
+              (map swap-trim)
+              (transducer-status "traversing loan-count")
+              group-lines-by-first
+              (map (fn [[k v]] [k (count v)]))
+              ))))
+
+    (if (not (<! (kvdb/fetch :patrons1 "000001")))
+      (<! (transduce-file-to-db
+            "tmp/coloans.csv" :patrons1 
+            (comp
+              (map #(string/split % #","))
+              (transducer-status "traversing patrons")
+              group-lines-by-first))))
+
+    (if (not (<! (kvdb/fetch :lids1 "000001")))
+      (<! (transduce-file-to-db
+            "tmp/coloans-by-lid.csv" :lids1 
+            (comp
+              (map #(string/split % #","))
+              (map swap-trim)
+              (transducer-status "traversing lids")
+              group-lines-by-first))))
+
+    ))
 
 (defn start []
   (go
