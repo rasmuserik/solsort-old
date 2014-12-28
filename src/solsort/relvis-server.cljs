@@ -160,7 +160,7 @@
       (fn 
         ([result input]
          (swap! cnt inc)
-         (if (< 5000 (- (.now js/Date) @prev-time))
+         (if (< 60000 (- (.now js/Date) @prev-time))
            (do
              (reset! prev-time (.now js/Date))
              (print s @cnt)))
@@ -184,7 +184,7 @@
     (<! (generate-coloans-csv))
     (<! (generate-coloans-by-lid-csv))
 
-    (if (not (<! (kvdb/fetch :loan-count "000001")))
+    (if (not (<! (kvdb/fetch :loan-count "x8331046")))
       (<! (transduce-file-to-db
             "tmp/coloans-by-lid.csv" :loan-count
             (comp
@@ -195,17 +195,17 @@
               (map (fn [[k v]] [k (count v)]))
               ))))
 
-    (if (not (<! (kvdb/fetch :patrons1 "000001")))
+    (if (not (<! (kvdb/fetch :patrons "000001")))
       (<! (transduce-file-to-db
-            "tmp/coloans.csv" :patrons1 
+            "tmp/coloans.csv" :patrons
             (comp
               (map #(string/split % #","))
               (transducer-status "traversing patrons")
               group-lines-by-first))))
 
-    (if (not (<! (kvdb/fetch :lids1 "000001")))
+    (if (not (<! (kvdb/fetch :lids "x8331046")))
       (<! (transduce-file-to-db
-            "tmp/coloans-by-lid.csv" :lids1 
+            "tmp/coloans-by-lid.csv" :lids 
             (comp
               (map #(string/split % #","))
               (map swap-trim)
@@ -214,9 +214,24 @@
 
     ))
 
+(defn get-related [lid]
+  (go
+    (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 3000)
+          coloans (or (<! (kvdb/multifetch :patrons patrons)) #js{})]
+      coloans)))
+#_((
+    (print id)
+    (let [patrons (kvdb/fetch :lids1 id)
+          ;lids (kvdb/multifetch :patrons1 patrons)
+          lids 1
+          ] 
+      (print id patrons lids)
+      (.log js/console patrons)
+      lids)))
+
 (defn start []
   (go
-    (<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
     (<! (prepare-data-2))
+    (<! (webserver/add "relvis-related" #(get-related (:filename %))))
     (print "starting visual relation server")
     ))

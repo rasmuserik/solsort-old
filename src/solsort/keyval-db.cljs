@@ -53,6 +53,7 @@
 (defn multifetch [storage ids] 
   (go 
     (<! (ensure-store storage))
+    (print storage ids)
     (<! (commit storage))
     (let [c (chan)
           result (atom #js{})
@@ -67,7 +68,7 @@
 
 (defn fetch [storage id] 
   (go 
-    (aget (<! (multifetch storage #js[id])) id)
+    (aget (or (<! (multifetch storage #js[id])) #js{}) id)
     ))
 
 (defn store [storage id value] 
