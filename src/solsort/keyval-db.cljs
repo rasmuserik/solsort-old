@@ -76,6 +76,17 @@
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
     value))
+(defn clear [storage]
+  (go
+    (<! (ensure-store storage))
+    (<! (commit storage))
+    (let [c (chan 1)
+          trans (.transaction @db #js[storage] "readwrite")
+          objStore (.objectStore trans storage)]
+      (.clear objStore)
+      (set! (.-oncomplete trans)  #(put! c true))
+      (set! (.-onerror trans)  #(do (print "clear commit error") (close! c)))
+      (<! c))))
 
 (defn tryout []
   (go

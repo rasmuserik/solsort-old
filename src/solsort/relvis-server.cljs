@@ -230,36 +230,43 @@
   (go
     ;(if (not @freqs) (<! load-frequencies))
     (print 'get-related lid)
-    (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 5000)
-          coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
-                       (js->clj)
-                       (vals)
-                       (flatten)
-                       (frequencies))
-          coloans-with-total (loop [coloan (first coloans)
-                                    coloans (rest coloans)
-                                    acc []]
-                               (if coloan
-                                 (recur (first coloans)
-                                        (rest coloans)
-                                        (conj acc [(second coloan)
-                                                   (first coloan) 
-                                                   ; (<! (kvdb/fetch :loan-count lid))
-                                                   ]))
-                                 acc))
-          weighted (->> coloans
-                        (map (fn [[a b]] [b a]))
-                        (sort)
-                        (reverse)
-                        (take 10)
-                        (map (fn [[weight lid]] {:lid lid :weight weight}))
-                        )]
-      (print 'coloans weighted)
-      weighted)))
+    (let [cached nil] ;(<! (kvdb/fetch :related lid))]
+      (if cached
+        cached
+        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 5000)
+              coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
+                           (js->clj)
+                           (vals)
+                           (flatten)
+                           (frequencies))
+              coloans-with-total (loop [coloan (first coloans)
+                                        coloans (rest coloans)
+                                        acc []]
+                                   (if coloan
+                                     (recur (first coloans)
+                                            (rest coloans)
+                                            (conj acc [(second coloan)
+                                                       (first coloan) 
+                                                       ; (<! (kvdb/fetch :loan-count lid))
+                                                       ]))
+                                     acc))
+              weighted (->> coloans
+                            (map (fn [[a b]] [b a]))
+                            (sort)
+                            (reverse)
+                            (take 10)
+                            (map (fn [[weight lid]] {:lid lid :weight weight}))
+                            (clj->js)
+                            )]
+          (print 'coloans weighted)
+          (<! (kvdb/store :related lid weighted))
+          ;(<! (kvdb/commit :related))
+          weighted)))))
 
 (defn start []
   (go
     (<! (prepare-data))
+ ;   (kvdb/clear :related)
     (<! (webserver/add "relvis-related" #(get-related (:filename %))))
     (print "starting visual relation server")
     ))
