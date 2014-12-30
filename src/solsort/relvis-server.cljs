@@ -139,7 +139,6 @@
         values (atom '())]
     (fn 
       ([result] 
-       (print 'done)
        (if (< 0 (count @values)) 
          (do
            (xf result [@prev-key @values])
@@ -158,9 +157,12 @@
     (let [prev-time (atom 0)
           cnt (atom 0)]
       (fn 
+        ([result]
+         (print s 'done)
+         (xf result))
         ([result input]
          (swap! cnt inc)
-         (if (< 60000 (- (.now js/Date) @prev-time))
+         (if (< 6000 (- (.now js/Date) @prev-time))
            (do
              (reset! prev-time (.now js/Date))
              (print s @cnt)))
@@ -172,15 +174,16 @@
       (fn 
         ([result]
          (if @acc (do
-                    (xf result acc)
+                    (xf result @acc)
                     (reset! acc nil)))
          (xf result))
-        ([result input] (swap! acc conj input))))))
+        ([result input] 
+         (swap! acc conj input))))))
 
 (def group-lines-by-first
   (comp
     by-first
-    (map (fn [[k v]] [k (map (fn [[s]] (string/trim s)) v)]))))
+    (map (fn [[k v]] [k (map (fn [[s]] s) v)]))))
 (defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
 
 (defn transduce-file-to-db [file-name db-name transducer]
@@ -188,31 +191,55 @@
     (pipe (each-lines file-name) c)
     (kvdb-store-channel db-name c)))
 
+(defn calculate-lid-counts []
+  (let [transducer
+        (comp
+          (map #(string/split % #","))
+          (map swap-trim)
+          (transducer-status "finding lid-count")
+          group-lines-by-first
+          (map (fn [[k v]] [k (count v)]))
+          (transducer-accumulate [])
+          )
+        c (chan 1 transducer)]
+    (pipe (each-lines "tmp/coloans-by-lid.csv") c)
+    c))
+
 (defn prepare-data []
   (if (not config/nodejs) (throw "error: not on node"))
   (go
     (<! (make-tmp-dir))
     (<! (generate-coloans-csv))
     (<! (generate-coloans-by-lid-csv))
+    #_(let [counts (<! (calculate-lid-counts))]
+        (print 'a)
+        (print 'lid-counts counts)
+        (print 'b)
+        )
 
-    (if (not (<! (kvdb/fetch :loan-count "x8331046")))
-      (<! (transduce-file-to-db
-            "tmp/coloans-by-lid.csv" :loan-count
-            (comp
-              (map #(string/split % #","))
-              (map swap-trim)
-              (transducer-status "traversing loan-count")
-              group-lines-by-first
-              (map (fn [[k v]] [k (count v)]))
-              ))))
+    #_(if (not (<! (kvdb/fetch :loan-count "x8331046")))
+        (<! (transduce-file-to-db
+              "tmp/coloans-by-lid.csv" :loan-count
+              (comp
+                (map #(string/split % #","))
+                (map swap-trim)
+                (transducer-status "traversing loan-count")
+                group-lines-by-first
+                (map (fn [[k v]] [k (count v)]))
+                ))))
 
     (if (not (<! (kvdb/fetch :patrons "000001")))
-      (<! (transduce-file-to-db
-            "tmp/coloans.csv" :patrons
-            (comp
-              (map #(string/split % #","))
-              (transducer-status "traversing patrons")
-              group-lines-by-first))))
+      (let [lid-counts 
+            (clj->js (into {} (<! (calculate-lid-counts))))
+            ]
+        (print 'lid-count-length (.-length (.keys js/Object lid-counts)))
+        (<! (transduce-file-to-db
+              "tmp/coloans.csv" :patrons
+              (comp
+                (map #(string/split % #","))
+                (transducer-status "traversing patrons")
+                (map (fn [[k v]] [k #js[(string/trim v) (aget lid-counts (string/trim v))]]))
+                group-lines-by-first)))))
 
     (if (not (<! (kvdb/fetch :lids "x8331046")))
       (<! (transduce-file-to-db
@@ -266,7 +293,7 @@
 (defn start []
   (go
     (<! (prepare-data))
- ;   (kvdb/clear :related)
+    ;   (kvdb/clear :related)
     (<! (webserver/add "relvis-related" #(get-related (:filename %))))
     (print "starting visual relation server")
     ))
