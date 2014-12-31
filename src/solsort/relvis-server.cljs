@@ -256,15 +256,14 @@
 (defn get-related [lid]
   (go
     ;(if (not @freqs) (<! load-frequencies))
-    (print 'get-related lid)
     (let [cached nil] ;(<! (kvdb/fetch :related lid))]
       (if cached
         cached
-        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 5000)
+        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
               coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
                            (js->clj)
                            (vals)
-                           (flatten)
+                           (mapcat identity)
                            (frequencies))
               coloans-with-total (loop [coloan (first coloans)
                                         coloans (rest coloans)
@@ -278,14 +277,19 @@
                                                        ]))
                                      acc))
               weighted (->> coloans
-                            (map (fn [[a b]] [b a]))
+                            (map (fn [[[lid total] cooccur]] 
+                                   [(bit-or (* 1000 (/ cooccur (.sqrt js/Math (+ 10 total)))) 0)
+                                    lid cooccur total]))
                             (sort)
                             (reverse)
-                            (take 10)
-                            (map (fn [[weight lid]] {:lid lid :weight weight}))
+                            (take 100)
+                            (map (fn [[weight lid cooccur total]] 
+                                   {:lid lid :weight weight 
+                                    ; :cooccur cooccur :total total
+                                    }))
                             (clj->js)
                             )]
-          (print 'coloans weighted)
+          (print 'get-related lid weighted)
           (<! (kvdb/store :related lid weighted))
           ;(<! (kvdb/commit :related))
           weighted)))))
