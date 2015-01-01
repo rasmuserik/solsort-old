@@ -255,8 +255,7 @@
 (def freqs (atom nil))
 (defn get-related [lid]
   (go
-    ;(if (not @freqs) (<! load-frequencies))
-    (let [cached nil] ;(<! (kvdb/fetch :related lid))]
+    (let [cached (<! (kvdb/fetch :related lid))]
       (if cached
         cached
         (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
