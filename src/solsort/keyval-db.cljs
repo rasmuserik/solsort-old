@@ -7,25 +7,39 @@
 (def stores (atom {}))
 
 (def db (atom nil))
-
+(def locked (atom false))
+(defn lock [id]
+  (go
+    ;(print 'locking id)
+    (while @locked (<! (timeout 100)))
+    (print 'lock id)
+    (reset! locked true)))
+(defn unlock [id] 
+  ;(print 'unlock id)
+  (reset! locked false))
 (defn open-db []
   (go
     (if @db (.close @db))
-    ; BUG/WARNING  not multientrant
+    (<! (lock 'a))
     (let [c (chan)
           store-list (seq (read-string (.getItem js/localStorage "keyval-db")))
           req (.open js/indexedDB "keyval-db" (inc (count store-list)))
           ]
       (set! (.-onupgradeneeded req)
-            #(let [db (.-result (.-target %))]
-               (doall (for [store store-list]
-                        (if (not (.contains (.-objectStoreNames db) store))
-                          (.createObjectStore db store))))))
-      (set! (.-onerror req) #(js/console.log 'error %))
+            (fn [req]
+              (print 'upgrade-needed-start)
+              (let [db (.-result (.-target req))]
+                (doall (for [store store-list]
+                         (if (not (.contains (.-objectStoreNames db) store))
+                           (.createObjectStore db store)))))))
+      (set! (.-onerror req) #(do
+                               (unlock 'a1)
+                               (js/console.log 'error %)))
       (set! (.-onsuccess req) 
-            #(do 
-               (reset! db (.-result (.-target %)))
-               (close! c)))
+            (fn [req]
+              (unlock 'a2)
+              (reset! db (.-result (.-target req)))
+              (close! c)))
       (<! c))))
 
 (defn ensure-store [storage]
@@ -38,22 +52,32 @@
       (while (not @db) (<! (timeout 100))))))
 
 (defn commit [storage]
-  (if (< 0 (count (@stores storage)))
-    (let [c (chan 1)
-          trans (.transaction @db #js[storage] "readwrite")
-          objStore (.objectStore trans storage)]
-      (doall (for [[k v] (@stores storage)]
-               (.put objStore v k)))
-      (set! (.-oncomplete trans)  #(put! c true))
-      (set! (.-onerror trans)  #(do (print "commit error") (close! c)))
-      (swap! stores assoc storage {})
-      c)
-    (go)))
+  (go 
+
+    (if (< 0 (count (@stores storage)))
+      (do
+        (<! (lock 'b))
+        (let [c (chan 1)
+              trans (.transaction @db #js[storage] "readwrite")
+              objStore (.objectStore trans storage)]
+          (doall (for [[k v] (@stores storage)]
+                   (.put objStore v k)))
+          (set! (.-oncomplete trans)  
+                #(do (unlock 'b1) 
+                     (put! c true)))
+          (set! (.-onerror trans)  
+                #(do 
+                   (unlock 'b2)
+                   (print "commit error") 
+                   (close! c)))
+          (swap! stores assoc storage {})
+          (<! c))))))
 
 (defn multifetch [storage ids] 
   (go 
     (<! (ensure-store storage))
     (<! (commit storage))
+    (<! (lock 'c))
     (let [c (chan)
           result (atom #js{})
           transaction (.transaction @db #js[storage] "readonly")
@@ -62,8 +86,12 @@
                (let [request (.get object-store id)]
                  (set! (.-onsuccess request) 
                        (fn [] (aset @result id (.-result request)))))))
-      (set! (.-oncomplete transaction)  (fn [] (put! c @result)))
-      (<! c))))
+      (set! (.-oncomplete transaction)  
+            (fn [] 
+              (put! c @result)))
+      (<! c)
+      (unlock 'c)
+      )))
 
 (defn fetch [storage id] 
   (go 

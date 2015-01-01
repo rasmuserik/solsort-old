@@ -289,9 +289,9 @@
                                     }))
                             (clj->js)
                             )]
-          (print 'get-related lid weighted)
+          (print 'get-related lid (take 10 weighted))
           (<! (kvdb/store :related lid weighted))
-          ;(<! (kvdb/commit :related))
+          (<! (kvdb/commit :related))
           weighted)))))
 
 (defn start []
