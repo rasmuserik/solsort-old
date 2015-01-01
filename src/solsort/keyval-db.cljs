@@ -12,7 +12,7 @@
   (go
     ;(print 'locking id)
     (while @locked (<! (timeout 100)))
-    (print 'lock id)
+    ;(print 'lock id)
     (reset! locked true)))
 (defn unlock [id] 
   ;(print 'unlock id)
@@ -89,8 +89,9 @@
       (set! (.-oncomplete transaction)  
             (fn [] 
               (put! c @result)))
-      (<! c)
-      (unlock 'c)
+      (let [return-value (<! c)]
+        (unlock 'c)
+        return-value)
       )))
 
 (defn fetch [storage id] 
