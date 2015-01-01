@@ -9,6 +9,44 @@
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
+(defn get-related [lid]
+  (go
+    (let [cached (<! (kvdb/fetch :related lid))]
+      (if cached
+        cached
+        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
+              coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
+                           (js->clj)
+                           (vals)
+                           (mapcat identity)
+                           (frequencies))
+              coloans-with-total (loop [coloan (first coloans)
+                                        coloans (rest coloans)
+                                        acc []]
+                                   (if coloan
+                                     (recur (first coloans)
+                                            (rest coloans)
+                                            (conj acc [(second coloan)
+                                                       (first coloan) 
+                                                       ; (<! (kvdb/fetch :loan-count lid))
+                                                       ]))
+                                     acc))
+              weighted (->> coloans
+                            (map (fn [[[lid total] cooccur]] 
+                                   [(bit-or (* 1000 (/ cooccur (.sqrt js/Math (+ 10 total)))) 0)
+                                    lid cooccur total]))
+                            (sort)
+                            (reverse)
+                            (take 100)
+                            (map (fn [[weight lid cooccur total]] 
+                                   {:lid lid :weight weight 
+                                    ; :cooccur cooccur :total total
+                                    }))
+                            (clj->js)
+                            )]
+          (<! (kvdb/store :related lid weighted))
+          weighted)))))
+
 (def data-path "../_visual_relation_server")
 ;(def fs (if (config/nodejs) (js/require "fs")))
 (defn iterateLines [prefix fname swap]
@@ -162,7 +200,7 @@
          (xf result))
         ([result input]
          (swap! cnt inc)
-         (if (< 6000 (- (.now js/Date) @prev-time))
+         (if (< 60000 (- (.now js/Date) @prev-time))
            (do
              (reset! prev-time (.now js/Date))
              (print s @cnt)))
@@ -205,6 +243,23 @@
     (pipe (each-lines "tmp/coloans-by-lid.csv") c)
     c))
 
+(defn cache-related []
+  (let [transducer
+        (comp
+          (map #(string/split % #","))
+          (map swap-trim)
+          (transducer-status "finding and caching related")
+          group-lines-by-first
+          (map (fn [[k v]] k)))
+        c (chan 1 transducer)]
+    (pipe (each-lines "tmp/coloans-by-lid.csv") c)
+    (go
+      (loop [lid (<! c)]
+        (if lid 
+          (do
+            (<! (get-related lid))
+            (recur (<! c)))))
+      (<! (kvdb/commit :related)))))
 (defn prepare-data []
   (if (not config/nodejs) (throw "error: not on node"))
   (go
@@ -234,48 +289,8 @@
               (transducer-status "traversing lids")
               group-lines-by-first))))
 
-    ))
-
-(def freqs (atom nil))
-(defn get-related [lid]
-  (go
-    (let [cached (<! (kvdb/fetch :related lid))]
-      (if cached
-        cached
-        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
-              coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
-                           (js->clj)
-                           (vals)
-                           (mapcat identity)
-                           (frequencies))
-              coloans-with-total (loop [coloan (first coloans)
-                                        coloans (rest coloans)
-                                        acc []]
-                                   (if coloan
-                                     (recur (first coloans)
-                                            (rest coloans)
-                                            (conj acc [(second coloan)
-                                                       (first coloan) 
-                                                       ; (<! (kvdb/fetch :loan-count lid))
-                                                       ]))
-                                     acc))
-              weighted (->> coloans
-                            (map (fn [[[lid total] cooccur]] 
-                                   [(bit-or (* 1000 (/ cooccur (.sqrt js/Math (+ 10 total)))) 0)
-                                    lid cooccur total]))
-                            (sort)
-                            (reverse)
-                            (take 100)
-                            (map (fn [[weight lid cooccur total]] 
-                                   {:lid lid :weight weight 
-                                    ; :cooccur cooccur :total total
-                                    }))
-                            (clj->js)
-                            )]
-          (print 'get-related lid (take 10 weighted))
-          (<! (kvdb/store :related lid weighted))
-          (<! (kvdb/commit :related))
-          weighted)))))
+    (if (not (<! (kvdb/fetch :related "x826375x")))
+    (<! (cache-related)))))
 
 (defn start []
   (go
