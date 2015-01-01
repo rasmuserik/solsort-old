@@ -211,22 +211,6 @@
     (<! (make-tmp-dir))
     (<! (generate-coloans-csv))
     (<! (generate-coloans-by-lid-csv))
-    #_(let [counts (<! (calculate-lid-counts))]
-        (print 'a)
-        (print 'lid-counts counts)
-        (print 'b)
-        )
-
-    #_(if (not (<! (kvdb/fetch :loan-count "x8331046")))
-        (<! (transduce-file-to-db
-              "tmp/coloans-by-lid.csv" :loan-count
-              (comp
-                (map #(string/split % #","))
-                (map swap-trim)
-                (transducer-status "traversing loan-count")
-                group-lines-by-first
-                (map (fn [[k v]] [k (count v)]))
-                ))))
 
     (if (not (<! (kvdb/fetch :patrons "000001")))
       (let [lid-counts 
