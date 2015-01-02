@@ -1,20 +1,3 @@
-# solsort.com api server notes
-
-Applications
-
-- relvis related server
-- watch/driftsovervågning uccorg
-
-# TODO
-
-- refactor relvis related server
-- create repository for static code
-- autoreload on dev-machines
-- set up nginx
-- services: - `/api/log` - `_logger.js` - `_*` - `/_s/..`
-- writings
-- slides
-
 # JavaScript
 ## FeatureLevels
 
@@ -48,4 +31,48 @@ Applications
 - canvas
 - webgl
 
+# Backlog
+
+- related-server up and running
+- related-info
+- restructure repositories
+
+## Later
+
+### Website
+
+- services: - `/api/log` - `_logger.js` - `_*` - `/_s/..`
+- writings
+- set up nginx
+- slides
+
+### Platform
+- autoreload on dev-machines
+- semi-distributed database
+- communication
+
 # Release log
+
+## 0.1.0 
+
+- recommendation engine - `/relvis-related/related`
+  - calculation of related materials
+  - fix weighting for recommendation
+  - implemented using/learning transducers
+- keyval-db
+  - locking for better stability
+  - code for clearing a "database"
+
+## 0.0.0 
+
+- keyval-db - simple db-key-value storage
+- simple web-server
+
+# Repository Plan
+
+Main repositories
+
+- `solsort` - source code for everything
+- `notes` - various writings: notes and release-status
+- `webroot` - static files for the webserver
+- repositories for building individual projects
