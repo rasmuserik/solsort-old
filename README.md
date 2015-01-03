@@ -20,6 +20,7 @@
 - future
   - firefox-addon - https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs - child_process, read-file, ... inkl. mobile
   - android-app https://crosswalk-project.org/
+    - possibility also to run a thread on rhino - to have access to android api
   - cordova iOS etc.  - chrome extension
   - opera extension
 
