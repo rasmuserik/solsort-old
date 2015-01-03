@@ -10,12 +10,13 @@
 (def locked (atom false))
 (defn lock [id]
   (go
-    ;(print 'locking id)
-    (while @locked (<! (timeout 100)))
-    ;(print 'lock id)
+  ;  (print 'locking id)
+    (while @locked 
+      (<! (timeout 100)))
+  ;  (print 'lock id)
     (reset! locked true)))
 (defn unlock [id] 
-  ;(print 'unlock id)
+ ; (print 'unlock id)
   (reset! locked false))
 (defn open-db []
   (go
@@ -69,6 +70,11 @@
                 #(do 
                    (unlock 'b2)
                    (print "commit error") 
+                   (close! c)))
+          (set! (.-onabort trans)  
+                #(do 
+                   (unlock 'b3)
+                   (print "commit abort") 
                    (close! c)))
           (swap! stores assoc storage {})
           (<! c))))))

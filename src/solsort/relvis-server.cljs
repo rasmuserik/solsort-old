@@ -11,15 +11,20 @@
 
 (defn get-related [lid]
   (go
+    ;(print 'cache (<! (kvdb/fetch :related lid)))
     (let [cached (<! (kvdb/fetch :related lid))]
       (if cached
         cached
-        (let [patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
+        (let [
+              ;_ (print 'getting-related-for lid)
+              patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
+              ;_1 (print 'got-patrons)
               coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
                            (js->clj)
                            (vals)
                            (mapcat identity)
                            (frequencies))
+              ;_2 (print 'got-coloans)
               coloans-with-total (loop [coloan (first coloans)
                                         coloans (rest coloans)
                                         acc []]
@@ -44,7 +49,9 @@
                                     }))
                             (clj->js)
                             )]
+          ;(print 'found-related)
           (<! (kvdb/store :related lid weighted))
+          ;(print 'stored-related-for lid)
           weighted)))))
 
 (def data-path "../_visual_relation_server")
@@ -154,6 +161,12 @@
     (if (not (.existsSync (js/require "fs") "tmp/coloans.csv"))
       (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv"))))))
 
+(defn generate-lids-csv []
+  (go
+    (print "ensuring tmp/lids.csv")
+    (if (not (.existsSync (js/require "fs") "tmp/lids.csv"))
+      (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
+
 (defn make-tmp-dir []
   (go 
     (if (not (.existsSync (js/require "fs") "tmp")) 
@@ -170,7 +183,7 @@
       (let [[k v] key-val]
         (<! (kvdb/store db k (clj->js v)))
         (recur (<! c)))
-      (kvdb/commit db))))
+      (<! (kvdb/commit db)))))
 
 (defn by-first [xf]
   (let [prev-key (atom nil)
@@ -252,20 +265,22 @@
           group-lines-by-first
           (map (fn [[k v]] k)))
         c (chan 1 transducer)]
-    (pipe (each-lines "tmp/coloans-by-lid.csv") c)
+    (pipe (each-lines "tmp/lids.csv") c)
     (go
       (loop [lid (<! c)]
-        (if lid 
+        (<! (kvdb/commit :related))
+        (if lid
           (do
+            (print 'get-related lid)
             (<! (get-related lid))
-            (recur (<! c)))))
-      (<! (kvdb/commit :related)))))
+            (recur (<! c))))))))
 (defn prepare-data []
   (if (not config/nodejs) (throw "error: not on node"))
   (go
     (<! (make-tmp-dir))
     (<! (generate-coloans-csv))
     (<! (generate-coloans-by-lid-csv))
+    (<! (generate-lids-csv))
 
     (if (not (<! (kvdb/fetch :patrons "000001")))
       (let [lid-counts 
@@ -290,7 +305,7 @@
               group-lines-by-first))))
 
     (if (not (<! (kvdb/fetch :related "x826375x")))
-    (<! (cache-related)))))
+      (<! (cache-related)))))
 
 (defn start []
   (go
