@@ -271,7 +271,7 @@
         (<! (kvdb/commit :related))
         (if lid
           (do
-            (print 'get-related lid)
+ ;           (print 'get-related lid)
             (<! (get-related lid))
             (recur (<! c))))))))
 (defn prepare-data []
