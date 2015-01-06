@@ -53,7 +53,6 @@
 - communication
 
 # Release log
-
 ## 0.1.0 
 
 - recommendation engine - `/relvis-related/related`
@@ -73,7 +72,9 @@
 
 Main repositories
 
-- `solsort` - source code for everything
+- `solsort` - source code for cloud
 - `notes` - various writings: notes and release-status
 - `webroot` - static files for the webserver
+- `gateway` - gateway server, which starts webrtc-server, connects nodes, and forward http to nodes, proxies couch-base-access etc.
+- `loader` - boot-javascript that caches code in localstorage, and autoupdates etc.
 - repositories for building individual projects
