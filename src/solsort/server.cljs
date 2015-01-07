@@ -4,6 +4,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]
     [solsort.manager]
     [solsort.relvis-server]
+    [solsort.bib-process]
     [solsort.webserver]
     ))
 
@@ -14,6 +15,7 @@
 
 (register "manager" solsort.manager.start)
 (register "relvis-server" solsort.relvis-server.start)
+(register "bib-process" solsort.bib-process.start)
 (register "hello" (fn [] (solsort.webserver/add "hello" (fn [info] 
                                                           (print 'muyhaha)
                                                           (go info)))))
