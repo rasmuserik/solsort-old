@@ -34,6 +34,8 @@
 
 # Backlog
 
+- refacter general utilities from related-server into utility library
+- clean up dead code
 - related-server up and running
 - related-info
 - restructure repositories
