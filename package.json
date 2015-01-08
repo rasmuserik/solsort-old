@@ -15,5 +15,5 @@
     "request": "^2.40.0",
     "xhr2": "^0.1.0"
   },
-  "main": "debug.html#bib-process"
+  "main": "server.html#relvis-server"
 }
