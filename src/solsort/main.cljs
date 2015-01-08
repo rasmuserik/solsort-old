@@ -24,7 +24,7 @@
     (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
 
 ((or (get @commands arg)
-           (fn []
-             (print "possible arguments:")
-             (doall (map (fn [[a b]] (print a)) @commands)))))
+     (fn []
+       (print "possible arguments:")
+       (doall (map (fn [[a b]] (print a)) @commands)))))
 

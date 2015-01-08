@@ -10,13 +10,13 @@
 (def locked (atom false))
 (defn lock [id]
   (go
-  ;  (print 'locking id)
+    ;  (print 'locking id)
     (while @locked 
       (<! (timeout 100)))
-  ;  (print 'lock id)
+    ;  (print 'lock id)
     (reset! locked true)))
 (defn unlock [id] 
- ; (print 'unlock id)
+  ; (print 'unlock id)
   (reset! locked false))
 (defn open-db []
   (go

@@ -111,23 +111,23 @@
               group-lines-by-first))))))
 
 (defn cache-related []
-    (if (not (<! (kvdb/fetch :related "x826375x")))
-  (let [transducer
-        (comp
-          (map #(string/split % #","))
-          (map swap-trim)
-          (transducer-status "finding and caching related")
-          group-lines-by-first
-          (map (fn [[k v]] k)))
-        c (chan 1 transducer)]
-    (pipe (each-lines "tmp/lids.csv") c)
-    (go
-      (loop [lid (<! c)]
-        (<! (kvdb/commit :related))
-        (if lid
-          (do
-            (<! (get-related lid))
-            (recur (<! c)))))))))
+  (if (not (<! (kvdb/fetch :related "x826375x")))
+    (let [transducer
+          (comp
+            (map #(string/split % #","))
+            (map swap-trim)
+            (transducer-status "finding and caching related")
+            group-lines-by-first
+            (map (fn [[k v]] k)))
+          c (chan 1 transducer)]
+      (pipe (each-lines "tmp/lids.csv") c)
+      (go
+        (loop [lid (<! c)]
+          (<! (kvdb/commit :related))
+          (if lid
+            (do
+              (<! (get-related lid))
+              (recur (<! c)))))))))
 
 (defn prepare-data []
   (if (not nodejs) (throw "error: not on node"))
@@ -140,7 +140,7 @@
     (<! (create-patrons-db))
     (<! (create-lids-db))
 
-      (<! (cache-related))))
+    (<! (cache-related))))
 
 (defn start []
   (go
