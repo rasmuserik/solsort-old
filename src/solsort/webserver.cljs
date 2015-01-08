@@ -3,11 +3,10 @@
   (:require
     [clojure.string :refer [split]]
     [solsort.system :as system]
-    [cljs.reader :refer [read-string]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def initialised (atom false))
-(def services (atom {}))
+(def services (atom {:default #(go #js{:error "not found"})}))
 
 (defn path-split [string]
   (let [[full-path param] (.split string "?")

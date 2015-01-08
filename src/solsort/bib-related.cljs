@@ -4,7 +4,7 @@
     [solsort.system :refer [exec each-lines nodejs]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transduce-file-to-db transducer-accumulate]]
+    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -81,6 +81,11 @@
         c (chan 1 transducer)]
     (pipe (each-lines "tmp/coloans-by-lid.csv") c)
     c))
+
+(defn transduce-file-to-db [file-name db-name transducer]
+  (let [c (chan 1 transducer)]
+    (pipe (each-lines file-name) c)
+    (kvdb-store-channel db-name c)))
 
 (defn create-patrons-db []
   (go
