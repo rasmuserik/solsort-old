@@ -19,7 +19,6 @@
 (defn http-serve [req res]
   (go
     (let [[path id params] (path-split (.-url req))
-          related "hello"
           f (or (@services (first path)) 
                 (@services :default))
           split-pos (.lastIndexOf id ".")
@@ -31,7 +30,6 @@
       (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")"))
       )))
 
-;(<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
 (defn start-server []
   (if (not system/nodejs)
     (throw "error: not on node"))
@@ -39,10 +37,10 @@
     (let [c (chan)
           http (js/require "http")
           server (.createServer http http-serve)
-          ]
-      (.listen server 1337)
-      (print "starting server on port 1337")
-      )))
+          port (or (aget js/process.env "PORT") 4444)
+          host (or (aget js/process.env "HOST") "localhost") ]
+      (.listen server port host)
+      (print (str "starting server on " host ":" port)))))
 
 (defn add [path f]
   (if (not @initialised)

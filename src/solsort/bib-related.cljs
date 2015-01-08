@@ -1,10 +1,10 @@
-(ns solsort.relvis-server
+(ns solsort.bib-related
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.system :refer [exec each-lines nodejs]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transduce-file-to-db]]
+    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transduce-file-to-db transducer-accumulate]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -84,10 +84,9 @@
 
 (defn create-patrons-db []
   (go
-    (if (not (<! (kvdb/fetch :patrons "000001")))
-      (let [lid-counts 
-            (clj->js (into {} (<! (calculate-lid-counts))))
-            ]
+    (if (<! (kvdb/fetch :patrons "1205248"))
+      (print "ensured patron-database")
+      (let [lid-counts (clj->js (into {} (<! (calculate-lid-counts)))) ]
         (print 'lid-count-length (.-length (.keys js/Object lid-counts)))
         (<! (transduce-file-to-db
               "tmp/coloans.csv" :patrons
@@ -101,7 +100,8 @@
   (go
     (<! (create-lids-db))
 
-    (if (not (<! (kvdb/fetch :lids "x8331046")))
+    (if (<! (kvdb/fetch :lids "x8331046"))
+      (print "ensured lids-database")
       (<! (transduce-file-to-db
             "tmp/coloans-by-lid.csv" :lids 
             (comp
