@@ -1,11 +1,10 @@
 (ns solsort.relvis-server
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.node :refer [exec each-lines]]
+    [solsort.system :refer [exec each-lines nodejs]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.config :as config]
-    [solsort.util :refer [parse-json-or-nil]]
+    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transduce-file-to-db]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -69,77 +68,6 @@
     (if (not (.existsSync (js/require "fs") "tmp/lids.csv"))
       (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
 
-(defn print-channel [c]
-  (go (loop [msg (<! c)]
-        (if msg (do (print msg) (recur (<! c)))))))
-
-(defn kvdb-store-channel [db c]
-  (go-loop 
-    [key-val (<! c)]
-    (if key-val
-      (let [[k v] key-val]
-        (<! (kvdb/store db k (clj->js v)))
-        (recur (<! c)))
-      (<! (kvdb/commit db)))))
-
-(defn by-first [xf]
-  (let [prev-key (atom nil)
-        values (atom '())]
-    (fn 
-      ([result] 
-       (if (< 0 (count @values)) 
-         (do
-           (xf result [@prev-key @values])
-           (reset! values '())))
-       (xf result))
-      ([result input]
-       (if (= (first input) @prev-key)
-         (swap! values conj (rest input))
-         (do 
-           (if (< 0 (count @values)) (xf result [@prev-key @values]))
-           (reset! prev-key (first input))
-           (reset! values (list (rest input)))))))))
-
-(defn transducer-status [s]
-  (fn [xf]
-    (let [prev-time (atom 0)
-          cnt (atom 0)]
-      (fn 
-        ([result]
-         (print s 'done)
-         (xf result))
-        ([result input]
-         (swap! cnt inc)
-         (if (< 60000 (- (.now js/Date) @prev-time))
-           (do
-             (reset! prev-time (.now js/Date))
-             (print s @cnt)))
-         (xf result input))))))
-
-(defn transducer-accumulate [initial]
-  (fn [xf]
-    (let [acc (atom initial)]
-      (fn 
-        ([result]
-         (if @acc (do
-                    (xf result @acc)
-                    (reset! acc nil)))
-         (xf result))
-        ([result input] 
-         (swap! acc conj input))))))
-
-(def group-lines-by-first
-  (comp
-    by-first
-    (map (fn [[k v]] [k (map (fn [[s]] s) v)]))))
-
-(defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
-
-(defn transduce-file-to-db [file-name db-name transducer]
-  (let [c (chan 1 transducer)]
-    (pipe (each-lines file-name) c)
-    (kvdb-store-channel db-name c)))
-
 (defn calculate-lid-counts []
   (let [transducer
         (comp
@@ -202,7 +130,7 @@
             (recur (<! c)))))))))
 
 (defn prepare-data []
-  (if (not config/nodejs) (throw "error: not on node"))
+  (if (not nodejs) (throw "error: not on node"))
   (go
     (<! (make-tmp-dir))
     (<! (generate-coloans-csv))

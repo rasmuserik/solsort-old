@@ -1,4 +1,4 @@
-(ns solsort.node
+(ns solsort.system
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
@@ -38,3 +38,6 @@
            (put! c @buf)
            (close! c)))
     c))
+(def nodejs (and (.hasOwnProperty js/window "process") 
+                 (.hasOwnProperty js/window.process "title") 
+                 (= js/window.process.title "node")))

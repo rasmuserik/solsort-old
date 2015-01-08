@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [clojure.string :refer [split]]
-    [solsort.config :as config]
+    [solsort.system :as system]
     [cljs.reader :refer [read-string]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -33,7 +33,7 @@
 
 ;(<! (webserver/add "relvis-related" #(go (<! (kvdb/fetch :related (:filename %))))))
 (defn start-server []
-  (if (not config/nodejs)
+  (if (not system/nodejs)
     (throw "error: not on node"))
   (go
     (let [c (chan)

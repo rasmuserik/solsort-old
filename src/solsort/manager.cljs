@@ -1,10 +1,9 @@
 (ns solsort.manager
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.node :refer [exec]]
+    [solsort.system :refer [exec]]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
-
 
 (defn uccorg-watcher []
   (go
