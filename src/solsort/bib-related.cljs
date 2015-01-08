@@ -97,14 +97,12 @@
               "tmp/coloans.csv" :patrons
               (comp
                 (map #(string/split % #","))
-                (transducer-status "traversing patrons")
+                (transducer-status "traversing 46186845 loans and finding patrons loans")
                 (map (fn [[k v]] [k #js[(string/trim v) (aget lid-counts (string/trim v))]]))
                 group-lines-by-first)))))))
 
 (defn create-lids-db []
   (go
-    (<! (create-lids-db))
-
     (if (<! (kvdb/fetch :lids "x8331046"))
       (print "ensured lids-database")
       (<! (transduce-file-to-db
@@ -112,21 +110,21 @@
             (comp
               (map #(string/split % #","))
               (map swap-trim)
-              (transducer-status "traversing lids")
+              (transducer-status "traversing 46186845 loans and finding lids loans")
               group-lines-by-first))))))
 
 (defn cache-related []
-  (if (not (<! (kvdb/fetch :related "x826375x")))
-    (let [transducer
-          (comp
-            (map #(string/split % #","))
-            (map swap-trim)
-            (transducer-status "finding and caching related")
-            group-lines-by-first
-            (map (fn [[k v]] k)))
-          c (chan 1 transducer)]
-      (pipe (each-lines "tmp/lids.csv") c)
-      (go
+  (go
+    (if (not (<! (kvdb/fetch :related "x826375x")))
+      (let [transducer
+            (comp
+              (map #(string/split % #","))
+              (map swap-trim)
+              (transducer-status "finding and caching related for 686521 lids")
+              group-lines-by-first
+              (map (fn [[k v]] k)))
+            c (chan 1 transducer)]
+        (pipe (each-lines "tmp/lids.csv") c)
         (loop [lid (<! c)]
           (<! (kvdb/commit :related))
           (if lid
