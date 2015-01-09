@@ -16,7 +16,7 @@
            elems (rest elems)
            w 0]
       (let [w (+ w (second elem))]
-        (if (<= pos w)
+        (if (or (<= pos w) (empty? elems))
           (first elem)
           (recur (first elems) (rest elems) w))))))
 
@@ -44,12 +44,12 @@
   (let [[user library gender birthyear id _lid cluster date title author type1] (first elems)]
     (concat
       {:lid lid
-       :loans (count elems)
+       :count (count elems)
        :id id
        :cluster cluster
-       :title title
-       :author author
-       :type type1}
+       :title (if title (.slice title 1 -1) "")
+       :author (if author (.slice author 1 -1) "")
+       :kind type1}
       (if (< 9 (count elems))
         {
          :genderAge (gender-age elems)
@@ -71,7 +71,7 @@
 (defn start []
   (let [transducer
         (comp
-          (transducer-status "writing lid-info")
+          (transducer-status "writing stats.jsonl")
           (map #(string/split % #","))
           (map (fn [a] (map string/trim a)))
           (map (fn [a] (concat (list (nth a 5)) a)))
@@ -79,7 +79,7 @@
           (map stat)
           )
         c (chan 1 transducer)]
-    (print 'here)
     (pipe (each-lines "../final_adhl.sorted.csv") c)
     (into-file "stats.jsonl" c)
+    (print "done stats.jsonl")
     ))
