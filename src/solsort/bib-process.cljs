@@ -42,21 +42,24 @@
 
 (defn stat [[lid elems]]
   (let [[user library gender birthyear id _lid cluster date title author type1] (first elems)]
+    (into {}
     (concat
       {:lid lid
        :count (count elems)
        :id id
-       :cluster cluster
+       :cluster cluster}
+      (if (= "\"\"" title)
+        {} {
        :title (if title (.slice title 1 -1) "")
        :author (if author (.slice author 1 -1) "")
-       :kind type1}
+       :kind type1})
       (if (< 9 (count elems))
         {
          :genderAge (gender-age elems)
          :libraries (libraries elems)
          :dates (dates elems)
          } {})
-      )))
+      ))))
 
 (defn into-file [filename channel]
   (go 
