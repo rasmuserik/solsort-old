@@ -4,50 +4,82 @@
     [solsort.system :refer [exec each-lines]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.util :refer [parse-json-or-nil]]
+    [solsort.util :refer [print-channel by-first transducer-status]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
-(defn transducer-status [s]
-  (fn [xf]
-    (let [prev-time (atom 0)
-          cnt (atom 0)]
-      (fn 
-        ([result]
-         (print s 'done)
-         (xf result))
-        ([result input]
-         (swap! cnt inc)
-         (if (< 60000 (- (.now js/Date) @prev-time))
-           (do
-             (reset! prev-time (.now js/Date))
-             (print s @cnt)))
-         (xf result input))))))
+(defn get-random [obj]
+  (let [total (reduce + (vals obj))
+        pos (* (js/Math.random) total)
+        elems (seq obj)]
+    (loop [elem (first elems)
+           elems (rest elems)
+           w 0]
+      (let [w (+ w (second elem))]
+        (if (<= pos w)
+          (first elem)
+          (recur (first elems) (rest elems) w))))))
 
-(defn by-first [xf]
-  (let [prev-key (atom nil)
-        values (atom '())]
-    (fn 
-      ([result] 
-       (if (< 0 (count @values)) 
-         (do
-           (xf result [@prev-key @values])
-           (reset! values '())))
-       (xf result))
-      ([result input]
-       (if (= (first input) @prev-key)
-         (swap! values conj (rest input))
-         (do 
-           (if (< 0 (count @values)) (xf result [@prev-key @values]))
-           (reset! prev-key (first input))
-           (reset! values (list (rest input)))))))))
+(defn noise [atm elem]
+  (swap! atm assoc elem (inc (get @atm elem 0)))
+  (if (< (js/Math.random) 0.01)
+    (get-random @atm)
+    elem))
+
+(defn gender [a] (nth a 2))
+(defn age [line] (- (js/parseInt (nth line 7)) (js/parseInt (nth line 3))))
+
+(def gender-age-stat (atom {}))
+(defn gender-age [elems]
+  (into (sorted-map )(frequencies (map #(noise gender-age-stat (str (gender %) (age %))) elems))))
+
+(def libraries-stat (atom {}))
+(defn libraries [elems]
+  (into (sorted-map )(frequencies (map #(noise libraries-stat (second %)) elems))))
+
+(defn dates [elems]
+  (into (sorted-map )(frequencies (map #(nth % 7) elems))))
+
+(defn stat [[lid elems]]
+  (let [[user library gender birthyear id _lid cluster date title author type1] (first elems)]
+    (concat
+      {:lid lid
+       :loans (count elems)
+       :id id
+       :cluster cluster
+       :title title
+       :author author
+       :type type1}
+      (if (< 9 (count elems))
+        {
+         :genderAge (gender-age elems)
+         :libraries (libraries elems)
+         :dates (dates elems)
+         } {})
+      )))
+
+(defn into-file [filename channel]
+  (go 
+    (let [fs (js/require "fs")
+          out (.createWriteStream fs filename)
+          ]
+      (loop [msg (<! channel)]
+        (if msg (do (.write out (str (js/JSON.stringify (clj->js msg)) "\n")) (recur (<! channel)))))
+      (.end out))))
+
 
 (defn start []
   (let [transducer
         (comp
+          (transducer-status "writing lid-info")
           (map #(string/split % #","))
           (map (fn [a] (map string/trim a)))
-          ;(map (fn [a] [(nth 5 a) a]))
-          (map #(print 'a %)))
+          (map (fn [a] (concat (list (nth a 5)) a)))
+          by-first
+          (map stat)
+          )
         c (chan 1 transducer)]
-    (pipe (each-lines "../final_adhl.sorted.csv") c)))
+    (print 'here)
+    (pipe (each-lines "../final_adhl.sorted.csv") c)
+    (into-file "stats.jsonl" c)
+    ))
