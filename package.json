@@ -8,5 +8,5 @@
     "nodejs-externs": "^0.10.0",
     "nodewebkit": "^0.11.4"
   },
-  "main": "main.html#bib-process"
+  "main": "debug.html#bib-related"
 }

@@ -4,7 +4,7 @@
     [solsort.system :refer [exec each-lines nodejs]]
     [solsort.keyval-db :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate]]
+    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -43,7 +43,7 @@
           (<! (kvdb/store :related lid weighted))
           weighted)))))
 
-(def data-path "../_visual_relation_server")
+(def data-path "../visual_relation_server")
 
 (defn make-tmp-dir []
   (go 
@@ -67,6 +67,12 @@
     (print "ensuring tmp/lids.csv")
     (if (not (.existsSync (js/require "fs") "tmp/lids.csv"))
       (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
+
+(defn generate-stats-jsonl []
+  (go
+    (print "ensuring tmp/stats.jsonl")
+    (if (not (.existsSync (js/require "fs") "tmp/stats.jsonl"))
+      (<! (exec (str "xzcat " data-path "/stats.jsonl.xz > tmp/stats.jsonl"))))))
 
 (defn calculate-lid-counts []
   (let [transducer
@@ -132,6 +138,25 @@
               (<! (get-related lid))
               (recur (<! c)))))))))
 
+(defn load-info []
+  (go
+    ;(if (not (<! (kvdb/fetch :bibinfo "x826375x")))
+      (let [transducer
+            (comp
+              (map parse-json-or-nil)
+              (transducer-status "loading info for 69384 lids")
+              ;(map #(list (aget % "lid") %))
+              ;(map (fn [a] (print a) a))
+              )
+            c (chan 1 transducer)]
+        (pipe (each-lines "tmp/stats.jsonl") c)
+        (loop [entry (<! c)]
+          (if entry
+            (do
+              (print :bibinfo (aget entry "lid") entry)
+    ;          (<! (kvdb/store :bibinfo (aget entry "lid") entry))
+              (recur (<! c))))))));)
+
 (defn prepare-data []
   (if (not nodejs) (throw "error: not on node"))
   (go
@@ -143,12 +168,23 @@
     (<! (create-patrons-db))
     (<! (create-lids-db))
 
-    (<! (cache-related))))
+    (<! (cache-related))
+    
+    (<! (generate-stats-jsonl))
+ ;   (<! (load-info))
+    ))
+
+(defn handle-web-request [req]
+  (case (second (:path req))
+    "related" (get-related (:filename req))
+    ;"info" (kvdb/fetch :bibinfo (:filename req))
+    (go {:error "wrong api"})
+    ))
 
 (defn start []
   (go
     (<! (prepare-data))
     ;   (kvdb/clear :related)
     (print "starting visual relation server")
-    (<! (webserver/add "relvis-related" #(get-related (:filename %))))
+    (<! (webserver/add "relvis-related" handle-web-request))
     ))
