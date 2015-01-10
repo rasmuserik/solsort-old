@@ -132,15 +132,15 @@
             c (chan 1 transducer)]
         (pipe (each-lines "tmp/lids.csv") c)
         (loop [lid (<! c)]
-          (<! (kvdb/commit :related))
           (if lid
             (do
               (<! (get-related lid))
-              (recur (<! c)))))))))
+              (recur (<! c)))
+            (<! (kvdb/commit :related))))))))
 
 (defn load-info []
   (go
-    (if (not (<! (kvdb/fetch :bibinfo "93106679")))
+    (if (not (<! (kvdb/fetch :bibinfo "x826375x")))
       (let [transducer
             (comp
               (map parse-json-or-nil)
@@ -151,11 +151,9 @@
         (loop [entry (<! c)]
           (if entry
             (do
-              ;          (print :bibinfo (aget entry "lid") entry)
               (<! (kvdb/store :bibinfo (aget entry "lid") entry))
-              (recur (<! c))))))
-      (<! (kvdb/commit :bibinfo)))
-    ))
+              (recur (<! c)))
+            (<! (kvdb/commit :bibinfo))))))))
 
 (defn prepare-data []
   (if (not nodejs) (throw "error: not on node"))
