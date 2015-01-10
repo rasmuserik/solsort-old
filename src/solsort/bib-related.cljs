@@ -140,27 +140,31 @@
 
 (defn load-info []
   (go
-    ;(if (not (<! (kvdb/fetch :bibinfo "x826375x")))
+    (if (not (<! (kvdb/fetch :bibinfo "93106679")))
       (let [transducer
             (comp
               (map parse-json-or-nil)
               (transducer-status "loading info for 69384 lids")
-              ;(map #(list (aget % "lid") %))
-              ;(map (fn [a] (print a) a))
               )
             c (chan 1 transducer)]
         (pipe (each-lines "tmp/stats.jsonl") c)
         (loop [entry (<! c)]
           (if entry
             (do
-              (print :bibinfo (aget entry "lid") entry)
-    ;          (<! (kvdb/store :bibinfo (aget entry "lid") entry))
-              (recur (<! c))))))));)
+              ;          (print :bibinfo (aget entry "lid") entry)
+              (<! (kvdb/store :bibinfo (aget entry "lid") entry))
+              (recur (<! c))))))
+      (<! (kvdb/commit :bibinfo)))
+    ))
 
 (defn prepare-data []
   (if (not nodejs) (throw "error: not on node"))
   (go
     (<! (make-tmp-dir))
+
+    (<! (generate-stats-jsonl))
+    (<! (load-info))
+
     (<! (generate-coloans-csv))
     (<! (generate-coloans-by-lid-csv))
     (<! (generate-lids-csv))
@@ -169,15 +173,12 @@
     (<! (create-lids-db))
 
     (<! (cache-related))
-    
-    (<! (generate-stats-jsonl))
- ;   (<! (load-info))
     ))
 
 (defn handle-web-request [req]
   (case (second (:path req))
     "related" (get-related (:filename req))
-    ;"info" (kvdb/fetch :bibinfo (:filename req))
+    "info" (kvdb/fetch :bibinfo (:filename req))
     (go {:error "wrong api"})
     ))
 
