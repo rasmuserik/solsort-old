@@ -66,7 +66,8 @@
   (go
     (print "ensuring tmp/lids.csv")
     (if (not (.existsSync (js/require "fs") "tmp/lids.csv"))
-      (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
+      ;(<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
+      (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq > tmp/lids.csv")))))
 
 (defn generate-stats-jsonl []
   (go
@@ -95,7 +96,7 @@
 
 (defn create-patrons-db []
   (go
-    (if (<! (kvdb/fetch :patrons "1205248"))
+    (if (<! (kvdb/fetch :patrons "1000000"))
       (print "ensured patron-database")
       (let [lid-counts (clj->js (into {} (<! (calculate-lid-counts)))) ]
         (print 'lid-count-length (.-length (.keys js/Object lid-counts)))
@@ -109,7 +110,7 @@
 
 (defn create-lids-db []
   (go
-    (if (<! (kvdb/fetch :lids "x8331046"))
+    (if (<! (kvdb/fetch :lids "93102371"))
       (print "ensured lids-database")
       (<! (transduce-file-to-db
             "tmp/coloans-by-lid.csv" :lids 
@@ -121,7 +122,7 @@
 
 (defn cache-related []
   (go
-    (if (not (<! (kvdb/fetch :related "x826375x")))
+    (if (not (<! (kvdb/fetch :related "93102371")))
       (let [transducer
             (comp
               (map #(string/split % #","))
@@ -140,7 +141,7 @@
 
 (defn load-info []
   (go
-    (if (not (<! (kvdb/fetch :bibinfo "x826375x")))
+    (if (not (<! (kvdb/fetch :bibinfo "93102371")))
       (let [transducer
             (comp
               (map parse-json-or-nil)
@@ -182,8 +183,9 @@
 
 (defn start []
   (go
+    ; (kvdb/clear :related)
+    ; (kvdb/clear :related) (kvdb/clear :patrons) (kvdb/clear :lids)
     (<! (prepare-data))
-    ;   (kvdb/clear :related)
     (print "starting visual relation server")
     (<! (webserver/add "relvis-related" handle-web-request))
     ))
