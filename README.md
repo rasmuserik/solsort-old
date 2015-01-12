@@ -2,6 +2,11 @@
 
 # Backlog
 
+- √running in node.js
+
+- abstract all system-specific into system.cljs library
+- database-abstraction backed on leveldb and indexeddb
+
 - testing
 - improve key-value-database
 - also compile + test node version
