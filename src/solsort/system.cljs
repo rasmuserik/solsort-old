@@ -38,6 +38,8 @@
            (put! c @buf)
            (close! c)))
     c))
-(def nodejs (and (.hasOwnProperty js/window "process") 
-                 (.hasOwnProperty js/window.process "title") 
-                 (= js/window.process.title "node")))
+(def nodejs (and 
+              (exists? js/global)
+              (.hasOwnProperty js/global "process") 
+                 (.hasOwnProperty js/global.process "title") 
+                 (= js/global.process.title "node")))

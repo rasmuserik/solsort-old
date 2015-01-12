@@ -10,13 +10,13 @@
 (def commands (atom {}))
 (defn register [cmd f] (swap! commands assoc cmd f))
 
-(register "uccorg-monitor" solsort.uccorg-monitor.start)
-(register "bib-related" solsort.bib-related.start)
-(register "bib-process" solsort.bib-process.start)
+(register "uccorg-monitor" solsort.uccorg-monitor/start)
+(register "bib-related" solsort.bib-related/start)
+(register "bib-process" solsort.bib-process/start)
 
 (def arg
   (or
-    (and js/window.process (get js/window.process.argv 2))
+    (and (exists? js/global) js/global.process (get js/global.process.argv 2))
     (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
 
 ((or (get @commands arg)
