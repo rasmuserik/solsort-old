@@ -2,6 +2,9 @@
 
 # Backlog
 
+- testing
+- improve key-value-database
+- also compile + test node version
 - related-server up and running
 - restructure repositories
 
@@ -82,7 +85,7 @@
 Main repositories
 
 - `solsort` - source code for cloud
-- `notes` - various writings: notes and release-status
+  - `notes.md` - various writings: notes and release-status, will be automatically extracted and transformed from markdown
 - `webroot` - static files for the webserver
 - `gateway` - gateway server, which starts webrtc-server, connects nodes, and forward http to nodes, proxies couch-base-access etc.
 - `loader` - boot-javascript that caches code in localstorage, and autoupdates etc.
