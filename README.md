@@ -1,43 +1,8 @@
-# JavaScript
-## FeatureLevels
-
-- insufficient - IE9-, android4.3-, iOS6- - javascript,Content-Encoding:gzip
-- basic - Blackberry-10,IE10+,iOS6+,Android4.4+ - js+cors-ajax+html,canvas,atob/btoa,appcache,geolocation,history/location,hashchange-event,navigator.onLine,websockets,(server-sent except ie)
-- client - IE11+, iOS8+, Android5+, ff34,chrome37,opera24 - webgl, indexeddb, webworkers, video, web-cryptography, file+filereader-api, page visibility, requestAnimationFrame, (device-orientation,fullscreen,touch,clipboard,performance.now)
-- peer - recent chrome/firefox/opera/android5+ - webrtc-peer-data, camera, generational-garbage-collection, webworker transferables, (indexeddb-binary-blob-builder, battery-status, simd.js, presentation-api, storageInfo, filesystem+drag, touch, vibration, web audio api)
-- app - arbitrary http-access, ie. crosswalk, node-webkit, ...
-- server - connection to couchbase/elastic-search/postgresql, http-server available from internet
-
-- mobile - avoid computation, only little memory
-    - nb: keep-awake-hack: play a video (can only start on touch-interaction)
-
-
-## Platforms
-
-- current
-  - pure webapp
-  - node-webkit
-- future
-  - firefox-addon - https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs - child_process, read-file, ... inkl. mobile
-  - android-app https://crosswalk-project.org/
-    - possibility also to run a thread on rhino - to have access to android api
-  - cordova iOS etc.  - chrome extension
-  - opera extension
-
-# View types
-
-- html
-- releated graph - d3-force
-- map - Leaflet
-- canvas
-- webgl
+# Solsort
 
 # Backlog
 
-- refacter general utilities from related-server into utility library
-- clean up dead code
 - related-server up and running
-- related-info
 - restructure repositories
 
 ## Later
@@ -55,6 +20,13 @@
 - communication
 
 # Release log
+## 0.2.0 
+
+- refacter general utilities from related-server into utility library
+- statistic calculation from library data
+- clean up dead code
+- related-info
+
 ## 0.1.0 
 
 - recommendation engine - `/relvis-related/related`
@@ -70,7 +42,42 @@
 - keyval-db - simple db-key-value storage
 - simple web-server
 
-# Repository Plan
+# Notes
+## View types
+
+- html
+- releated graph - d3-force
+- map - Leaflet
+- canvas
+- webgl
+
+## JavaScript
+### FeatureLevels
+
+- insufficient - IE9-, android4.3-, iOS6- - javascript,Content-Encoding:gzip
+- basic - Blackberry-10,IE10+,iOS6+,Android4.4+ - js+cors-ajax+html,canvas,atob/btoa,appcache,geolocation,history/location,hashchange-event,navigator.onLine,websockets,(server-sent except ie)
+- client - IE11+, iOS8+, Android5+, ff34,chrome37,opera24 - webgl, indexeddb, webworkers, video, web-cryptography, file+filereader-api, page visibility, requestAnimationFrame, (device-orientation,fullscreen,touch,clipboard,performance.now)
+- peer - recent chrome/firefox/opera/android5+ - webrtc-peer-data, camera, generational-garbage-collection, webworker transferables, (indexeddb-binary-blob-builder, battery-status, simd.js, presentation-api, storageInfo, filesystem+drag, touch, vibration, web audio api)
+- app - arbitrary http-access, ie. crosswalk, node-webkit, ...
+- server - connection to couchbase/elastic-search/postgresql, http-server available from internet
+
+- mobile - avoid computation, only little memory
+    - nb: keep-awake-hack: play a video (can only start on touch-interaction)
+
+
+### Platforms
+
+- current
+  - pure webapp
+  - node-webkit
+- future
+  - firefox-addon - https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs - child_process, read-file, ... inkl. mobile
+  - android-app https://crosswalk-project.org/
+    - possibility also to run a thread on rhino - to have access to android api
+  - cordova iOS etc.  - chrome extension
+  - opera extension
+
+## Repository Plan
 
 Main repositories
 
@@ -81,8 +88,7 @@ Main repositories
 - `loader` - boot-javascript that caches code in localstorage, and autoupdates etc.
 - repositories for building individual projects
 
-# Design
-
+## Distributed System
 Distributed system
 - node
   - DB-thread
