@@ -8,7 +8,10 @@
 (defn get-db [id]
     (or (get @dbs id)
         (get (reset! dbs (assoc @dbs id
-                ((js/require "levelup") (str "./" (.replace (str id) #"[^a-zA-Z0-9]" "_") ".leveldb")))) id)))
+                ((js/require "levelup") 
+                 (str "./" (.replace (str id) #"[^a-zA-Z0-9]" "_") ".leveldb")
+                 #js{"valueEncoding" "json"}
+                 ))) id)))
 (defn commit [storage] (go))
 (defn fetch [storage id] 
   (let [c (chan 1)]
