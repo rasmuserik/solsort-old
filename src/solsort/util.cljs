@@ -1,7 +1,7 @@
 (ns solsort.util
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.keyval-db :as kvdb]
+    [solsort.kvdb :as kvdb]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

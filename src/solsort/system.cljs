@@ -3,6 +3,10 @@
   (:require
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+(enable-console-print!)
+(def browser (exists? js/window))
+(def global (if browser js/window js/global)) ; various conditional global assignments below
+(if (not browser) (aset global "window" global))
 (defn exec [cmd]
   (let [c (chan)]
     (.exec (js/require "child_process") cmd
@@ -43,3 +47,9 @@
               (.hasOwnProperty js/global "process") 
                  (.hasOwnProperty js/global.process "title") 
                  (= js/global.process.title "node")))
+(defn set-immediate [f] "execute function immediately after event-handling"
+  (if (exists? js/setImmediate) 
+    js/setImmediate ; node.js and IE (IE might be buggy)
+    (fn [f] (js/setTimeout f 0))))
+
+(set-immediate #(print 'isBrowser browser))

@@ -1,4 +1,4 @@
-(defproject solsort-server "0.1.0-SNAPSHOT"
+(defproject solsort "0.1.0-SNAPSHOT"
   :description "solsort.com server"
   :url "http://solsort.com"
 

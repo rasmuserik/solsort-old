@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.system :refer [exec each-lines nodejs]]
-    [solsort.keyval-db :as kvdb]
+    [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
     [clojure.string :as string :refer [split]]
@@ -110,7 +110,7 @@
 
 (defn create-lids-db []
   (go
-    (if (<! (kvdb/fetch :lids "93102371"))
+    (if (<! (kvdb/fetch :lids "93044142"))
       (print "ensured lids-database")
       (<! (transduce-file-to-db
             "tmp/coloans-by-lid.csv" :lids 
@@ -122,7 +122,7 @@
 
 (defn cache-related []
   (go
-    (if (not (<! (kvdb/fetch :related "93102371")))
+    (if (not (<! (kvdb/fetch :related "93044142")))
       (let [transducer
             (comp
               (map #(string/split % #","))
@@ -141,11 +141,11 @@
 
 (defn load-info []
   (go
-    (if (not (<! (kvdb/fetch :bibinfo "93102371")))
+    (if (not (<! (kvdb/fetch :bibinfo "93044142")))
       (let [transducer
             (comp
               (map parse-json-or-nil)
-              (transducer-status "loading info for 69384 lids")
+              (transducer-status "loading info for 693894 lids")
               )
             c (chan 1 transducer)]
         (pipe (each-lines "tmp/stats.jsonl") c)
@@ -183,8 +183,6 @@
 
 (defn start []
   (go
-    ; (kvdb/clear :related)
-    ; (kvdb/clear :related) (kvdb/clear :patrons) (kvdb/clear :lids)
     (<! (prepare-data))
     (print "starting visual relation server")
     (<! (webserver/add "relvis-related" handle-web-request))

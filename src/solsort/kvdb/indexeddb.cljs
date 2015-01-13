@@ -1,4 +1,4 @@
-(ns solsort.keyval-db
+(ns solsort.kvdb.indexeddb
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [cljs.reader :refer [read-string]]
@@ -111,18 +111,6 @@
     (<! (ensure-store storage))
     (swap! stores assoc storage (assoc (@stores storage) id value))
     value))
-(defn clear [storage]
-  (go
-    (<! (ensure-store storage))
-    (<! (commit storage))
-    (let [c (chan 1)
-          trans (.transaction @db #js[storage] "readwrite")
-          objStore (.objectStore trans storage)]
-      (.clear objStore)
-      (set! (.-oncomplete trans)  #(put! c true))
-      (set! (.-onerror trans)  #(do (print "clear commit error") (close! c)))
-      (<! c))))
-
 (defn tryout []
   (go
     (print 'HERE (seq #js[1 2 3 4]))

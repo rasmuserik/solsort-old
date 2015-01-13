@@ -6,3 +6,5 @@ target/
 .nrepl-port
 tmp/
 *.swp
+localStorage/
+*.leveldb
