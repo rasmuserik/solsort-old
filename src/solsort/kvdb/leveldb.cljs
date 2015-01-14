@@ -23,11 +23,16 @@
               (put! c value))))
     c))
 (defn multifetch [storage ids]  
-  (go
-    (let [result #js{}]
-      (for [id ids]
-        (aset result id (<! (fetch storage id))))
-      result)))
+  (let [c (chan 1)
+        result #js{}
+        cnt (atom (count ids))]
+    (doall (for [id ids]
+             (take! (fetch storage id)
+                    (fn [value]
+                      (aset result id value)
+                      (if (<= (swap! cnt dec) 0)
+                        (put! c result))))))
+    c))
 (defn store [storage id value]
   (let [c (chan 1)]
     (.put (get-db storage) 
