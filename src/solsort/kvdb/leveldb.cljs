@@ -26,7 +26,7 @@
   (go
     (let [result #js{}]
       (for [id ids]
-        (aset result id (< (fetch storage id))))
+        (aset result id (<! (fetch storage id))))
       result)))
 (defn store [storage id value]
   (let [c (chan 1)]
