@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.system :refer [browser]]
-    [solsort.kvdb.indexeddb :as idb]
+    [solsort.kvdb.indexeddb-old :as idb]
     [solsort.kvdb.leveldb :as leveldb]
     [cljs.reader :refer [read-string]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
