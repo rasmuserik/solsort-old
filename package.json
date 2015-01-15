@@ -13,5 +13,5 @@
     "passport": "^0.2.1",
     "webworker-threads": "^0.5.3"
   },
-  "main": "main.html#bib-related"
+  "main": "debug.html#bib-related"
 }

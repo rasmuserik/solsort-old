@@ -2,15 +2,14 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [cljs.reader :refer [read-string]]
-    [cljs.core.async :refer [>! <! chan put! take! timeout close! dropping-buffer]]))
+    [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
-#_(
 (def cache (atom #js{}))
 (def next-cache (atom #js{}))
 (def writes (atom #js{}))
 (def write-channels (atom (list)))
 (def reads (atom #js{}))
-(def needs-update (dropping-buffer 1))
+(def needs-update (chan 1))
 (defn add-triple [obj a b c]
   (if (not (aget obj a))
     (aset obj a #js{}))
@@ -111,7 +110,8 @@
 
 (def main-loop 
   (go-loop 
-    (<! (needs-update))
+    [_ nil]
+    (<! needs-update)
     (let [actions (switch-buffers)
           stores (distinct (map (fn [[_ __ store]] store) actions))]
       (loop [store (first stores) stores (rest stores)]
@@ -121,5 +121,3 @@
             (recur (first stores) (rest stores)))))
       (<! (commit actions)))
     (recur [])))
-
-)
