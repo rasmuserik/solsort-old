@@ -85,7 +85,7 @@
           (do
             (if @logfile-stream
               (let [oldname @logfile-name]
-                (.on @logfile-stream "close" (exec (str "bzip2 " oldname)))
+                (.on @logfile-stream "close" (exec (str "xz -9 " oldname)))
                 (.end @logfile-stream)))
             (if (not (.existsSync fs logpath)) (.mkdirSync fs logpath))
             (reset! logfile-stream (.createWriteStream fs logname #js{:flags "a"}))

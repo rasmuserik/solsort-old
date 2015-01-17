@@ -451,7 +451,8 @@ Rasmus Erik, 2005
 ## Ubuntu setup notes
 
 
-- `sudo apt-get install build-essential tmux vim firefox chromium`
+- `sudo apt-get install build-essential tmux vim firefox chromium cabal-install openjdk-7-jdk`
+- `cabal update ; cabal install pandoc`
 - firewall: `sudo ufw allow ssh/tcp; sudo ufw allow http/tcp; sudo ufw allow https/tcp; sudo ufw logging on; sudo ufw enable`
 - `dconf read /org/gnome/desktop/input-sources/xkb-options` `dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"`
 - `sudo update-alternatives --config editor`
