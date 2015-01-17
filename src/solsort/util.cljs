@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.kvdb :as kvdb]
+    [solsort.system :refer [log]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -54,20 +55,20 @@
            (reset! prev-key (first input))
            (reset! values (list (rest input)))))))))
 
-(defn transducer-status [s]
+(defn transducer-status [& s]
   (fn [xf]
     (let [prev-time (atom 0)
           cnt (atom 0)]
       (fn 
         ([result]
-         (print s 'done)
+         (apply log (concat s (list 'done)))
          (xf result))
         ([result input]
          (swap! cnt inc)
          (if (< 60000 (- (.now js/Date) @prev-time))
            (do
              (reset! prev-time (.now js/Date))
-             (print s @cnt)))
+             (apply log (concat s (list @cnt)))))
          (xf result input))))))
 
 (defn transducer-accumulate [initial]

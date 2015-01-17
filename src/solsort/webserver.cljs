@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [clojure.string :refer [split]]
-    [solsort.system :as system]
+    [solsort.system :as system :refer [log]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def initialised (atom false))
@@ -39,7 +39,7 @@
           port (or (aget js/process.env "PORT") 1337)
           host (or (aget js/process.env "HOST") "localhost") ]
       (.listen server port host)
-      (print (str "starting server on " host ":" port)))))
+      (log (str "starting server on " host ":" port)))))
 
 (defn add [path f]
   (if (not @initialised)

@@ -1,7 +1,7 @@
 (ns solsort.bib-related
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.system :refer [exec each-lines nodejs]]
+    [solsort.system :refer [exec each-lines nodejs log]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
@@ -52,26 +52,26 @@
 
 (defn generate-coloans-by-lid-csv []
   (go
-    (print "ensuring tmp/coloans-by-lid.csv")
+    (log 'bib "ensuring tmp/coloans-by-lid.csv")
     (if (not (.existsSync (js/require "fs") "tmp/coloans-by-lid.csv"))
       (<! (exec  "cat tmp/coloans.csv | sort -k+2 > tmp/coloans-by-lid.csv")))))
 
 (defn generate-coloans-csv []
   (go
-    (print "ensuring tmp/coloans.csv")
+    (log 'bib "ensuring tmp/coloans.csv")
     (if (not (.existsSync (js/require "fs") "tmp/coloans.csv"))
       (<! (exec (str "xzcat " data-path "/coloans/* | sed -e 's/,/,\t/' | sort -n > tmp/coloans.csv"))))))
 
 (defn generate-lids-csv []
   (go
-    (print "ensuring tmp/lids.csv")
+    (log 'bib "ensuring tmp/lids.csv")
     (if (not (.existsSync (js/require "fs") "tmp/lids.csv"))
       ;(<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq | sort -R > tmp/lids.csv")))))
       (<! (exec  "cat tmp/coloans-by-lid.csv | sed -e 's/.*,[\t ]*/0, /' | uniq > tmp/lids.csv")))))
 
 (defn generate-stats-jsonl []
   (go
-    (print "ensuring tmp/stats.jsonl")
+    (log 'bib "ensuring tmp/stats.jsonl")
     (if (not (.existsSync (js/require "fs") "tmp/stats.jsonl"))
       (<! (exec (str "xzcat " data-path "/stats.jsonl.xz > tmp/stats.jsonl"))))))
 
@@ -80,7 +80,7 @@
         (comp
           (map #(string/split % #","))
           (map swap-trim)
-          (transducer-status "finding lid-count")
+          (transducer-status 'bib "finding lid-count")
           group-lines-by-first
           (map (fn [[k v]] [k (count v)]))
           (transducer-accumulate [])
@@ -97,27 +97,27 @@
 (defn create-patrons-db []
   (go
     (if (<! (kvdb/fetch :patrons "1000000"))
-      (print "ensured patron-database")
+      (log 'bib "ensured patron-database")
       (let [lid-counts (clj->js (into {} (<! (calculate-lid-counts)))) ]
         (print 'lid-count-length (.-length (.keys js/Object lid-counts)))
         (<! (transduce-file-to-db
               "tmp/coloans.csv" :patrons
               (comp
                 (map #(string/split % #","))
-                (transducer-status "traversing 46186845 loans and finding patrons loans")
+                (transducer-status 'bib "traversing 46186845 loans and finding patrons loans")
                 (map (fn [[k v]] [k #js[(string/trim v) (aget lid-counts (string/trim v))]]))
                 group-lines-by-first)))))))
 
 (defn create-lids-db []
   (go
     (if (<! (kvdb/fetch :lids "93044142"))
-      (print "ensured lids-database")
+      (log 'bib "ensured lids-database")
       (<! (transduce-file-to-db
             "tmp/coloans-by-lid.csv" :lids 
             (comp
               (map #(string/split % #","))
               (map swap-trim)
-              (transducer-status "traversing 46186845 loans and finding lids loans")
+              (transducer-status 'bib "traversing 46186845 loans and finding lids loans")
               group-lines-by-first))))))
 
 (defn cache-related []
@@ -127,7 +127,7 @@
             (comp
               (map #(string/split % #","))
               (map swap-trim)
-              (transducer-status "finding and caching related for 686521 lids")
+              (transducer-status 'bib "finding and caching related for 686521 lids")
               group-lines-by-first
               (map (fn [[k v]] k)))
             c (chan 1 transducer)]
@@ -145,7 +145,7 @@
       (let [transducer
             (comp
               (map parse-json-or-nil)
-              (transducer-status "loading info for 693894 lids")
+              (transducer-status 'bib "loading info for 693894 lids")
               )
             c (chan 1 transducer)]
         (pipe (each-lines "tmp/stats.jsonl") c)
@@ -184,6 +184,6 @@
 (defn start []
   (go
     (<! (prepare-data))
-    (print "starting visual relation server")
+    (log 'bib "starting visual relation server")
     (<! (webserver/add "relvis-related" handle-web-request))
     ))
