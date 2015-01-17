@@ -59,6 +59,7 @@
 
 (defn two-digits [n] (.slice (str (+ (mod n 100) 300)) 1))
 (defn three-digits [n] (.slice (str (+ (mod n 1000) 3000)) 1))
+(defn six-digits [n] (.slice (str (+ (mod n 1000000) 3000000)) 1))
 (defn date-string []
   (let [now (js/Date.)]
     (string/join "" (map two-digits [(.getUTCFullYear now) (inc (.getUTCMonth now)) (.getUTCDate now)]))))
@@ -72,7 +73,7 @@
 (def fs (if nodejs (js/require "fs")))
 (defn log [& args]
   (let [msg (string/join " " (concat
-                               [(str (if nodejs js/process.pid) (if browser js/location.href))
+                               [(six-digits (if nodejs js/process.pid 999999))
                                 (timestamp-string)]
                                (map pr-str args)))
         date (date-string)
