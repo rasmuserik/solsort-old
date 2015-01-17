@@ -1,18 +1,21 @@
 (ns solsort.kvdb.leveldb
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.system :refer [ensure-dir]]
     [cljs.reader :refer [read-string]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def dbs (atom {}))
 (defn get-db [id]
   (or (get @dbs id)
+      (do
+        (ensure-dir "./dbs")
       (get 
         (reset! dbs (assoc @dbs id
                            ((js/require "levelup") 
-                            (str "./" (.replace (str id) #"[^a-zA-Z0-9]" "_") ".leveldb")
+                            (str "./dbs/" (.replace (str id) #"[^a-zA-Z0-9]" "_") ".leveldb")
                             #js{"valueEncoding" "json"}))) 
-        id)))
+        id))))
 
 (defn commit [storage] (go))
 (defn fetch [storage id] 

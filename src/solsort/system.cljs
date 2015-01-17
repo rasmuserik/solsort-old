@@ -49,7 +49,7 @@
               (.hasOwnProperty js/global "process")
               (.hasOwnProperty js/global.process "title")
               (= js/global.process.title "node")))
-
+(def pid (if nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (defn set-immediate [f] "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
@@ -71,9 +71,11 @@
 (def logfile-name (atom nil))
 (def logfile-stream (atom nil))
 (def fs (if nodejs (js/require "fs")))
+(defn ensure-dir [dirname]
+  (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
 (defn log [& args]
   (let [msg (string/join " " (concat
-                               [(six-digits (if nodejs js/process.pid 999999))
+                               [(six-digits pid)
                                 (timestamp-string)]
                                (map pr-str args)))
         date (date-string)
@@ -87,7 +89,7 @@
               (let [oldname @logfile-name]
                 (.on @logfile-stream "close" (exec (str "xz -9 " oldname)))
                 (.end @logfile-stream)))
-            (if (not (.existsSync fs logpath)) (.mkdirSync fs logpath))
+            (ensure-dir logpath)
             (reset! logfile-stream (.createWriteStream fs logname #js{:flags "a"}))
             (reset! logfile-name logname)))
         (.write @logfile-stream (str msg "\n"))))
