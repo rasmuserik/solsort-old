@@ -451,9 +451,12 @@ Rasmus Erik, 2005
 ## Ubuntu setup notes
 
 
-- `sudo apt-get install build-essential screen`
+- `sudo apt-get install build-essential tmux vim firefox chromium`
 - firewall: `sudo ufw allow ssh/tcp; sudo ufw allow http/tcp; sudo ufw allow https/tcp; sudo ufw logging on; sudo ufw enable`
+- `dconf read /org/gnome/desktop/input-sources/xkb-options` `dconf write /org/gnome/desktop/input-sources/xkb-options "['caps:escape']"`
 - `sudo update-alternatives --config editor`
+- _system settings_ _appearance_ _behaviour_ _auto-hide the launcher_
+
 
 Wifi access point
 http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-point/
