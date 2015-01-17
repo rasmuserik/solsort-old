@@ -1,9 +1,11 @@
 (ns solsort.system
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (enable-console-print!)
+
 (def browser (exists? js/window))
 (def global (if browser js/window js/global)) ; various conditional global assignments below
 (if (not browser) (aset global "window" global))
@@ -42,14 +44,51 @@
            (put! c @buf)
            (close! c)))
     c))
-(def nodejs (and 
+(def nodejs (and
               (exists? js/global)
-              (.hasOwnProperty js/global "process") 
-                 (.hasOwnProperty js/global.process "title") 
-                 (= js/global.process.title "node")))
+              (.hasOwnProperty js/global "process")
+              (.hasOwnProperty js/global.process "title")
+              (= js/global.process.title "node")))
+
 (defn set-immediate [f] "execute function immediately after event-handling"
-  (if (exists? js/setImmediate) 
+  (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
 
 (set-immediate #(print 'isBrowser browser))
+
+(defn two-digits [n] (.slice (str (+ (mod n 100) 300)) 1))
+(defn three-digits [n] (.slice (str (+ (mod n 1000) 3000)) 1))
+(defn date-string []
+  (let [now (js/Date.)]
+    (string/join "" (map two-digits [(.getUTCFullYear now) (inc (.getUTCMonth now)) (.getUTCDate now)]))))
+(defn time-string []
+  (let [now (js/Date.)]
+    (string/join "" (map two-digits [(.getUTCHours now) (.getUTCMinutes now) (.getUTCSeconds now)]))))
+(defn timestamp-string []
+  (str (date-string) "-" (time-string) "." (three-digits (.now js/Date))))
+(def logfile-name (atom nil))
+(def logfile-stream (atom nil))
+(def fs (if nodejs (js/require "fs")))
+(defn log [& args]
+  (let [msg (string/join " " (concat
+                               [(str (if nodejs js/process.pid) (if browser js/location.href))
+                                (timestamp-string)]
+                               (map pr-str args)))
+        date (date-string)
+        logpath "logs/"
+        logname (str logpath date ".log")]
+    (if nodejs
+      (do
+        (if (not (= @logfile-name logname))
+          (do
+            (if @logfile-stream
+              (let [oldname @logfile-name]
+                (.on @logfile-stream "close" (exec (str "bzip2 " oldname)))
+                (.end @logfile-stream)))
+            (if (not (.existsSync fs logpath)) (.mkdirSync fs logpath))
+            (reset! logfile-stream (.createWriteStream fs logname #js{:flags "a"}))
+            (reset! logfile-name logname)))
+        (.write @logfile-stream (str msg "\n"))))
+    (.log js/console msg)))
+(log 'solsort-start)
