@@ -185,5 +185,5 @@
   (go
     (<! (prepare-data))
     (log 'bib "starting visual relation server")
-    (<! (webserver/add "relvis-related" handle-web-request))
+    (<! (webserver/add "bib" handle-web-request))
     ))

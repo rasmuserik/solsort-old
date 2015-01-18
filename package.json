@@ -2,7 +2,8 @@
   "name": "solsort",
   "version": "0.1.0-SNAPSHOT",
   "scripts": {
-    "start": "xvfb-run nodewebkit"
+    "xstart": "xvfb-run nodewebkit",
+    "start": "node www/solsort.js bib-related"
   },
   "dependencies": {
     "express": "^4.10.7",
