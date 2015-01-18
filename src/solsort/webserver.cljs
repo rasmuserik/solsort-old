@@ -36,7 +36,7 @@
     (let [c (chan)
           http (js/require "http")
           server (.createServer http http-serve)
-          port (or (aget js/process.env "PORT") 1337)
+          port (or (aget js/process.env "PORT") 9999)
           host (or (aget js/process.env "HOST") "localhost") ]
       (.listen server port host)
       (log (str "starting server on " host ":" port)))))
