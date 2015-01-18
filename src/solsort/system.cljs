@@ -50,6 +50,7 @@
               (.hasOwnProperty js/global.process "title")
               (= js/global.process.title "node")))
 (def pid (if nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
+(def hostname (if nodejs (.hostname (js/require "os")) "browser"))
 (defn set-immediate [f] "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
@@ -80,7 +81,7 @@
                                (map pr-str args)))
         date (date-string)
         logpath "logs/"
-        logname (str logpath date ".log")]
+        logname (str logpath hostname "-" date ".log")]
     (if nodejs
       (do
         (if (not (= @logfile-name logname))
