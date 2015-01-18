@@ -22,10 +22,14 @@
         xz (.slice (str "" (js/Math.random)) 2) 
         max-age (* 350 24 60 60)
         cookie (str "xz=" xz ";Max-Age=" max-age ";Path=/;Domain=.solsort.com")]
-      (.setHeader res "Set-Cookie" cookie)))
+    (.setHeader res "Set-Cookie" cookie)))
 
+(defn read-file [filename]
+  (log 'web 'caching filename)
+  (.readFileSync (js/require "fs") filename))
+(def cached-file (memoize read-file))
 (defn http-serve [req res]
-;  (cookie req res)
+  ;  (cookie req res)
   (go
     (let [[path id params] (path-split (.-url req))
           f (or (@services (first path)) 
@@ -36,8 +40,18 @@
           info {:path path :filename filename :extension extension :params params}
           t0 (js/Date.now)
           ]
-      (.setHeader res "Content-Type" "application/javascript")
-      (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")"))
+      (case extension
+        "png" 
+        (do
+          (.setHeader res "Content-Type" "image/png")
+          (.end res (cached-file "misc/_default.png")))
+        "gif" 
+        (do
+          (.setHeader res "Content-Type" "image/gif")
+          (.end res (cached-file "misc/_default.gif")))
+        (do
+          (.setHeader res "Content-Type" "application/javascript")
+          (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")"))))
       (log 'web 
            (.-url req) 
            (str (- (js/Date.now) t0) "ms")

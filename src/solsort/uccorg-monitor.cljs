@@ -10,8 +10,9 @@
   (go
     (while true
       (let [status  (parse-json-or-nil (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))]
+        (log 'uccorg 'ok status)
         (if status
-          (<! (timeout 10000))
+          (<! (timeout 60000))
           (do
             (print 'uccorg "uccorg restart service")
             (print (js/Date.))

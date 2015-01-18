@@ -13,6 +13,11 @@
 (register "uccorg-monitor" solsort.uccorg-monitor/start)
 (register "bib-related" solsort.bib-related/start)
 (register "bib-process" solsort.bib-process/start)
+(register 
+  "server" 
+  (fn []
+    (solsort.uccorg-monitor/start)
+    (solsort.bib-related/start)))
 
 (def arg
   (or
