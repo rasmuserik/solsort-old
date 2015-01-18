@@ -1,2 +1,2 @@
 cd /home/server/solsort
-./node_modules/.bin/forever www/solsort.js start server
+PATH=/home/server/local/bin:/usr/local/bin:$PATH ./node_modules/.bin/forever start www/solsort.js bib-related
