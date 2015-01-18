@@ -47,8 +47,8 @@
 (def nodejs (and
               (exists? js/global)
               (.hasOwnProperty js/global "process")
-              (.hasOwnProperty js/global.process "title")
-              (= js/global.process.title "node")))
+              (.hasOwnProperty js/global.process "title")))
+              ;(= js/global.process.title "node")))
 (def pid (if nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if nodejs (.hostname (js/require "os")) "browser"))
 (defn set-immediate [f] "execute function immediately after event-handling"

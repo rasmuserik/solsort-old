@@ -3,10 +3,11 @@
   "version": "0.1.0-SNAPSHOT",
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
-    "start": "node www/solsort.js bib-related"
+    "start": "forever start www/solsort.js bib-related"
   },
   "dependencies": {
     "express": "^4.10.7",
+    "forever": "^0.13.0",
     "leveldown": "^0.10.2",
     "levelup": "^0.19.0",
     "nodejs-externs": "^0.10.0",
