@@ -6,8 +6,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (def initialised (atom false))
-(def services (atom {:default #(go #js{:error "not found"})}))
-
+(def services (atom {:default #(go nil)}))
 (defn path-split [string]
   (let [[full-path param] (.split string "?")
         path-parts (filter #(< 0 (.-length %)) (seq (.split full-path "/")))
@@ -39,7 +38,16 @@
           extension (if (< 0 split-pos) (.slice id (inc split-pos)) "")
           info {:path path :filename filename :extension extension :params params}
           t0 (js/Date.now)
+          content (<! (f info))
           ]
+      (if (nil? content)
+        (do
+          (log 'web 404 path id)
+          ;(.writeHead res 404)
+          ;(.end res)
+          (.setHeader res "Content-Type" "application/javascript")
+          (.end res "{error:'not implemented'}")
+          )
       (case extension
         "png" 
         (do
@@ -51,7 +59,7 @@
           (.end res (cached-file "misc/_default.gif")))
         (do
           (.setHeader res "Content-Type" "application/javascript")
-          (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")"))))
+          (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")")))))
       (log 'web 
            (.-url req) 
            (str (- (js/Date.now) t0) "ms")
