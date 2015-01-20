@@ -5,9 +5,18 @@
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+(defn dev-proxy []
+  (go
+    (while true
+      (do
+        (log 'uccorg "starting dev proxy")
+        (<! (exec "ssh uccorganism@93.165.158.107 -L 0.0.0.0:8080:localhost:8080 -N"))
+        (<! (timeout 60000))))))
+
 (defn start []
   (log 'uccorg "starting uccorg monitor")
   (go
+    (dev-proxy)
     (while true
       (let [status  (parse-json-or-nil (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))]
         (log 'uccorg 'ok status)

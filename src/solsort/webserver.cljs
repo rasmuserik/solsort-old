@@ -8,11 +8,13 @@
 (def initialised (atom false))
 (def services (atom {:default #(go nil)}))
 (defn path-split [string]
+  (try
   (let [[full-path param] (.split string "?")
         path-parts (filter #(< 0 (.-length %)) (seq (.split full-path "/")))
         params (into {} (map #(split % #"=" 2) (split param "&")))
         ]
-    [(butlast path-parts) (last path-parts) params]))
+    [(butlast path-parts) (last path-parts) params])
+  (catch :default e [#js["bad-req"] (str string ".error") {}])))
 
 (defn cookie [req res] "TODO"
   (let [cookies (or (aget (.-headers req) "cookie") "")
