@@ -1,0 +1,9 @@
+language:
+  - node_js
+  - clojure
+jdk:
+  - oraclejdk7
+node_js:
+  "0.8"
+script:
+  - lein cljsbuild once test && node build/test/test.js

@@ -3,7 +3,8 @@
   "version": "0.1.0-SNAPSHOT",
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
-    "start": "forever start www/solsort.js bib-related"
+    "start": "forever start www/solsort.js bib-related",
+    "test": "lein cljsbuild once test && node build/test/test.js"
   },
   "dependencies": {
     "express": "^4.10.7",
