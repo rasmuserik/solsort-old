@@ -10,7 +10,7 @@
     (while true
       (do
         (log 'uccorg "(re-)starting dev proxy")
-        (<! (exec "ssh uccorganism@93.165.158.107 -L 0.0.0.0:8080:localhost:8080 -N & SSH_PID=$! (sleep 300; kill $SSH_PID)"))
+        (<! (exec "ssh uccorganism@93.165.158.107 -L 0.0.0.0:8080:localhost:8080 -N & SSH_PID=$!; sleep 300; kill $SSH_PID"))
         ;(<! (timeout 60000))
         ))))
 
