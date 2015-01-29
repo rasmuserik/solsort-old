@@ -1,10 +1,5 @@
 language:
-  - node_js
   - clojure
 lein: lein2
-jdk:
-  - oraclejdk7
-node_js:
-  "0.10"
 script:
   - lein2 cljsbuild once test && node build/test/test.js
