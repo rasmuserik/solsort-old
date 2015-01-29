@@ -95,4 +95,7 @@
             (reset! logfile-name logname)))
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
+(defn exit [errcode]
+  (if nodejs
+    (js/process.exit errcode)))
 (log 'solsort-start)

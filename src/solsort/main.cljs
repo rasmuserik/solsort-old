@@ -18,6 +18,7 @@
   (fn []
     (solsort.uccorg-monitor/start)
     (solsort.bib-related/start)))
+(register "test" #(print 'test))
 
 (def arg
   (or

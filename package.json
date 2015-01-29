@@ -4,7 +4,7 @@
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
     "start": "forever start www/solsort.js bib-related",
-    "test": "lein cljsbuild once test && node build/test/test.js"
+    "test": "node build/test/test.js test && xvfb-run nodewebkit"
   },
   "dependencies": {
     "express": "4.10.7",
@@ -12,9 +12,9 @@
     "leveldown": "0.10.2",
     "levelup": "0.19.0",
     "nodejs-externs": "0.10.0",
-    "nodewebkit": "0.11.4",
+    "nodewebkit": "0.11.6",
     "passport": "0.2.1",
     "webworker-threads": "0.5.3"
   },
-  "main": "debug.html#bib-related"
+  "main": "www/test.html#test"
 }

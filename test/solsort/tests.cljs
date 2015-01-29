@@ -22,6 +22,6 @@
   (go
       (<! (test-kvdb))
       (<! (test-util))
-      ))
+      (system/exit 0)))
 
 (run-tests)
