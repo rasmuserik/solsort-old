@@ -1,6 +1,7 @@
 language:
   - node_js
   - clojure
+lein: lein
 jdk:
   - oraclejdk7
 node_js:
