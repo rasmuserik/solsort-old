@@ -4,5 +4,9 @@ language:
 lein: lein2
 node_js:
   "0.10"
+install:
+  - npm install
+before_script:
+  - lein2 cljsbuild once test
 script:
-  - lein2 cljsbuild once test && node build/test/test.js
+  - node build/test/test.js
