@@ -9,4 +9,4 @@ install:
 before_script:
   - lein2 cljsbuild once test
 script:
-  - node build/test/test.js
+  - npm test
