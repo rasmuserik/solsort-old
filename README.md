@@ -1,5 +1,5 @@
 # Solsort
-
+[![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
 # Backlog
 
 - √running in node.js
