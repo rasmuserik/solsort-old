@@ -10,3 +10,4 @@ localStorage/
 *.leveldb
 logs/
 dbs/
+npm-debug.log

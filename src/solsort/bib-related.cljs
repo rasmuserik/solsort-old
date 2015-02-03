@@ -1,6 +1,7 @@
 (ns solsort.bib-related
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
+    [solsort.test :refer [testcase]]
     [solsort.system :refer [exec each-lines nodejs log]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]

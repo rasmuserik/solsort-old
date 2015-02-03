@@ -1,6 +1,7 @@
 (ns solsort.system
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.test :refer [testcase]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -48,7 +49,6 @@
               (exists? js/global)
               (.hasOwnProperty js/global "process")
               (.hasOwnProperty js/global.process "title")))
-              ;(= js/global.process.title "node")))
 (def pid (if nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if nodejs (.hostname (js/require "os")) "browser"))
 (defn set-immediate [f] "execute function immediately after event-handling"
@@ -74,6 +74,12 @@
 (def fs (if nodejs (js/require "fs")))
 (defn ensure-dir [dirname]
   (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
+(defn exit [errcode]
+  (go
+    (<! (timeout 5000))
+    (if nodejs
+      (js/process.exit errcode))))
+
 (defn log [& args]
   (let [msg (string/join " " (concat
                                [(six-digits pid)
@@ -95,7 +101,5 @@
             (reset! logfile-name logname)))
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
-(defn exit [errcode]
-  (if nodejs
-    (js/process.exit errcode)))
-(log 'solsort-start)
+
+(log 'solsort-start (str (if nodejs "node") (if browser "browser")) hostname)

@@ -1,15 +1,22 @@
 (ns solsort.util
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
+    [solsort.test :refer [testcase]]
     [solsort.kvdb :as kvdb]
     [solsort.system :refer [log]]
     [clojure.string :as string :refer [split]]
+    [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (defn parse-json-or-nil [str]
   (try
     (js/JSON.parse str)
     (catch :default _ nil)))
+
+(testcase 'parse-json-or-nil-1 
+          #(nil? (parse-json-or-nil "this is not json")))
+(testcase 'parse-json-or-nil-2 
+    #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
 
 (defn http-req
   ([url params] (throw "not implemented"))
@@ -90,3 +97,6 @@
 
 (defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
 
+(defn chan? [c] (instance? ManyToManyChannel c))
+(testcase 'chan?-1 #(chan? (chan)))
+(testcase 'chan?-2 #(not (chan? true)))

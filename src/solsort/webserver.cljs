@@ -1,6 +1,7 @@
 (ns solsort.webserver
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.test :refer [testcase]]
     [clojure.string :refer [split]]
     [solsort.system :as system :refer [log]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
