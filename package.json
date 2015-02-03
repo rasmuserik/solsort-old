@@ -4,7 +4,7 @@
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
     "start": "forever start www/solsort.js bib-related",
-    "test": "node build/main/main.js test && xvfb-run nodewebkit"
+    "test": "node build/solsort/solsort.js test && xvfb-run nodewebkit"
   },
   "dependencies": {
     "express": "4.10.7",

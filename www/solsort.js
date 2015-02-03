@@ -1,1 +1,1 @@
-../build/main/main.js
+../build/solsort/solsort.js
