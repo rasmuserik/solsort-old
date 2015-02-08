@@ -18,6 +18,7 @@
 (testcase 'parse-json-or-nil-2 
     #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
 
+
 (defn http-req
   ([url params] (throw "not implemented"))
   ([url]
@@ -31,6 +32,8 @@
      (set! (.-onload xhr) #(put! result (.-responseText xhr)))
      (.send xhr)
      result)))
+
+
 (defn print-channel [c]
   (go (loop [msg (<! c)]
         (if msg (do (print msg) (recur (<! c)))))))

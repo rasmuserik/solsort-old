@@ -4,9 +4,8 @@
     [solsort.test :refer [testcase]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
-
+(comment enable-print)
 (enable-console-print!)
-
 (def is-browser (exists? js/window))
 (def global (if is-browser js/window js/global)) ; various conditional global assignments below
 (defn exec [cmd]
@@ -50,16 +49,16 @@
               (.hasOwnProperty js/global.process "title")))
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
-(def window-React-etc nil)
+(comment window-React-etc)
 (if (and is-nodejs (not is-browser)) (aset global "React" (js/require "react")))
 (if (not is-browser) (aset global "window" global))
-(testcase "React"
-          #(go (= "<h1>Hello</h1>"
+(testcase 'react-available
+          #(= "<h1>Hello</h1>"
               (.renderToStaticMarkup
                 js/React
                 (.createElement
                   js/React
-                  "h1" nil "Hello")))))
+                  "h1" nil "Hello"))))
 (defn set-immediate [f] "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
@@ -109,4 +108,5 @@
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
 
+(comment log application start)
 (log 'solsort-start (str (if is-nodejs "node") (if is-browser "browser")) hostname)
