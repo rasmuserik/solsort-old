@@ -7,9 +7,9 @@
 
 (enable-console-print!)
 
-(def browser (exists? js/window))
-(def global (if browser js/window js/global)) ; various conditional global assignments below
-(if (not browser) (aset global "window" global))
+(def is-browser (exists? js/window))
+(def global (if is-browser js/window js/global)) ; various conditional global assignments below
+(if (not is-browser) (aset global "window" global))
 (defn exec [cmd]
   (let [c (chan)]
     (.exec (js/require "child_process") cmd
@@ -45,18 +45,16 @@
            (put! c @buf)
            (close! c)))
     c))
-(def nodejs (and
+(def is-nodejs (and
               (exists? js/global)
               (.hasOwnProperty js/global "process")
               (.hasOwnProperty js/global.process "title")))
-(def pid (if nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
-(def hostname (if nodejs (.hostname (js/require "os")) "browser"))
+(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
+(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
 (defn set-immediate [f] "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
-
-(set-immediate #(print 'isBrowser browser))
 
 (defn two-digits [n] (.slice (str (+ (mod n 100) 300)) 1))
 (defn three-digits [n] (.slice (str (+ (mod n 1000) 3000)) 1))
@@ -71,13 +69,13 @@
   (str (date-string) "-" (time-string) "." (three-digits (.now js/Date))))
 (def logfile-name (atom nil))
 (def logfile-stream (atom nil))
-(def fs (if nodejs (js/require "fs")))
+(def fs (if is-nodejs (js/require "fs")))
 (defn ensure-dir [dirname]
   (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
 (defn exit [errcode]
   (go
     (<! (timeout 5000))
-    (if nodejs
+    (if is-nodejs
       (js/process.exit errcode))))
 
 (defn log [& args]
@@ -88,7 +86,7 @@
         date (date-string)
         logpath "logs/"
         logname (str logpath hostname "-" date ".log")]
-    (if nodejs
+    (if is-nodejs
       (do
         (if (not (= @logfile-name logname))
           (do
@@ -102,4 +100,4 @@
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
 
-(log 'solsort-start (str (if nodejs "node") (if browser "browser")) hostname)
+(log 'solsort-start (str (if is-nodejs "node") (if is-browser "browser")) hostname)

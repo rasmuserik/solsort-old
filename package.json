@@ -4,7 +4,7 @@
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
     "start": "forever start www/solsort.js bib-related",
-    "test": "node build/solsort/solsort.js test && xvfb-run nodewebkit"
+    "test": "node resources/build/solsort/solsort.js test && xvfb-run nodewebkit"
   },
   "dependencies": {
     "express": "4.10.7",
@@ -16,5 +16,5 @@
     "passport": "0.2.1",
     "webworker-threads": "0.5.3"
   },
-  "main": "www/index.html#test"
+  "main": "resources/index.html#test"
 }

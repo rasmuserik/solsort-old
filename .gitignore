@@ -11,3 +11,4 @@ localStorage/
 logs/
 dbs/
 npm-debug.log
+figwheel_server.log

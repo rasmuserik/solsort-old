@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.test :refer [testcase]]
-    [solsort.system :refer [exec each-lines nodejs log]]
+    [solsort.system :refer [exec each-lines is-nodejs log]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
@@ -158,7 +158,7 @@
             (<! (kvdb/commit :bibinfo))))))))
 
 (defn prepare-data []
-  (if (not nodejs) (throw "error: not on node"))
+  (if (not is-nodejs) (throw "error: not on node"))
   (go
     (<! (make-tmp-dir))
 

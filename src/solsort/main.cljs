@@ -4,10 +4,12 @@
     [solsort.bib-related]
     [solsort.bib-process]
     [solsort.test-runner]
+ ;   [solsort.system :refer [is-debug]]
+ ;   [figwheel.client]
     ))
 
 (enable-console-print!)
-
+;(if is-debug (figwheel.client/start {}))
 (def commands (atom {}))
 (defn register [cmd f] (swap! commands assoc cmd f))
 
@@ -29,4 +31,3 @@
                (fn []
                  (print "possible arguments:")
                  (doall (map (fn [[a b]] (print a)) @commands)))))
-

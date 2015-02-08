@@ -71,7 +71,7 @@
       )))
 
 (defn start-server []
-  (if (not system/nodejs)
+  (if (not system/is-nodejs)
     (throw "error: not on node"))
   (go
     (let [c (chan)
