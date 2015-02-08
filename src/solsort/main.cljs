@@ -4,12 +4,10 @@
     [solsort.bib-related]
     [solsort.bib-process]
     [solsort.test-runner]
- ;   [solsort.system :refer [is-debug]]
- ;   [figwheel.client]
+    [solsort.system :as system :refer [log]]
     ))
 
 (enable-console-print!)
-;(if is-debug (figwheel.client/start {}))
 (def commands (atom {}))
 (defn register [cmd f] (swap! commands assoc cmd f))
 
@@ -22,12 +20,27 @@
             (solsort.uccorg-monitor/start)
             (solsort.bib-related/start)))
 
-          (def arg
-            (or
-              (and (exists? js/global) js/global.process (get js/global.process.argv 2))
-              (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
+(def arg
+  (or
+    (and (exists? js/global) js/global.process (get js/global.process.argv 2))
+    (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
 
-          ((or (get @commands arg)
-               (fn []
-                 (print "possible arguments:")
-                 (doall (map (fn [[a b]] (print a)) @commands)))))
+((or (get @commands arg)
+     (fn []
+       (print "possible arguments:")
+       (doall (map (fn [[a b]] (print a)) @commands)))))
+
+(log 'js-worker js/window.Worker)
+(if (exists? js/Worker) 
+  (do
+    (def worker (js/Worker. system/source-file))
+    (set! (.-onmessage 
+            worker)
+          (fn [e] 
+            (log "message from worker")
+            (js/console.log e)
+            ))
+    ))
+
+(if system/is-worker
+  (js/postMessage "halo"))

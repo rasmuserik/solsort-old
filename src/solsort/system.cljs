@@ -6,8 +6,14 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
 (enable-console-print!)
-(def is-browser (exists? js/window))
-(def global (if is-browser js/window js/global)) ; various conditional global assignments below
+(def is-browser (and (exists? js/window) (exists? js/window.document)))
+(def global 
+  (cond
+    (exists? js/window) js/window
+    (exists? js/global) js/global
+    (exists? js/self) js/self
+    :else ((fn [] js/this))))
+
 (defn exec [cmd]
   (let [c (chan)]
     (.exec (js/require "child_process") cmd
@@ -49,10 +55,13 @@
               (.hasOwnProperty js/global.process "title")))
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
-(comment window-React-etc)
-(if (and is-nodejs (not is-browser)) (aset global "React" (js/require "react")))
+(comment window-React-Worker-etc)
+(if (and is-nodejs (not is-browser)) 
+  (do 
+    (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
+    (aset global "React" (js/require "react"))))
 (if (not is-browser) (aset global "window" global))
-(testcase 'react-available
+(testcase 'react
           #(= "<h1>Hello</h1>"
               (.renderToStaticMarkup
                 js/React
@@ -109,4 +118,10 @@
     (.log js/console msg)))
 
 (comment log application start)
-(log 'solsort-start (str (if is-nodejs "node") (if is-browser "browser")) hostname)
+(def source-file 
+  (cond
+    (exists? js/__filename) js/__filename 
+    (and (exists? js/location) (= "file" (.slice js/location.href 0 4))) "solsort.js" 
+    :else "/solsort.js"))
+(def is-worker (and (not is-nodejs) (not is-browser)))
+(log 'solsort-start (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
