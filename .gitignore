@@ -12,3 +12,4 @@ logs/
 dbs/
 npm-debug.log
 figwheel_server.log
+bower_components/

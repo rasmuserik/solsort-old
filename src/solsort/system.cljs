@@ -9,7 +9,6 @@
 
 (def is-browser (exists? js/window))
 (def global (if is-browser js/window js/global)) ; various conditional global assignments below
-(if (not is-browser) (aset global "window" global))
 (defn exec [cmd]
   (let [c (chan)]
     (.exec (js/require "child_process") cmd
@@ -51,6 +50,16 @@
               (.hasOwnProperty js/global.process "title")))
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
+(def window-React-etc nil)
+(if (and is-nodejs (not is-browser)) (aset global "React" (js/require "react")))
+(if (not is-browser) (aset global "window" global))
+(testcase "React"
+          #(go (= "<h1>Hello</h1>"
+              (.renderToStaticMarkup
+                js/React
+                (.createElement
+                  js/React
+                  "h1" nil "Hello")))))
 (defn set-immediate [f] "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)

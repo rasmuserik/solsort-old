@@ -6,6 +6,7 @@ node_js:
   "0.10"
 install:
   - npm install
+  - bower install
 before_script:
   - lein2 cljsbuild once
 script:
