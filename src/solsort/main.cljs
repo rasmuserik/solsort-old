@@ -4,6 +4,7 @@
     [solsort.bib-related]
     [solsort.bib-process]
     [solsort.test-runner]
+    [solsort.hello]
     [solsort.system :as system :refer [log]]
     ))
 
@@ -15,6 +16,7 @@
 (register "bib-related" solsort.bib-related/start)
 (register "bib-process" solsort.bib-process/start)
 (register "test" solsort.test-runner/start)
+(register "hello" solsort.hello/start)
 (register "server" 
           (fn []
             (solsort.uccorg-monitor/start)
