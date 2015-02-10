@@ -24,11 +24,18 @@
                )))
     c))
 
+(def is-nodejs (and
+              (exists? js/global)
+              (.hasOwnProperty js/global "process")
+              (.hasOwnProperty js/global.process "title")))
+(def fs (if is-nodejs (js/require "fs")))
+(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
+(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
 (defn each-lines [filename]
   (let
     [c (chan 1)
      buf (atom "")
-     stream (.createReadStream (js/require "fs") filename)]
+     stream (.createReadStream fs filename)]
     (.on stream "data"
          (fn [data]
            (.pause stream)
@@ -49,12 +56,6 @@
            (put! c @buf)
            (close! c)))
     c))
-(def is-nodejs (and
-              (exists? js/global)
-              (.hasOwnProperty js/global "process")
-              (.hasOwnProperty js/global.process "title")))
-(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
-(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
 (comment window-React-Worker-etc)
 (if (and is-nodejs (not is-browser)) 
   (do 
@@ -89,12 +90,6 @@
 (def fs (if is-nodejs (js/require "fs")))
 (defn ensure-dir [dirname]
   (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
-(defn exit [errcode]
-  (go
-    (<! (timeout 5000))
-    (if is-nodejs
-      (js/process.exit errcode))))
-
 (defn log [& args]
   (let [msg (string/join " " (concat
                                [(six-digits pid)
@@ -117,6 +112,13 @@
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
 
+(defn exit [errcode]
+  (go
+    (<! (timeout 1000))
+    (log 'system 'exit errcode)
+    (if is-nodejs
+      (js/process.exit errcode))))
+
 (comment log application start)
 (def source-file 
   (cond
@@ -124,4 +126,6 @@
     (and (exists? js/location) (= "file" (.slice js/location.href 0 4))) "solsort.js" 
     :else "/solsort.js"))
 (def is-worker (and (not is-nodejs) (not is-browser)))
-(log 'solsort-start (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
+(log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
+(defn dev-server []
+  (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))

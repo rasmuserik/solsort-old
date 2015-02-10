@@ -13,3 +13,4 @@ dbs/
 npm-debug.log
 figwheel_server.log
 bower_components/
+tail.pid lein.log

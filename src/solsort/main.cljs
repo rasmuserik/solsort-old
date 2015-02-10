@@ -21,6 +21,7 @@
           (fn []
             (solsort.uccorg-monitor/start)
             (solsort.bib-related/start)))
+(register "dev-server" system/dev-server)
 
 (def arg
   (or
@@ -32,8 +33,7 @@
        (print "possible arguments:")
        (doall (map (fn [[a b]] (print a)) @commands)))))
 
-(log 'js-worker js/window.Worker)
-(if (exists? js/Worker) 
+#_((if (exists? js/Worker) 
   (do
     (def worker (js/Worker. system/source-file))
     (set! (.-onmessage 
@@ -45,4 +45,4 @@
     ))
 
 (if system/is-worker
-  (js/postMessage "halo"))
+  (js/postMessage "halo")))

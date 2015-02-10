@@ -2,16 +2,9 @@
 [![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
 # Backlog
 
-- √running in node.js
-
-- abstract all system-specific into system.cljs library
-- database-abstraction backed on leveldb and indexeddb
-
-- testing
-- improve key-value-database
-- also compile + test node version
-- related-server up and running
-- restructure repositories
+- router
+- watch compiled js, and reload on update
+- improve key-value-database - reimplement indexeddb-backend
 
 ## Later
 
@@ -19,7 +12,6 @@
 
 - services: - `/api/log` - `_logger.js` - `_*` - `/_s/..`
 - writings
-- set up nginx
 - slides
 
 ### Platform
@@ -28,6 +20,17 @@
 - communication
 
 # Release log
+
+- set up nginx
+- testing
+- √restructure repositories
+- √related-server up and running
+- √also compile + test node version
+- √running in node.js
+- √abstract all system-specific into system.cljs library
+- database-abstraction backed on leveldb and indexeddb
+
+
 ## 0.2.0 
 
 - refacter general utilities from related-server into utility library
