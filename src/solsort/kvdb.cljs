@@ -1,7 +1,7 @@
 (ns solsort.kvdb
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.test :refer [testcase]]
+    [solsort.registry :refer [testcase]]
     [solsort.system :refer [is-browser]]
     [solsort.kvdb.indexeddb :as idb]
     [solsort.kvdb.leveldb :as leveldb]

@@ -1,7 +1,7 @@
 (ns solsort.system
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.test :refer [testcase]]
+    [solsort.registry :refer [testcase]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -69,7 +69,7 @@
                 (.createElement
                   js/React
                   "h1" nil "Hello"))))
-(defn set-immediate [f] "execute function immediately after event-handling"
+(def set-immediate ; "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
@@ -127,5 +127,7 @@
     :else "/solsort.js"))
 (def is-worker (and (not is-nodejs) (not is-browser)))
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
+(defn autorestart []
+  (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
 (defn dev-server []
   (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))

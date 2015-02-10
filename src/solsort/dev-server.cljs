@@ -1,13 +1,26 @@
-(ns solsort.hello
+(ns solsort.dev-server
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.test :refer [testcase]]
-    [solsort.system :refer [exec each-lines is-nodejs log is-browser]]
-    [solsort.kvdb :as kvdb]
-    [solsort.webserver :as webserver]
-    [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
-    [clojure.string :as string :refer [split]]
+    [solsort.registry :refer [route]]
+    [solsort.system :as system :refer [log is-browser]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
+
+
+(enable-console-print!)
+
+#_((if (exists? js/Worker) 
+  (do
+    (def worker (js/Worker. system/source-file))
+    (set! (.-onmessage 
+            worker)
+          (fn [e] 
+            (log "message from worker")
+            (js/console.log e)
+            ))
+    ))
+
+(if system/is-worker
+  (js/postMessage "halo")))
 
 
 (defn form [a]
@@ -37,3 +50,8 @@
           ) 
       ))))
 
+(route "dev-server"
+       (fn []
+         (log 'dev-server 'start)
+         (start)
+         (system/autorestart)))

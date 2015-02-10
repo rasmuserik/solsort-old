@@ -1,5 +1,5 @@
 killall java
-lein cljsbuild auto > lein.log &
+lein cljsbuild auto solsort > lein.log &
 
 kill `cat tail.pid`
 tail -f lein.log &
