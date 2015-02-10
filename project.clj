@@ -4,20 +4,16 @@
 
   :dependencies [[org.clojure/clojure "1.7.0-alpha5"]
                  [org.clojure/clojurescript "0.0-2760"]
-                 [figwheel "0.2.3-SNAPSHOT"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
 
-  :plugins 
-  [[lein-cljsbuild "1.0.4"]
-   [lein-figwheel "0.2.3-SNAPSHOT"]]
+  :plugins [[lein-cljsbuild "1.0.4"]]
 
   :source-paths ["src"]
-  :figwheel { :http-server-root ""}
 
   :cljsbuild { 
     :builds [
              {:id "debug"
-              :source-paths ["src" "debug"]
+              :source-paths ["src"]
               :compiler {
                 :output-to "resources/build/debug/debug.js"
                 :output-dir "resources/build/debug"
