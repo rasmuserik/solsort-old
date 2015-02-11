@@ -9,7 +9,6 @@
 
 
 (defn call-raw [route-name jsobj]
-  (log 'call-raw (@routes route-name))
   (if (contains? @routes route-name)
     ((@routes route-name) jsobj)
     (go nil)))
