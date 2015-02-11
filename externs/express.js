@@ -144,3 +144,7 @@ ExpressRequest.prototype.path = "";
 ExpressRequest.prototype.params = {}; 
 ExpressRequest.prototype.query = {}; 
 ExpressRequest.prototype.next = {}; 
+
+var bodyParser;
+bodyParser.json = function() {};
+bodyParser.urlencoded = function() {};

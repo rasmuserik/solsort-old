@@ -3,6 +3,7 @@
   (:require
     [solsort.registry :refer [route]]
     [solsort.system :as system :refer [log is-browser]]
+    [solsort.router :refer [call-raw]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -54,4 +55,6 @@
        (fn []
          (log 'dev-server 'start)
          (start)
+         (call-raw "bib-related" #js{})
          (system/autorestart)))
+
