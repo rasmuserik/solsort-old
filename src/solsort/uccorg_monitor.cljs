@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.system :refer [exec log]]
+    [solsort.registry :refer [route]]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -32,3 +33,4 @@
             (print (js/Date.))
             (print (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))
             ))))))
+(route "uccorg-monitor" start)

@@ -4,6 +4,7 @@
     [solsort.system :refer [exec each-lines]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
+    [solsort.registry :refer [route]]
     [solsort.util :refer [print-channel by-first transducer-status]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
@@ -85,4 +86,6 @@
     (pipe (each-lines "../final_adhl.sorted.csv") c)
     (into-file "stats.jsonl" c)
     (print "done stats.jsonl")
+    (go)
     ))
+(route "bib-process" start)

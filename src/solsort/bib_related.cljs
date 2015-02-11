@@ -1,7 +1,7 @@
 (ns solsort.bib-related
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.registry :refer [testcase route]]
     [solsort.system :refer [exec each-lines is-nodejs log]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
@@ -188,3 +188,5 @@
     (log 'bib "starting visual relation server")
     (<! (webserver/add "bib" handle-web-request))
     ))
+
+(route "bib-related" start)
