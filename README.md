@@ -54,6 +54,26 @@
 - simple web-server
 
 # Notes
+
+- router
+  - api
+    - `(route path-prefix fn [html-fn])` - js->clj params, transform to requested 
+    - `(route-raw path-prefix fn)`
+    - `(call path &args)` - local, core or remote, depending on whether route is available - only able to call up in the network chain
+  - dispatch: path-prefix, obj:
+    - √ boot (argv/url-hash)
+    - webworker (`postMessage([msg_id, path, obj])`, `postMessage([msg_id, response])`)
+    - http-reqs
+  - fn-input optionsobject keys
+    - req-path - fn-name
+    - req-client - local | webworker | remote
+    - req-content - wished for result type: json, jsonhtml, meta+content
+  - data types JSON
+    - `["div",...]
+    - `{"error":...}`
+    - `{"content": ..., ...}` also `"Content-Type":` `"cache":` 
+    - json
+
 ## View types
 
 - html
