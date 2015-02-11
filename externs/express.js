@@ -20,6 +20,7 @@
  * @see http://expressjs.com/api.html
  * @externs
  * @author Daniel Wirtz <dcode@dcode.io>
+ * @author Rasmus Erik Voel Jensen, solsort.com
  */
 
 /**
@@ -131,3 +132,15 @@ Application.prototype.session = function(opt) {};
 Application.prototype.static = function(path) {};
 
 // TODO: Finish...
+//
+/**
+ * @typedef {function(new:ExpressRequest, ...)}
+ */
+var ExpressRequest;
+ExpressRequest.prototype.url = "";
+ExpressRequest.prototype.baseUrl = "";
+ExpressRequest.prototype.originalUrl = "";
+ExpressRequest.prototype.path = "";
+ExpressRequest.prototype.params = {}; 
+ExpressRequest.prototype.query = {}; 
+ExpressRequest.prototype.next = {}; 
