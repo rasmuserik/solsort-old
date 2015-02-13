@@ -24,4 +24,4 @@
       (do
         (log 'routes 'starting arg)
         (.apply (aget routes arg) #js{}))
-      (log 'routes 'no-such-route arg (keys @registry/routes)))))
+      (log 'routes 'no-such-route arg (js/Object.keys registry/routes)))))

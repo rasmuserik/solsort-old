@@ -1,7 +1,7 @@
 (ns solsort.system
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.registry :refer [testcase route]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -31,18 +31,23 @@
                  (.hasOwnProperty js/global "process")
                  (.hasOwnProperty js/global.process "title")))
 (def fs (if is-nodejs (js/require "fs")))
+(def origin (if is-nodejs "http://localhost:9999" js/location.origin))
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
+(route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " arg))))
 (testcase 'xhr
-          (fn [](let [c (chan)
-                 xhr (XHR.)
-                 json (js/JSON.stringify #js{:args #js["world"]})]
-             (.open xhr "POST" "http://localhost:9999/xhr-test" true)
-             (set! (.-onload xhr) #(put! c true))
-             (set! (.-onerror xhr) #(close! c))
-             (.setRequestHeader xhr "Content-Type" "application/json")
-             (.send xhr json) 
-             c)))
-
+          (fn []
+            (let [c (chan)
+                  xhr (XHR.)
+                  json (js/JSON.stringify #js{:args #js["world"]})]
+              (.open xhr "POST" (str origin "/xhr-test") true)
+              (set! (.-onload xhr) 
+                    (fn []
+                      (js/console.log xhr)
+                    (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
+              (set! (.-onerror xhr) #(close! c))
+              (.setRequestHeader xhr "Content-Type" "application/json")
+              (.send xhr json) 
+              c)))
 
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
