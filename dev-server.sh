@@ -9,6 +9,6 @@ while true
 do
   node resources/build/solsort/solsort.js dev-server &
   NODE_PID=$!
-  sleep 10
+  sleep 5
   wait $NODE_PID
 done

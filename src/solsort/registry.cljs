@@ -1,8 +1,7 @@
 (ns solsort.registry)
 
-(def routes (atom {}))
-(defn route [path f]
-  (swap! routes assoc path f))
+(def routes #js {})
+(defn route [path f] (aset routes path f))
 
 (def testcases (atom []))
 (defn testcase [id f]

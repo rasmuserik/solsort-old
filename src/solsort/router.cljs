@@ -9,8 +9,8 @@
 
 
 (defn call-raw [route-name jsobj]
-  (if (contains? @routes route-name)
-    ((@routes route-name) jsobj)
+  (if (aget routes route-name)
+    ((aget routes route-name) jsobj)
     (go nil)))
 
 (def arg
@@ -20,8 +20,8 @@
 
 (system/set-immediate 
   (fn []
-    (if (contains? @routes arg)
+    (if (aget routes arg)
       (do
         (log 'routes 'starting arg)
-        ((@routes arg) #js{}))
+        (.apply (aget routes arg) #js{}))
       (log 'routes 'no-such-route arg (keys @registry/routes)))))

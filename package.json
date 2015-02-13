@@ -17,7 +17,8 @@
     "nodewebkit": "0.11.6",
     "passport": "0.2.1",
     "react": "^0.12.2",
-    "webworker-threads": "0.5.3"
+    "webworker-threads": "0.5.3",
+    "xmlhttprequest": "^1.7.0"
   },
   "main": "resources/index.html#test"
 }

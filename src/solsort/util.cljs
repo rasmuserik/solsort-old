@@ -44,7 +44,6 @@
      (.send xhr)
      result)))
 
-
 (defn print-channel [c]
   (go (loop [msg (<! c)]
         (if msg (do (print msg) (recur (<! c)))))))

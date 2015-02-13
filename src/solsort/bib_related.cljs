@@ -175,26 +175,12 @@
     (<! (cache-related))
     ))
 
-(defn handle-web-request [req]
-  (case (second (:path req))
-    "related" (get-related (:filename req))
-    "info" (kvdb/fetch :bibinfo (:filename req))
-    (go {:error "wrong api"})
-    ))
-
 (defn start []
   (go
     (<! (prepare-data))
     (log 'bib "starting visual relation server")
-    (<! (webserver/add "bib" handle-web-request))
     ))
 
 (route "bib-related" start)
-(route "bib/info/" 
-       (fn [o]
-         (let [lid (aget (aget o "-args") 0)]
-           (kvdb/fetch :bibinfo lid))))
-(route "bib/related/" 
-       (fn [o]
-         (let [lid (aget (aget o "-args") 0)]
-           (get-related lid))))
+(route "bib/info/" (fn [lid] (kvdb/fetch :bibinfo lid)))
+(route "bib/related/" (fn [lid] (get-related lid)))

@@ -6,6 +6,8 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
 (enable-console-print!)
+
+(declare log)
 (def is-browser (and (exists? js/window) (exists? js/window.document)))
 (def global 
   (cond
@@ -29,6 +31,19 @@
                  (.hasOwnProperty js/global "process")
                  (.hasOwnProperty js/global.process "title")))
 (def fs (if is-nodejs (js/require "fs")))
+(def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
+(testcase 'xhr
+          (fn [](let [c (chan)
+                 xhr (XHR.)
+                 json (js/JSON.stringify #js{:args #js["world"]})]
+             (.open xhr "POST" "http://localhost:9999/xhr-test" true)
+             (set! (.-onload xhr) #(put! c true))
+             (set! (.-onerror xhr) #(close! c))
+             (.setRequestHeader xhr "Content-Type" "application/json")
+             (.send xhr json) 
+             c)))
+
+
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
 (defn read-file-sync [filename]

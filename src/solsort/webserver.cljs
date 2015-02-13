@@ -4,32 +4,56 @@
     [solsort.registry :refer [testcase routes]]
     [solsort.router :refer [call-raw]]
     [clojure.string :refer [split]]
-    [solsort.util :refer [jsextend]]
+    [solsort.util :refer [jsextend parse-json-or-nil]]
     [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
-(if is-nodejs
-  (do
+
+(comment is-nodejs) 
+(if is-nodejs 
+  (do 
+    ;cljs-bug (go (let [a :ok] (print #js{:bug a} {:no-bug a})))
     (def cached-file (memoize read-file-sync))
 
+    (defn default-route []
+      (this-as obj (go
+                     (case (aget obj "content-type")
+                       "png" #js{:headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
+                       "gif" #js{:headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
+                       #js{:error "not-implemented"}))))
     (defn handler [route]
       (fn [req res]
         (go
-          (let [obj (.-body req)
-                path (.-path req)
-                argpath (.slice path (.-length route))
-                argext (.split argpath ".")
-                args (.filter (.split (aget argext 0) "/") #(< 0 (.-length %))) 
+          (let [t0 (js/Date.now)
+                argext (.split (.slice (.-path req) (.-length route)) ".")
+                query (.-query req)
+                body (.-body req)
+                args (or (parse-json-or-nil (aget query "args"))
+                         (aget body "args")
+                         (.filter (.split (aget argext 0) "/") #(< 0 (.-length %))))
+                callback (aget query "callback")
+                kind (if callback "json" (.join (.slice argext 1) "."))
+                f (or (aget routes route) default-route)
+                o (clj->js { :content-type kind
+                            :client "remote" })
+                result (<! (.apply f o args)) 
+                headers (aget result "headers")
                 ]
-            (jsextend obj (.-query req))
-            (aset obj "-route" route)
-            (aset obj "-client" "remote")
-            (aset obj "-content-type" (.join (.slice argext 1) "."))
-            (aset obj "-args" args)
-            (log 'webserver path)
-            (let [result (js/JSON.stringify (<! (call-raw route obj)))
-                  callback-name (aget obj "callback")
-                  wrapped-result (if callback-name (str callback-name "(" result ")") result) ]
-              (.send res wrapped-result) )))))
+            (if (and headers (aget headers "Content-Type") (aget result "content"))
+              (do
+                (.set res headers)
+                (.send res (aget result "content")))
+              (do
+                (.set res "Content-Type" "application/javascript")
+              (.send res 
+                     (if callback
+                       (str callback "(" (js/JSON.stringify result) ")") 
+                       (js/JSON.stringify result)))))
+            (log 'web 
+                 (.-url req) 
+                 (str (- (js/Date.now) t0) "ms")
+                 (aget (.-headers req) "x-solsort-remote-addr")
+                 (.-body req)
+                 )))))
 
     (defn server []
       (aset global "bodyParser" (js/require "body-parser"))
@@ -40,92 +64,10 @@
 
         (.use app (.json js/bodyParser))
         (.use app (.urlencoded js/bodyParser #js{"extended" false}))
-        (doall (for [k (keys @routes)]
+        (doall (for [k (seq (js/Object.keys routes))]
                  (.all app (str "/" k "*" ) (handler k))))
         (.all app "*" (handler ""))
         (.listen app 9999)
         (log 'webserver 'starting host port)))
     (set-immediate server)
-
-
-    (def initialised (atom false))
-    (def services (atom {:default #(go nil)}))
-    (defn path-split [string]
-      (try
-        (let [[full-path param] (.split string "?")
-              path-parts (filter #(< 0 (.-length %)) (seq (.split full-path "/")))
-              params (into {} (map #(split % #"=" 2) (split param "&")))
-              ]
-          [(butlast path-parts) (last path-parts) params])
-        (catch :default e [#js["bad-req"] (str string ".error") {}])))
-
-    (defn cookie [req res] "TODO"
-      (let [cookies (or (aget (.-headers req) "cookie") "")
-            xzcookie (re-matches #"xz=[0-9]*" cookies)
-            _ (print 'xzcookie xzcookie cookies)
-            xz (.slice (str "" (js/Math.random)) 2) 
-            max-age (* 350 24 60 60)
-            cookie (str "xz=" xz ";Max-Age=" max-age ";Path=/;Domain=.solsort.com")]
-        (.setHeader res "Set-Cookie" cookie)))
-
-    (defn http-serve [req res]
-      ;  (cookie req res)
-      (go
-        (let [[path id params] (path-split (.-url req))
-              f (or (@services (first path)) 
-                    (@services :default))
-              split-pos (.lastIndexOf id ".")
-              filename (if (< 0 split-pos) (.slice id 0 split-pos) id)
-              extension (if (< 0 split-pos) (.slice id (inc split-pos)) "")
-              info {:path path :filename filename :extension extension :params params}
-              t0 (js/Date.now)
-              content (<! (f info))
-              ]
-          (if (nil? content)
-            (do
-              (log 'web 404 path id)
-              ;(.writeHead res 404)
-              ;(.end res)
-              (.setHeader res "Content-Type" "application/javascript")
-              (.end res "{error:'not implemented'}")
-              )
-            (case extension
-              "png" 
-              (do
-                (.setHeader res "Content-Type" "image/png")
-                (.end res (cached-file "misc/_default.png")))
-              "gif" 
-              (do
-                (.setHeader res "Content-Type" "image/gif")
-                (.end res (cached-file "misc/_default.gif")))
-              (do
-                (.setHeader res "Content-Type" "application/javascript")
-                (.end res (str (params "callback") "(" (js/JSON.stringify (clj->js (<! (f info)))) ")")))))
-          (log 'web 
-               (.-url req) 
-               (str (- (js/Date.now) t0) "ms")
-               (aget (.-headers req) "x-solsort-remote-addr"))
-          ;(.log js/console req)
-          )))
-
-(defn start-server []
-  (if (not system/is-nodejs)
-    (throw "error: not on node"))
-  (go
-    (let [c (chan)
-          http (js/require "http")
-          server (.createServer http http-serve)
-          port (or (aget js/process.env "PORT") 9999)
-          host (or (aget js/process.env "HOST") "localhost") ]
-      (.listen server port host)
-      (log (str "starting server on " host ":" port)))))
-
-(defn add [path f]
-  (if (not @initialised)
-    (do
-      (reset! initialised true)
-      (start-server)))
-  (go
-    (swap! services assoc path f)
-    true))
-))
+    (comment end is-nodejs))) 
