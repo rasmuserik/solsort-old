@@ -2,56 +2,51 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.registry :refer [testcase routes]]
+    [solsort.router :refer [call-raw]]
     [clojure.string :refer [split]]
-    [solsort.system :as system :refer [log is-nodejs set-immediate global]]
+    [solsort.util :refer [jsextend]]
+    [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (if is-nodejs
   (do
-
-    (defn jsextend [target source]
-      (let [ks (js/Object.keys source)]
-        (while (< 0 (.-length ks))
-          (let [k (.pop ks)] (aset target k (aget source k)))))
-      (log 'jsextend source target)
-      target)
-
-    (testcase 'jsextend 
-              #(= {"foo" 1 "bar" 2}
-                  (js->clj (jsextend #js{:foo 1 :bar 1} #js{:bar 2}))))
-
-
-    (defn read-file [filename]
-      (log 'web 'caching filename)
-      (.readFileSync (js/require "fs") filename))
-    (def cached-file (memoize read-file))
+    (def cached-file (memoize read-file-sync))
 
     (defn handler [route]
       (fn [req res]
-        (let [obj (.-body req)]
-          (jsextend obj (.-query req))
-          (aset obj "-route" route)
-          (aset obj "-client" "remote")
-          (aset obj "-content-type" "remote")
-          (log 'webserver (.-path req) (.-query req) (.-body req))
-          (.send res route)
-          )))
+        (go
+          (let [obj (.-body req)
+                path (.-path req)
+                argpath (.slice path (.-length route))
+                argext (.split argpath ".")
+                args (.filter (.split (aget argext 0) "/") #(< 0 (.-length %))) 
+                ]
+            (jsextend obj (.-query req))
+            (aset obj "-route" route)
+            (aset obj "-client" "remote")
+            (aset obj "-content-type" (.join (.slice argext 1) "."))
+            (aset obj "-args" args)
+            (log 'webserver path)
+            (let [result (js/JSON.stringify (<! (call-raw route obj)))
+                  callback-name (aget obj "callback")
+                  wrapped-result (if callback-name (str callback-name "(" result ")") result) ]
+              (.send res wrapped-result) )))))
 
     (defn server []
-      (def express (js/require "express"))
       (aset global "bodyParser" (js/require "body-parser"))
-      (def app (express))
-      (def host (or (aget js/process.env "HOST") "localhost"))
-      (def port (or (aget js/process.env "PORT") 9999))
+      (let [express (js/require "express")
+            app (express)
+            host (or (aget js/process.env "HOST") "localhost")
+            port (or (aget js/process.env "PORT") 9999)]
 
+        (.use app (.json js/bodyParser))
+        (.use app (.urlencoded js/bodyParser #js{"extended" false}))
+        (doall (for [k (keys @routes)]
+                 (.all app (str "/" k "*" ) (handler k))))
+        (.all app "*" (handler ""))
+        (.listen app 9999)
+        (log 'webserver 'starting host port)))
+    (set-immediate server)
 
-      (.use app (.json js/bodyParser))
-      (.use app (.urlencoded js/bodyParser #js{"extended" false}))
-      (doall (for [k (keys @routes)]
-               (.all app (str "/" k "*" ) (handler k))))
-      (.all app "*" (handler "default"))
-      (.listen app 9999)
-      (log 'webserver 'starting host port))
-    ;(set-immediate server)
 
     (def initialised (atom false))
     (def services (atom {:default #(go nil)}))

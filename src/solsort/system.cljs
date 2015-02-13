@@ -25,12 +25,14 @@
     c))
 
 (def is-nodejs (and
-              (exists? js/global)
-              (.hasOwnProperty js/global "process")
-              (.hasOwnProperty js/global.process "title")))
+                 (exists? js/global)
+                 (.hasOwnProperty js/global "process")
+                 (.hasOwnProperty js/global.process "title")))
 (def fs (if is-nodejs (js/require "fs")))
 (def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
+(defn read-file-sync [filename]
+  (.readFileSync (js/require "fs") filename))
 (defn each-lines [filename]
   (let
     [c (chan 1)

@@ -16,7 +16,18 @@
 (testcase 'parse-json-or-nil-1 
           #(nil? (parse-json-or-nil "this is not json")))
 (testcase 'parse-json-or-nil-2 
-    #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
+          #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
+
+
+(defn jsextend [target source]
+  (let [ks (js/Object.keys source)]
+    (while (< 0 (.-length ks))
+      (let [k (.pop ks)] (aset target k (aget source k)))))
+  target)
+
+(testcase 'jsextend 
+          #(= {"foo" 1 "bar" 2}
+              (js->clj (jsextend #js{:foo 1 :bar 1} #js{:bar 2}))))
 
 
 (defn http-req

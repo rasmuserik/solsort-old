@@ -6,7 +6,7 @@
     [solsort.util :refer [chan?]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
-(defn start []
+(defn run-tests []
   (go
     (loop [[id f] (first (seq @testcases))
            tests (rest (seq @testcases))]
@@ -19,6 +19,9 @@
       (if (first tests)
         (recur (first tests) (rest tests))))
     (log 'test "tests done")
-    (solsort.system/exit 0)))
+    ))
 
-(route "test" start)
+(route "test" 
+       #(go
+          (<! (run-tests))
+          (solsort.system/exit 0)))

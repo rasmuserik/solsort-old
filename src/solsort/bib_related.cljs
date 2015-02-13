@@ -190,3 +190,11 @@
     ))
 
 (route "bib-related" start)
+(route "bib/info/" 
+       (fn [o]
+         (let [lid (aget (aget o "-args") 0)]
+           (kvdb/fetch :bibinfo lid))))
+(route "bib/related/" 
+       (fn [o]
+         (let [lid (aget (aget o "-args") 0)]
+           (get-related lid))))
