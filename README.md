@@ -1,90 +1,35 @@
 # Solsort
 [![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
-# Backlog
 
-- router
-- watch compiled js, and reload on update
-- improve key-value-database - reimplement indexeddb-backend
+# Tasks/progress/backlog v0.1.0
 
-## Later
+- solsort-api 
+  - •api-router-registry+exec (•registry,÷local,•http,÷webworker,÷destructor)
+  - •kvdb (√levelup+•indexeddb)
+  - √webserver+api-server (expressjs)
+  - √test
+  - √logging
+  - •autorestart
+  - ÷distsys (webworkers+routing+net)
+- external-api
+  - √XHR
+  - √React
+  - √Clojure
+- apps
+  - √related-service
+  - •uccorg-watcher
+  - ÷solsort.com website (base,writings,slides)
 
-### Website
+# old notes
 
-- services: - `/api/log` - `_logger.js` - `_*` - `/_s/..`
-- writings
-- slides
-
-### Platform
-- autoreload on dev-machines
-- semi-distributed database
-- communication
-
-# Release log
-
-- set up nginx
-- testing
-- √restructure repositories
-- √related-server up and running
-- √also compile + test node version
-- √running in node.js
-- √abstract all system-specific into system.cljs library
-- database-abstraction backed on leveldb and indexeddb
-
-
-## 0.2.0 
-
-- refacter general utilities from related-server into utility library
-- statistic calculation from library data
-- clean up dead code
-- related-info
-
-## 0.1.0 
-
-- recommendation engine - `/relvis-related/related`
-  - calculation of related materials
-  - fix weighting for recommendation
-  - implemented using/learning transducers
-- keyval-db
-  - locking for better stability
-  - code for clearing a "database"
-
-## 0.0.0 
-
-- keyval-db - simple db-key-value storage
-- simple web-server
-
-# Notes
-
-- router
-  - api
-    - `(route path-prefix fn [html-fn])` - js->clj params, transform to requested 
-    - `(route-raw path-prefix fn)`
-    - `(call path &args)` - local, core or remote, depending on whether route is available - only able to call up in the network chain
-  - dispatch: path-prefix, obj:
-    - √ boot (argv/url-hash)
-    - webworker (`postMessage([msg_id, path, obj])`, `postMessage([msg_id, response])`)
-    - http-reqs
-  - fn-input optionsobject keys
-    - req-path - fn-name
-    - req-client - local | webworker | remote
-    - req-content - wished for result type: json, jsonhtml, meta+content
-  - data types JSON
-    - `["div",...]
-    - `{"error":...}`
-    - `{"content": ..., ...}` also `"Content-Type":` `"cache":` 
-    - json
-
-## View types
-
+View Types
 - html
 - releated graph - d3-force
 - map - Leaflet
 - canvas
 - webgl
 
-## JavaScript
-### FeatureLevels
-
+Feature Levels
 - insufficient - IE9-, android4.3-, iOS6- - javascript,Content-Encoding:gzip
 - basic - Blackberry-10,IE10+,iOS6+,Android4.4+ - js+cors-ajax+html,canvas,atob/btoa,appcache,geolocation,history/location,hashchange-event,navigator.onLine,websockets,(server-sent except ie)
 - client - IE11+, iOS8+, Android5+, ff34,chrome37,opera24 - webgl, indexeddb, webworkers, video, web-cryptography, file+filereader-api, page visibility, requestAnimationFrame, (device-orientation,fullscreen,touch,clipboard,performance.now)
@@ -96,21 +41,20 @@
     - nb: keep-awake-hack: play a video (can only start on touch-interaction)
 
 
-### Platforms
+Platforms
 
 - current
   - pure webapp
-  - node-webkit
+  - node.js
 - future
+  - node-webkit
   - firefox-addon - https://developer.mozilla.org/en-US/Add-ons/SDK/Low-Level_APIs - child_process, read-file, ... inkl. mobile
   - android-app https://crosswalk-project.org/
     - possibility also to run a thread on rhino - to have access to android api
   - cordova iOS etc.  - chrome extension
   - opera extension
 
-## Repository Plan
-
-Main repositories
+Repository plan
 
 - `solsort` - source code for cloud
   - `notes.md` - various writings: notes and release-status, will be automatically extracted and transformed from markdown
@@ -119,8 +63,8 @@ Main repositories
 - `loader` - boot-javascript that caches code in localstorage, and autoupdates etc.
 - repositories for building individual projects
 
-## Distributed System
 Distributed system
+
 - node
   - DB-thread
   - UI-thread
