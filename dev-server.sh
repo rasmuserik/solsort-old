@@ -7,7 +7,7 @@ echo $! > tail.pid
 
 while true
 do
-  node resources/build/solsort/solsort.js dev-server &
+  node ./solsort.js dev-server &
   NODE_PID=$!
   sleep 5
   wait $NODE_PID

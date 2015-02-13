@@ -3,8 +3,8 @@
   "version": "0.1.0-SNAPSHOT",
   "scripts": {
     "xstart": "xvfb-run nodewebkit",
-    "start": "forever start www/solsort.js bib-related",
-    "test": "node resources/build/solsort/solsort.js test && xvfb-run nodewebkit"
+    "start": "forever start solsort.js bib-related",
+    "test": "node solsort.js test && xvfb-run nodewebkit"
   },
   "dependencies": {
     "body-parser": "^1.11.0",
@@ -20,5 +20,5 @@
     "webworker-threads": "0.5.3",
     "xmlhttprequest": "^1.7.0"
   },
-  "main": "resources/index.html#test"
+  "main": "solsort.html#test"
 }
