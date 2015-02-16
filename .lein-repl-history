@@ -1,0 +1,110 @@
+(ns solsort.registry)
+(defmacro defapi [scope id args &body]
+  `(def ~scope (fn ~args ~body)))
+(print macroexpand (defapi server hello [] (print 'hello) (print 'world)))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(def ~scope (fn ~args ~body)))
+(print macroexpand (defapi server hello [] (print 'hello) (print 'world)))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(def ~scope (fn ~args ~body)))
+(print (macroexpand (defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(hello))
+  ;`(def ~scope (fn ~args ~body)))
+(print (macroexpand (defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(hello))
+  ;`(def ~scope (fn ~args ~body)))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(def ~scope (fn ~args ~body)))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  `(def ~scope (fn ~args & ~body)))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  ['def scope (concat '(fn) [args] ~body)])
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  ['def scope (concat ['fn args] ~body)])
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  (list 'def scope (concat (list 'fn args) ~body)))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.registry)
+(defmacro defapi [scope id args & body]
+  (list 'def scope (concat (list 'fn args) body)))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" (name scope)))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route ~(name id) id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route ~(name id) id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route ~(str id) id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route ~(str id) ~id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route (qoute ~id) ~id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat (list 'defn id args) body)
+      (route '~id ~id))
+     ~(list 'defn id args (concat (list 'callup (name id)) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat `(defn ~id ~args) body)
+      (route '~id ~id))
+     (defn ~id ~args (concat `(callup '~id) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))
+(ns solsort.system)
+(defmacro defapi [scope id args & body]
+  `(if ~(symbol (str "is-" scope))
+     (do
+      ~(concat `(defn ~id ~args) body)
+      (route '~id ~id))
+     (defn ~id ~args ~(concat `(callup '~id) args))))
+(print (macroexpand '(defapi server hello [] (print 'hello) (print 'world))))

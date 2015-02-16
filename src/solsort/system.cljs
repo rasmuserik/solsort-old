@@ -1,13 +1,16 @@
 (ns solsort.system
-  (:require-macros [cljs.core.async.macros :refer [go alt!]])
+  (:require-macros 
+    [solsort.system :refer [defapi]]
+    [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase route]]
+    [solsort.registry :refer [testcase]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
 (enable-console-print!)
 
 (declare log)
+(def route solsort.registry/route)
 (def is-browser (and (exists? js/window) (exists? js/window.document)))
 (def global 
   (cond
@@ -153,3 +156,7 @@
   (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
 (defn dev-server []
   (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
+(def is-server (not is-browser))
+(defn callup [& args] "callup not implemented yet")
+(defapi server server-pid [] pid)
+(log 'server-pid (server-pid))
