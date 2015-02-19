@@ -8,35 +8,44 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
 (enable-console-print!)
-
 (declare log)
+
+
 (def route solsort.registry/route)
-(def is-browser (and (exists? js/window) (exists? js/window.document)))
 (def global 
   (cond
     (exists? js/window) js/window
     (exists? js/global) js/global
     (exists? js/self) js/self
     :else ((fn [] js/this))))
+(aset global "window" global)
 
-(defn exec [cmd]
-  (let [c (chan)]
-    (.exec (js/require "child_process") cmd
-           (fn [err stdout stderr]
-             (if (= err nil)
-               (put! c stdout)
-               (close! c)
-               )))
-    c))
 
+(def is-browser (and (exists? js/window) (exists? js/window.document)))
 (def is-nodejs (and
                  (exists? js/global)
                  (.hasOwnProperty js/global "process")
                  (.hasOwnProperty js/global.process "title")))
-(def fs (if is-nodejs (js/require "fs")))
+
+(def is-worker (and (not is-nodejs) (not is-browser)))
+(def is-server (and (not is-browser) (not is-worker)))
+(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
+(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
+
+(def source-file 
+  (cond
+    (exists? js/__filename) js/__filename 
+    (and (exists? js/location) (= "file" (.slice js/location.href 0 4))) "solsort.js" 
+    :else "/solsort.js"))
+
+
+
 (def origin (if is-nodejs "http://localhost:9999" js/location.origin))
+
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
+
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " arg))))
+
 (testcase 'xhr
           (fn []
             (let [c (chan)
@@ -45,15 +54,14 @@
               (.open xhr "POST" (str origin "/xhr-test") true)
               (set! (.-onload xhr) 
                     (fn []
-                      (js/console.log xhr)
-                    (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
+                      (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
               (set! (.-onerror xhr) #(close! c))
               (.setRequestHeader xhr "Content-Type" "application/json")
               (.send xhr json) 
               c)))
 
-(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
-(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
+
+(def fs (if is-nodejs (js/require "fs")))
 (defn read-file-sync [filename]
   (.readFileSync (js/require "fs") filename))
 (defn each-lines [filename]
@@ -81,12 +89,24 @@
            (put! c @buf)
            (close! c)))
     c))
+(defn ensure-dir [dirname]
+  (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
+(defn exec [cmd]
+  (let [c (chan)]
+    (.exec (js/require "child_process") cmd
+           (fn [err stdout stderr]
+             (if (= err nil)
+               (put! c stdout)
+               (close! c)
+               )))
+    c))
+
+
 (comment window-React-Worker-etc)
 (if (and is-nodejs (not is-browser)) 
   (do 
     (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
     (aset global "React" (js/require "react"))))
-(if (not is-browser) (aset global "window" global))
 (testcase 'react
           #(= "<h1>Hello</h1>"
               (.renderToStaticMarkup
@@ -94,10 +114,21 @@
                 (.createElement
                   js/React
                   "h1" nil "Hello"))))
+
+
 (def set-immediate ; "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
+
+(defn exit [errcode]
+  (go
+    (<! (timeout 1000))
+    (log 'system 'exit errcode)
+    (if is-nodejs
+      (js/process.exit errcode))))
+
+
 
 (defn two-digits [n] (.slice (str (+ (mod n 100) 300)) 1))
 (defn three-digits [n] (.slice (str (+ (mod n 1000) 3000)) 1))
@@ -113,8 +144,6 @@
 (def logfile-name (atom nil))
 (def logfile-stream (atom nil))
 (def fs (if is-nodejs (js/require "fs")))
-(defn ensure-dir [dirname]
-  (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
 (defn log [& args]
   (let [msg (string/join " " (concat
                                [(six-digits pid)
@@ -137,26 +166,14 @@
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
 
-(defn exit [errcode]
-  (go
-    (<! (timeout 1000))
-    (log 'system 'exit errcode)
-    (if is-nodejs
-      (js/process.exit errcode))))
 
-(comment log application start)
-(def source-file 
-  (cond
-    (exists? js/__filename) js/__filename 
-    (and (exists? js/location) (= "file" (.slice js/location.href 0 4))) "solsort.js" 
-    :else "/solsort.js"))
-(def is-worker (and (not is-nodejs) (not is-browser)))
+
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
+
 (defn autorestart []
   (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
-(defn dev-server []
+(defn dev-server [] "auto-exit on source change"
   (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
-(def is-server (not is-browser))
 (defn callup [& args] "callup not implemented yet")
 (defapi server server-pid [] pid)
 (log 'server-pid (server-pid))
