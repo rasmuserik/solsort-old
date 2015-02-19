@@ -2,9 +2,11 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [route]]
-    [solsort.system :as system :refer [log is-browser]]
+    [solsort.mbox :refer [handle]]
+    [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
+    [solsort.ws :refer [broadcast]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -24,6 +26,12 @@
 (if system/is-worker
   (js/postMessage "halo")))
 
+
+
+(defn autorestart []
+  (if is-nodejs (.watch fs source-file (memoize (fn [] 
+                                                  (broadcast #js{:type "reload"})
+                                                  (log 'system 'source-change 'restarting) (exit 0))))))
 
 (defn form [a]
   [:div {}
@@ -57,7 +65,8 @@
          (log 'dev-server 'start)
          (start)
          ;(call-raw "bib-related" #js{})
-         (system/autorestart)
+         (autorestart)
          (run-tests)
          ))
 
+(if is-browser (handle "reload" (fn [] (js/location.reload))))

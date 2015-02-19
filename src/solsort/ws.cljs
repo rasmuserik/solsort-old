@@ -2,12 +2,11 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.mbox :refer [incoming]]
     [solsort.registry :refer [testcase]]
     [solsort.system :refer [is-nodejs is-browser log pid set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
-
-(def incoming (chan))
 (def pids (atom {}))
 (declare send-message)
 (defn broadcast [msg]
@@ -15,6 +14,7 @@
            (send-message pid msg))))
 (defn send-message [pid msg] 
   (.send (@pids pid) (js/JSON.stringify msg)))
+
 
 (comment server)
 (if is-nodejs
@@ -38,7 +38,6 @@
         (.on wss "connection" 
              (fn [ws]
                (log 'ws 'incoming-connection ws)
-               (console.log (js/Object.keys ws))
                (.send ws (js/JSON.stringify  #js{:pid pid}))
                (.on ws "message" 
                     (fn [data flags]
@@ -62,6 +61,13 @@
 (comment browser)
 (if is-browser
   (do
+    (comment keep-alive loop)
+    (go 
+      (loop []
+        (<! (timeout 55000))
+        (broadcast #js{:type "keep-alive"})
+        (recur)))
+
     (def socket-server
       (if (= -1 (.indexOf js/location.origin "localhost"))
         "ws://ws.solsort.com/ws/"
@@ -79,7 +85,10 @@
         (aset ws "onclose" 
               (fn [e] 
                 (log 'ws 'close e)
-                (set-immediate ws-connect)))
+                ; TODO exponential delay reconnect if server to connect to
+                (go
+                  (<! (timeout 1000))
+                  (ws-connect))))
         (aset ws "onmessage" 
               (fn [e] 
                 (let [data (js/JSON.parse (aget e "data"))
