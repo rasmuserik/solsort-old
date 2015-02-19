@@ -8,12 +8,12 @@
 
   :plugins [[lein-cljsbuild "1.0.4"]]
 
-  :source-paths ["src"]
+  :source-paths ["src", "macros"]
 
   :cljsbuild { 
     :builds [
              #_{:id "debug"
-              :source-paths ["src"]
+              :source-paths ["src", "macros"]
               :compiler {
                 :output-to "debug/debug.js"
                 :output-dir "debug/"
@@ -21,7 +21,7 @@
                 :pretty-print true
                 :source-map "debug/debug.map"}}
              {:id "solsort"
-              :source-paths ["src"]
+              :source-paths ["src", "macros"]
               :compiler {
                 :output-to "solsort.js"
                 :output-dir "solsort.js-build/"
