@@ -30,8 +30,14 @@
 
 (if is-browser
   (do
+    (def socket-server
+        (if (= -1 (.indexOf js/location.origin "localhost"))
+          "ws://ws.solsort.com/ws/"
+          "ws://localhost/ws/" 
+          ))
+
     (let
-      [ws (js/WebSocket. "ws://localhost/ws/")]
+      [ws (js/WebSocket. socket-server)]
       (aset ws "onopen" (fn [e] 
                           (log 'ws 'open e)
                           (.send ws (js/JSON.stringify #js{:a "Hullo"}))
