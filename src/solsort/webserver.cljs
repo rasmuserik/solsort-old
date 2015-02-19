@@ -3,12 +3,14 @@
   (:require
     [solsort.registry :refer [testcase routes]]
     [solsort.router :refer [call-raw]]
+    [solsort.ws]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil]]
     [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (comment is-nodejs) 
+(log 'is-nodejs is-nodejs)
 (if is-nodejs 
   (do 
     ;cljs-bug (go (let [a :ok] (print #js{:bug a} {:no-bug a})))
@@ -44,10 +46,10 @@
                 (.send res (aget result "content")))
               (do
                 (.set res "Content-Type" "application/javascript")
-              (.send res 
-                     (if callback
-                       (str callback "(" (js/JSON.stringify result) ")") 
-                       (js/JSON.stringify result)))))
+                (.send res 
+                       (if callback
+                         (str callback "(" (js/JSON.stringify result) ")") 
+                         (js/JSON.stringify result)))))
             (log 'web 
                  (.-url req) 
                  (str (- (js/Date.now) t0) "ms")
@@ -55,19 +57,21 @@
                  (.-body req)
                  )))))
 
-    (defn server []
+    (defn -start-server []
       (aset global "bodyParser" (js/require "body-parser"))
       (let [express (js/require "express")
             app (express)
             host (or (aget js/process.env "HOST") "localhost")
-            port (or (aget js/process.env "PORT") 9999)]
+            port (or (aget js/process.env "PORT") 9999)
+            http-server-instance (.createServer (js/require "http") app) ]
 
         (.use app (.json js/bodyParser))
         (.use app (.urlencoded js/bodyParser #js{"extended" false}))
         (doall (for [k (seq (js/Object.keys routes))]
                  (.all app (str "/" k "*" ) (handler k))))
         (.all app "*" (handler ""))
-        (.listen app 9999)
+        (.listen http-server-instance 9999)
+        (solsort.ws/start-websocket-server http-server-instance)
         (log 'webserver 'starting host port)))
-    (set-immediate server)
+    (set-immediate -start-server)
     (comment end is-nodejs))) 

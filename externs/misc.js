@@ -19,3 +19,9 @@ LevelUp.prototype.createKeyStream = function() {};
 LevelUp.prototype.createValueStream = function() {};
 /** @return {stream.WritableStream} */
 LevelUp.prototype.createWriteStream = function() {};
+
+ws = function() {};      
+/** @type {function(new:WSServer, ...[*])} */                                           
+ws.Server = function() {};      
+var WSServer;
+WSServer.prototype.on = function() {};
