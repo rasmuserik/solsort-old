@@ -8,7 +8,7 @@
 
   :plugins [[lein-cljsbuild "1.0.4"]]
 
-  :source-paths ["src/"]
+  :source-paths ["src"]
 
   :cljsbuild { 
     :builds [
@@ -24,7 +24,7 @@
               :source-paths ["src"]
               :compiler {
                 :output-to "solsort.js"
-                :output-dir "solsort/"
+                :output-dir "solsort.js-build/"
                 :optimizations :advanced
                 :externs ["externs/express.js"
                           "bower_components/react-externs/externs.js"
