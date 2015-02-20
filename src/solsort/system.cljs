@@ -45,7 +45,6 @@
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
 
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " arg))))
-
 (testcase 'xhr
           (fn []
             (let [c (chan)
@@ -170,5 +169,5 @@
 
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
 
-(defapi server server-pid [] pid)
-(log 'server-pid (server-pid))
+;(defapi server server-pid [] pid)
+;(log 'server-pid (server-pid))
