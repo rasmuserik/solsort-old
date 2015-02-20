@@ -34,7 +34,6 @@
       (log 'ws 'start)
       (let [ws (js/require "ws")
             wss (ws.Server. #js{:server http-server})]
-        (log 'ws ws wss)
         (.on wss "connection" 
              (fn [ws]
                (log 'ws 'incoming-connection ws)

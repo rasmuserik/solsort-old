@@ -170,10 +170,5 @@
 
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
 
-(defn autorestart []
-  (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
-(defn dev-server [] "auto-exit on source change"
-  (if is-nodejs (.watch fs source-file (memoize (fn [] (log 'system 'source-change 'restarting) (exit 0))))))
-(defn callup [& args] "callup not implemented yet")
 (defapi server server-pid [] pid)
 (log 'server-pid (server-pid))
