@@ -34,7 +34,7 @@
                  :text-align :left
                  :border-radius (/ circle-size 2)
                :box-shadow "0px 0px 2px #000, 
-                           5px 5px 15px rgba(0,0,0,0.4)"
+                           3px 3px 10px rgba(0,0,0,0.4)"
                  }}
      [:img {:src (str "/icons/" (normalise-str title) "")
             :style { :width circle-size
@@ -58,7 +58,7 @@
                :backgroundColor "rgba(255,255,255,0.3)"
                :border-radius (/ circle-size 2)
                :text-shadow "2px 2px 10px #fff, 2px -2px 10px #fff, -2px 2px 10px #fff, -2px -2px 10px #fff"
-               :font-size (bit-or 0 (* circle-size 0.17))
+               :font-size (bit-or 0 (* circle-size 0.16))
                }}
       ;(normalise-str title)
       [:span 
@@ -73,7 +73,7 @@
 
 (defn form [a]
   [:div {:style {:text-align :center}}
-   [:div {:style {:margin "36px 0 72px 0" :font-size 18}}
+   [:div {:style {:margin "32px 0 64px 0" :font-size 16}}
       [:img {:src "/icons/solsort.png"
              :style {:height 64 :width 64}}]
     [:div
@@ -81,7 +81,7 @@
       " solsort.com "]
              "ApS"]
     [:div
-     "Open Source -  Full Stack - ClojureScript"]
+     "Open Source • Agile • Full Stack • ClojureScript"]
     [:div {:style {:font-size "300%" :margin "0.5ex 0 1ex 0"}}
      "HTML5 Apps &\xa0Backend"]
     [:div
@@ -178,7 +178,7 @@
   ["2013" "prototype" "hack4dk"]
   "/hack4dk/quiz/")
 (add-entry 
-  "Summer Hacks Slides"
+  "Summer\xa0Hacks Slides"
   ["2013" "copenhagenjs" "presentation" "bibgraph" "skolevej"]
   "/slides/cphjs2013-summer-hacks")
 (add-entry 
