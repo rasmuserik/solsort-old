@@ -7,6 +7,7 @@
     [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
+    [solsort.uccorg-monitor]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -67,6 +68,7 @@
          ;(call-raw "bib-related" #js{})
          (autorestart)
          (run-tests)
+         (solsort.uccorg-monitor/start)
          ))
 
 (if is-browser (handle "reload" (fn [] (js/location.reload))))
