@@ -23,7 +23,7 @@
 (defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
 
 
-(def circle-size 150)
+(def circle-size 100)
 (defn entry [o]
   (let [title (:title o)]
     [:a { :href (:url o)
@@ -150,7 +150,7 @@
   ["2014" "experiment" "webapp" "open content" "sangbog"]
   "/frie-sange/")
 (add-entry 
-  "Learn morse code"
+  "Learn morse\xa0code"
   ["2014" "experiment" "webapp"]
   "/morse-code/")
 (add-entry 

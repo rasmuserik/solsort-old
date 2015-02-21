@@ -69,7 +69,9 @@
 
     (def socket-server
       (if (= -1 (.indexOf js/location.origin "solsort"))
+        (if (= "http" (.slice js/location.origin 0 4))
         (str (.replace js/location.origin #"https?" "ws") "/ws/")
+          "ws://ws.solsort.com/ws/")
         "ws://ws.solsort.com/ws/"
         ))
 
