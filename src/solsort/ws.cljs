@@ -68,9 +68,9 @@
         (recur)))
 
     (def socket-server
-      (if (= -1 (.indexOf js/location.origin "localhost"))
+      (if (= -1 (.indexOf js/location.origin "solsort"))
+        (str (.replace js/location.origin #"https?" "ws") "/ws/")
         "ws://ws.solsort.com/ws/"
-        "ws://localhost/ws/" 
         ))
 
     (defn ws-connect []
