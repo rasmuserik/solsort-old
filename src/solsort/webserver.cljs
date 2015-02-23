@@ -19,8 +19,8 @@
     (defn default-route []
       (this-as obj (go
                      (case (aget obj "content-type")
-                       "png" #js{:headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
-                       "gif" #js{:headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
+                       "png" #js{:http-headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
+                       "gif" #js{:http-headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
                        #js{:error "not-implemented"}))))
     (defn handler [route]
       (fn [req res]
@@ -38,7 +38,7 @@
                 o (clj->js { :content-type kind
                             :client "remote" })
                 result (<! (.apply f o args)) 
-                headers (aget result "headers")
+                headers (aget result "http-headers")
                 ]
             (if (and headers (aget headers "Content-Type") (aget result "content"))
               (do

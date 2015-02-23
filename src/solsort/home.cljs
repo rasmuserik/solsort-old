@@ -33,8 +33,8 @@
                  :display :inline-block
                  :text-align :left
                  :border-radius (/ circle-size 2)
-               :box-shadow "0px 0px 2px #000, 
-                           3px 3px 10px rgba(0,0,0,0.4)"
+                 :box-shadow "0px 0px 2px #000, 
+                             3px 3px 10px rgba(0,0,0,0.4)"
                  }}
      [:img {:src (str "/icons/" (normalise-str title) "")
             :style { :width circle-size
@@ -71,15 +71,15 @@
        title]
       ]]))
 
-(defn form [a]
+(defn home-html []
   [:div {:style {:text-align :center}}
    [:div {:style {:margin "32px 0 64px 0" :font-size 16}}
-      [:img {:src "/icons/solsort.png"
-             :style {:height 64 :width 64}}]
+    [:img {:src "/icons/solsort.png"
+           :style {:height 64 :width 64}}]
     [:div
      [:span {:style {:font-size "150%"}} 
       " solsort.com "]
-             "ApS"]
+     "ApS"]
     [:div
      "Open Source • Agile • Full Stack • ClojureScript"]
     [:div {:style {:font-size "300%" :margin "0.5ex 0 1ex 0"}}
@@ -111,22 +111,42 @@
   (js->react (clj->js o)))
 
 
-(defn start []
-  (log 'home 'here2)
+(defn show-html []
+  (print "HERE")
   (if is-browser
     (go
-      (log 'home 'here3)
-      (log 'home (form 1))
-      (<! (timeout 100))
-      (log 'home (js/React.renderToStaticMarkup (clj->react (form 1))))
-      (js/React.render (clj->react (form 1) ) js/document.body)
+      (log 'home (home-html))
+      ;(log 'home (js/React.renderToStaticMarkup (clj->react (form 1))))
+      (js/React.render (clj->react (home-html)) js/document.body)
       ) ))
 
-(route "home"
+(defn html-to-http [o]
+  (if (:json-html o)
+    #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
+     :content
+     (str
+       "<!DOCTYPE html><html><head><title>"
+       (or (:title o) "solsort.com")
+       "</title><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta name=\"viewport\" content=\""
+       "width=device-width, initial-scale=1.0"
+       (if (:noscale o) ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "")
+       "\"><meta name=\"format-detection\" content=\"telephone=no\">"
+       (js/React.renderToStaticMarkup (js->react (:json-html o)))
+       "<script src=\"/react.min.js\"></script>"
+       "<script src=\"/solsort.js\"></script>"
+       "</head><body>"
+       "</body></html>")}))
+
+
+
+(route "index"
        (fn []
-         (log 'home 'here is-browser)
-         (start)
-         ))
+         (go
+         (log 'home 'index 'route is-browser)
+         (if is-browser
+           (show-html)
+           (html-to-http {:title "solsort.com" :json-html (clj->js (home-html))})
+           ))))
 
 
 ; state: unfinished|alpha|beta|done
