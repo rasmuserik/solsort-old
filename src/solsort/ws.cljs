@@ -64,7 +64,7 @@
     (go 
       (loop []
         (<! (timeout 55000))
-        (broadcast #js{:type "keep-alive"})
+        (broadcast #js{:mbox "keep-alive"})
         (recur)))
 
     (def socket-server

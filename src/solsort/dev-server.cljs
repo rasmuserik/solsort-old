@@ -31,7 +31,7 @@
 
 (defn autorestart []
   (if is-nodejs (.watch fs source-file (memoize (fn [] 
-                                                  (broadcast #js{:type "reload"})
+                                                  (broadcast #js{:mbox "reload"})
                                                   (log 'system 'source-change 'restarting) (exit 0))))))
 
 (defn form [a]
