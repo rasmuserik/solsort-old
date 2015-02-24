@@ -13,7 +13,7 @@
 (def img-height 120)
 (def small-size 12)
 (def activity-height 130)
-(defn rasmuserik-html []
+(defn html []
   [:div {:style {:text-align :center}}
    [:div {:style {
                   :display :inline-block
@@ -37,8 +37,6 @@
                    :margin-left (/ img-height 8)
                    }}
 
-     [:style (str "h1{font-weight:normal;margin-top:0}"
-                  "h2{font-size:" small-size "px;font-weight:normal;text-align:left}")]
      [:h1 "Rasmus\xa0Erik Voel\xa0Jensen"]
      [:div {:style {:font-size "100%"}}
       "Tingskrivervej\xa021\xa03tv \xa0 2400\xa0København\xa0NV \xa0 \xa0" [:br]
@@ -92,5 +90,10 @@
        (fn []
          (go
            (clj->js {:type "json-html"
-                     :title "Rasmus Erik"
-                     :json-html (rasmuserik-html)}))))
+                     :title "Rasmus Erik - solsort.com"
+                     :json-css {:h1 {:font-weight :normal
+                                     :margin-top 0}
+                                :h2 {:font-size small-size
+                                     :font-weight :normal
+                                     :text-align :left}}
+                     :json-html (html)}))))

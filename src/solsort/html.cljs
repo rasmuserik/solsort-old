@@ -1,6 +1,7 @@
 (ns solsort.html
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
+    [solsort.css :refer [js->css]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -18,33 +19,19 @@
   (js->react (clj->js o)))
 
 
-(defn jsonhtml-to-http [o]
+(defn jsonhtml->http [o]
     #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
         :content
         (str
-          "<!DOCTYPE html><html><head><title>"
-          (or (aget o "title") "solsort.com")
-          "</title><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta name=\"viewport\" content=\""
-          "width=device-width, initial-scale=1.0"
-          (if (aget o "noscale") ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "")
-          "\"><meta name=\"format-detection\" content=\"telephone=no\">"
-          "<style>
-          @font-face {
-          font-family: Ubuntu;
-          font-weight: 400;
-          src: url(/font/ubuntu-latin1.ttf) format(truetype);
-          }
-
-          body {
-          margin: 0px;
-          padding: 0px;
-          font-family: Ubuntu, sans-serif
-          }
-
-          div {
-          margin: 0;
-          padding: 0
-          }</style>"
+          "<!DOCTYPE html><html><head>"
+          "<title>" (or (aget o "title") "solsort.com") "</title>"
+          "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">"
+          "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">"
+          "<meta name=\"viewport\" content=\"" "width=device-width, initial-scale=1.0"
+          (if (aget o "noscale") ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "") "\">"
+          "<meta name=\"format-detection\" content=\"telephone=no\">"
+          "<link href=/style.css rel=stylesheet>"
+          "<style>" (if (aget o "json-css") (js->css (aget o "json-css"))) "</style>"
           "</head><body>"
           (js/React.renderToStaticMarkup (js->react (aget o "json-html")))
           "<script src=\"/react.min.js\"></script>"

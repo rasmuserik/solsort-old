@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [route]]
-    [solsort.html :refer [normalise-str hex-color clj->react jsonhtml-to-http]]
+    [solsort.html :refer [normalise-str hex-color clj->react]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
@@ -89,7 +89,7 @@
          (go
            (if is-browser
              (js/React.render (clj->react (home-html)) js/document.body)
-             (jsonhtml-to-http (clj->js {:type "jsonhtml" :title "solsort.com" :json-html (home-html)}))
+             (clj->js {:type "json-html" :title "solsort.com" :json-html (home-html)})
              ))))
 
 ; state: unfinished|alpha|beta|done

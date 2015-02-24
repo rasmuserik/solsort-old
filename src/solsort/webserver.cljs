@@ -3,7 +3,7 @@
   (:require
     [solsort.registry :refer [testcase routes]]
     [solsort.router :refer [call-raw]]
-    [solsort.html :refer [jsonhtml-to-http]]
+    [solsort.html :refer [jsonhtml->http]]
     [solsort.ws]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil]]
@@ -25,7 +25,7 @@
                        #js{:error "not-implemented"}))))
     (defn process-result [result]
       (if (= "json-html" (aget result "type"))
-        (jsonhtml-to-http result)
+        (jsonhtml->http result)
         result))
       
     (defn handler [route]
