@@ -10,7 +10,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
-(def img-height 160)
+(def img-height 120)
 (def small-size 12)
 (def activity-height 130)
 (defn rasmuserik-html []
@@ -55,9 +55,9 @@
      [:ul {:style {:min-height activity-height}}
       [:li "Write " [:a {:href "//github.com/rasmuserik"} "open source code"] 
        ", focus on HTML5 Apps in ClojureScript"]
-      [:li "Create and design solutions in collaboration with non-technical stakeholders"]
+      [:li "Design and create solutions in collaboration with non-technical stakeholders"]
       [:li "Run " [:a {:href "//solsort.com"} "my own company"]
-       " with all the aspects of that"]]
+       ", with all the aspects of that"]]
      [:h2 "Experience"]
      [:div  {:style {:margin-bottom 60}}
       "Work as developer and project manager • Conference talks • Taught/created university level courses • Master degree in Computer Science"]]
