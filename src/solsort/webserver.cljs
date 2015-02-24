@@ -3,6 +3,7 @@
   (:require
     [solsort.registry :refer [testcase routes]]
     [solsort.router :refer [call-raw]]
+    [solsort.html :refer [jsonhtml-to-http]]
     [solsort.ws]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil]]
@@ -22,6 +23,11 @@
                        "png" #js{:http-headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
                        "gif" #js{:http-headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
                        #js{:error "not-implemented"}))))
+    (defn process-result [result]
+      (if (= "json-html" (aget result "type"))
+        (jsonhtml-to-http result)
+        result))
+      
     (defn handler [route]
       (fn [req res]
         (go
@@ -37,7 +43,7 @@
                 f (or (aget routes route) default-route)
                 o (clj->js { :content-type kind
                             :client "remote" })
-                result (<! (.apply f o args)) 
+                result (process-result (<! (.apply f o args)) )
                 headers (aget result "http-headers")
                 ]
             (if (and headers (aget headers "Content-Type") (aget result "content"))

@@ -19,15 +19,14 @@
 
 
 (defn jsonhtml-to-http [o]
-  (if (:json-html o)
     #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
         :content
         (str
           "<!DOCTYPE html><html><head><title>"
-          (or (:title o) "solsort.com")
+          (or (aget o "title") "solsort.com")
           "</title><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta name=\"viewport\" content=\""
           "width=device-width, initial-scale=1.0"
-          (if (:noscale o) ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "")
+          (if (aget o "noscale") ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "")
           "\"><meta name=\"format-detection\" content=\"telephone=no\">"
           "<style>
           @font-face {
@@ -47,8 +46,7 @@
           padding: 0
           }</style>"
           "</head><body>"
-          (js/React.renderToStaticMarkup (js->react (:json-html o)))
+          (js/React.renderToStaticMarkup (js->react (aget o "json-html")))
           "<script src=\"/react.min.js\"></script>"
           "<script src=\"/solsort.js\"></script>"
-          "</body></html>")}))
-
+          "</body></html>")})

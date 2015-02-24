@@ -87,10 +87,9 @@
 (route "index"
        (fn []
          (go
-           (log 'home 'index 'route is-browser)
            (if is-browser
              (js/React.render (clj->react (home-html)) js/document.body)
-             (jsonhtml-to-http {:type "jsonhtml" :title "solsort.com" :json-html (clj->js (home-html))})
+             (jsonhtml-to-http (clj->js {:type "jsonhtml" :title "solsort.com" :json-html (home-html)}))
              ))))
 
 ; state: unfinished|alpha|beta|done
