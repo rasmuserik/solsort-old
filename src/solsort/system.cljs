@@ -122,7 +122,7 @@
 
 (defn exit [errcode]
   (go
-    (<! (timeout 1000))
+    (<! (timeout 300))
     (log 'system 'exit errcode)
     (if is-nodejs
       (js/process.exit errcode))))

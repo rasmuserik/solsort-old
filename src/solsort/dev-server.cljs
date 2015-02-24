@@ -71,4 +71,4 @@
          (solsort.uccorg-monitor/start)
          ))
 
-(if is-browser (handle "reload" (fn [] (js/location.reload))))
+(if is-browser (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))
