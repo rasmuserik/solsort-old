@@ -2,25 +2,16 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [route]]
-    [solsort.mbox :refer [handle]]
+    [solsort.html :refer [normalise-str hex-color clj->react jsonhtml-to-http]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
-    [solsort.ws :refer [broadcast]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
-(defn autorestart []
-  (if is-nodejs (.watch fs source-file (memoize (fn [] 
-                                                  (broadcast #js{:mbox "reload"})
-                                                  (log 'system 'source-change 'restarting) (exit 0))))))
 (def entries (atom []))
 (defn add-entry [title tags url]
   (swap! entries conj {:title title :tags tags :url url}))
-
-
-(defn normalise-str [s] (.join (.split (.toLowerCase s) #"[^a-zA-Z0-9]+") "-"))
-(defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
 
 
 (def circle-size 100)
@@ -93,66 +84,13 @@
    ])
 
 
-(comment
-  (if (or (vector? o) (seq? o))
-    (if (map? (second o))
-      (apply js/React.createElement (name (first o)) (clj->js (second o)) (map clj->react (rest (rest o))))
-      (apply js/React.createElement (name (first o)) nil (map clj->react (rest o))))
-    (str o)))
-
-(defn js->react [o]
-  (if (js/Array.isArray o)
-    (if (= (type (aget o 1)) js/Object)
-      (apply js/React.createElement (name (aget o 0)) (aget o 1) (map js->react (.slice o 2)))
-      (apply js/React.createElement (name (aget o 0)) nil (map js->react (rest o))))
-    (str o)))
-
-(defn clj->react [o]
-  (js->react (clj->js o)))
-
-
-(defn html-to-http [o]
-  (if (:json-html o)
-    #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
-        :content
-        (str
-          "<!DOCTYPE html><html><head><title>"
-          (or (:title o) "solsort.com")
-          "</title><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><meta name=\"viewport\" content=\""
-          "width=device-width, initial-scale=1.0"
-          (if (:noscale o) ", minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" "")
-          "\"><meta name=\"format-detection\" content=\"telephone=no\">"
-          "<style>
-          @font-face {
-          font-family: Ubuntu;
-          font-weight: 400;
-          src: url(/font/ubuntu-latin1.ttf) format(truetype);
-          }
-
-          body {
-          margin: 0px;
-          padding: 0px;
-          font-family: Ubuntu, sans-serif
-          }
-
-          div {
-          margin: 0;
-          padding: 0
-          }</style>"
-          "</head><body>"
-          (js/React.renderToStaticMarkup (js->react (:json-html o)))
-          "<script src=\"/react.min.js\"></script>"
-          "<script src=\"/solsort.js\"></script>"
-          "</body></html>")}))
-
-
 (route "index"
        (fn []
          (go
            (log 'home 'index 'route is-browser)
            (if is-browser
              (js/React.render (clj->react (home-html)) js/document.body)
-             (html-to-http {:title "solsort.com" :json-html (clj->js (home-html))})
+             (jsonhtml-to-http {:type "jsonhtml" :title "solsort.com" :json-html (clj->js (home-html))})
              ))))
 
 ; state: unfinished|alpha|beta|done
