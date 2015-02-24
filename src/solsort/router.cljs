@@ -2,7 +2,9 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.registry :as registry :refer [route routes]]
-    [solsort.system :as system :refer [log]]
+    [solsort.util :refer [chan?]]
+    [solsort.html :refer [render-jsonhtml]]
+    [solsort.system :as system :refer [log is-browser]]
     ))
 
 (enable-console-print!)
@@ -18,10 +20,20 @@
     (and (exists? js/global) js/global.process (get js/global.process.argv 2))
     (and (exists? js/window) js/window js/window.location (.slice js/window.location.hash 1))))
 
+(defn route-dispatch [route-name jsobj]
+  (go
+    (let [result-raw ((aget routes route-name) jsobj)
+          result (if (chan? result-raw) (<! result-raw) result-raw)]
+      (if (and is-browser (= "json-html" (aget result "type")))
+        (render-jsonhtml result))
+      result)))
+
+          
+
 (system/set-immediate 
   (fn []
     (if (aget routes arg)
       (do
         (log 'routes 'starting arg)
-        (.apply (aget routes arg) #js{}))
-      (log 'routes 'no-such-route arg (js/Object.keys registry/routes)))))
+        (route-dispatch arg #js{})
+      (log 'routes 'no-such-route arg (js/Object.keys registry/routes))))))

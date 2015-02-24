@@ -18,7 +18,7 @@
    [:div {:style {
                   :display :inline-block
                   :max-width 720
-                  :text-align left
+                  :text-align :left
                   :font-size 16 :margin-top (/ img-height 2) :margin-bottom (/ img-height 2)}}
     [:img {:src "/icons/rasmus-erik-voel-jensen"
            :style {:height img-height

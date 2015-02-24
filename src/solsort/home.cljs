@@ -92,6 +92,8 @@
              (clj->js {:type "json-html" :title "solsort.com" :json-html (home-html)})
              ))))
 
+
+
 ; state: unfinished|alpha|beta|done
 (add-entry "Rasmus Erik Voel Jensen"
            ["developer" "company owner" "computer scientist"]
