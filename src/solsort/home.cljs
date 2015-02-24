@@ -84,15 +84,7 @@
    ])
 
 
-(route "index"
-       (fn []
-         (go
-           (if is-browser
-             (js/React.render (clj->react (home-html)) js/document.body)
-             (clj->js {:type "json-html" :title "solsort.com" :json-html (home-html)})
-             ))))
-
-
+(route "index" (fn [] (go (clj->js {:type "json-html" :title "solsort.com" :json-html (home-html)}))))
 
 ; state: unfinished|alpha|beta|done
 (add-entry "Rasmus Erik Voel Jensen"
@@ -173,6 +165,4 @@
 (add-entry "CuteEngine"
            ["2011" "unfinished" "game" "unfinished"]
            "http://solsort.com/cute-engine")
-
-
 
