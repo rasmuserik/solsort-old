@@ -17,3 +17,4 @@ lein.log
 tail.pid
 solsort.js*
 solsort.map
+.lein-repl-history
