@@ -3,7 +3,7 @@
     [solsort.system :refer [defapi]]
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase pid]]
+    [solsort.registry :refer [testcase route pid]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -11,7 +11,6 @@
 (declare log)
 
 
-(def route solsort.registry/route)
 (def global 
   (cond
     (exists? js/window) js/window
@@ -30,8 +29,6 @@
 (def is-worker (and (not is-nodejs) (not is-browser)))
 (def is-server (and (not is-browser) (not is-worker)))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
-(def pid solsort.registry/pid)
-
 (def source-file 
   (cond
     (exists? js/__filename) js/__filename 

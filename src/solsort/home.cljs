@@ -4,7 +4,6 @@
     [solsort.registry :refer [route]]
     [solsort.html :refer [normalise-str hex-color clj->react]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
-    [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

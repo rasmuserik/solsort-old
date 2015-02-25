@@ -3,7 +3,6 @@
   (:require
     [solsort.registry :refer [route]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
-    [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

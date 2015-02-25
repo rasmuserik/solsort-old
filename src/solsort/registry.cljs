@@ -16,9 +16,7 @@
 
 (def unique-id-counter (atom 0))
 (defn unique-id [] (str "id" (swap! unique-id-counter inc)))
-(testcase 'id-unique-1 #(= "id1" (unique-id)))
-(testcase 'id-unique-2 #(= "id2" (unique-id)))
-
+(testcase 'id-unique #(not= (unique-id) (unique-id)))
 
 (def mbox-incoming (chan))
 (def mbox-handlers (atom {}))
@@ -29,7 +27,7 @@
   (post #js{:data data :info #js{} :pid pid :mbox mbox}))
 (defn local-mbox? [mbox] (contains? @mbox-handlers (name mbox)))
 (defn local-mboxes [] (keys @mbox-handlers))
-(defn register-fn [fname f]
+(defn route [fname f]
   (register
     (name fname)
     (fn [o]
@@ -61,14 +59,8 @@
               :mbox (name fname)})
     c))
 
-(register-fn :echo (fn [a] (go a)))
+
+(route :echo (fn [a] (go a)))
 (testcase 'call-local
           #(go (= "hello" (<! (call-local :echo "hello")))))
-
-
-
-(def routes #js {})
-(defn route [path f] 
-  (register-fn path f)
-  (aset routes path f))
 

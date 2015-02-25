@@ -3,7 +3,6 @@
   (:require
     [solsort.registry :refer [route register]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
-    [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
     [solsort.uccorg-monitor]
@@ -64,10 +63,9 @@
        (fn []
          (log 'dev-server 'start)
          (start)
-         ;(call-raw "bib-related" #js{})
          (autorestart)
          (run-tests)
          (solsort.uccorg-monitor/start)
-         ))
+         true))
 
 (if is-browser (register "reload" #(go (<! (timeout 800)) (js/location.reload))))

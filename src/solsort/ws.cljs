@@ -2,10 +2,9 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase post]]
-    [solsort.system :refer [is-nodejs is-browser log pid set-immediate]]
+    [solsort.registry :refer [testcase post pid]]
+    [solsort.system :refer [is-nodejs is-browser log set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
-
 (def pids (atom {}))
 (declare send-message)
 (defn broadcast [msg]

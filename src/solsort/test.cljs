@@ -16,6 +16,7 @@
         (if (not (if (chan? v) (<! v) v))
           (do
             (log 'test id 'failed)
+            (js/console.log "TEST FAIL" (name id))
             (solsort.system.exit 1))))
       (if (first tests)
         (recur (first tests) (rest tests))))

@@ -1,7 +1,7 @@
 (ns solsort.webserver
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase local-mboxes local-mbox? call-local register-fn]]
+    [solsort.registry :refer [testcase local-mboxes local-mbox? call-local route]]
     [solsort.html :refer [jsonhtml->http]]
     [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
@@ -19,7 +19,7 @@
                        "png" #js{:http-headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
                        "gif" #js{:http-headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
                        #js{:error "not-implemented"}))
-    (register-fn :default-route default-route)
+    (route :default-route default-route)
     (defn process-result [result]
       (if (= "json-html" (aget result "type"))
         (jsonhtml->http result)
