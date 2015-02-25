@@ -41,12 +41,12 @@
 
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
 
-(route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " arg))))
-#_(testcase 'xhr
+(route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
+(testcase 'xhr
           (fn []
             (let [c (chan)
                   xhr (XHR.)
-                  json (js/JSON.stringify #js{:args #js["world"]})]
+                  json (js/JSON.stringify #js{:hello "world"})]
               (.open xhr "POST" (str origin "/xhr-test") true)
               (set! (.-onload xhr) 
                     (fn []

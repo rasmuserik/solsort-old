@@ -37,11 +37,13 @@
                 path (if (= "." (aget path 0)) (.slice path 1) path)
                 path (if (= "/" (aget path 0)) (.slice path 1) path)
                 arglist (.split path #"[/.]")
+                arglist (if (< 0 (.-length (js/Object.keys body)))
+                          (cons body arglist)
+                          arglist)
                 callback (aget query "callback")
                 f (if (local-mbox? route) route :default-route)
                 result (process-result (<! (apply call-local f arglist)) )
-                headers (aget result "http-headers")
-                ]
+                headers (aget result "http-headers")]
             (if (and headers (aget headers "Content-Type") (aget result "content"))
               (do
                 (.set res headers)
