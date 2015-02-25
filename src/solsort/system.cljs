@@ -3,7 +3,7 @@
     [solsort.system :refer [defapi]]
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.registry :refer [testcase pid]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -29,8 +29,8 @@
 
 (def is-worker (and (not is-nodejs) (not is-browser)))
 (def is-server (and (not is-browser) (not is-worker)))
-(def pid (if is-nodejs js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
+(def pid pid)
 
 (def source-file 
   (cond

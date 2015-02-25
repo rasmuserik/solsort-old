@@ -2,8 +2,7 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.mbox :refer [incoming]]
-    [solsort.registry :refer [testcase]]
+    [solsort.registry :refer [testcase post]]
     [solsort.system :refer [is-nodejs is-browser log pid set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -24,7 +23,7 @@
       (fn [msg]
         (let [msg (js/JSON.parse msg)]
           (aset msg "src" (str "ws:" pid))
-          (put! incoming msg)
+          (post msg)
           (log 'ws pid 'msg msg))))
     (defn close-connection [id] 
       (fn []
@@ -100,7 +99,7 @@
                             (fn [e]
                               (let [msg (js/JSON.parse (aget e "data"))]
                                 (aset msg "src" (str "ws:" pid))
-                                (put! incoming msg)
+                                (post msg)
                                 (log 'ws pid 'msg msg))))
                       (aset ws "onclose" 
                             (fn [e] 

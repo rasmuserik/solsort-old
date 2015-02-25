@@ -1,8 +1,7 @@
 (ns solsort.dev-server
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [route]]
-    [solsort.mbox :refer [handle]]
+    [solsort.registry :refer [route register]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.router :refer [call-raw]]
     [solsort.test :refer [run-tests]]
@@ -71,4 +70,4 @@
          (solsort.uccorg-monitor/start)
          ))
 
-(if is-browser (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))
+(if is-browser (register "reload" #(go (<! (timeout 800)) (js/location.reload))))
