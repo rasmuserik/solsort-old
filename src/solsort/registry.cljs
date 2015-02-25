@@ -28,6 +28,7 @@
 (defn post-local [mbox data]
   (post #js{:data data :info #js{} :pid pid :mbox mbox}))
 (defn local-mbox? [mbox] (contains? @mbox-handlers (name mbox)))
+(defn local-mboxes [] (keys @mbox-handlers))
 (defn register-fn [fname f]
   (register
     (name fname)
