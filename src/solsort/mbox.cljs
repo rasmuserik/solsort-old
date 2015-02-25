@@ -12,10 +12,9 @@
   (loop []
     (let [msg (<! mbox-incoming)
           f (@mbox-handlers (aget msg "mbox"))]
-      (log 'mbox msg)
+      (log 'mbox (aget msg "pid") (aget msg "mbox") (aget msg "info"))
       (if f (f msg)))
     (recur)))
-
 
 (def handle register)
 (def unhandle unregister)

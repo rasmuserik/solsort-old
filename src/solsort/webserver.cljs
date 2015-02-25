@@ -1,59 +1,47 @@
 (ns solsort.webserver
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase routes]]
-    [solsort.router :refer [call-raw]]
+    [solsort.registry :refer [testcase local-mboxes local-mbox? call-local register-fn]]
     [solsort.html :refer [jsonhtml->http]]
-    [solsort.ws]
+    [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil]]
     [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (comment is-nodejs) 
-(log 'is-nodejs is-nodejs)
 (if is-nodejs 
   (do 
     ;cljs-bug (go (let [a :ok] (print #js{:bug a} {:no-bug a})))
     (def cached-file (memoize read-file-sync))
-
     (defn default-route [& args]
-      (log 'web 'default-route args (last args))
-      (this-as obj (go
                      (case (last args)
                        "png" #js{:http-headers #js{:Content-Type "image/png"} :content (cached-file "misc/_default.png")}
                        "gif" #js{:http-headers #js{:Content-Type "image/gif"} :content (cached-file "misc/_default.gif")}
-                       #js{:error "not-implemented"}))))
+                       #js{:error "not-implemented"}))
+    (register-fn :default-route default-route)
     (defn process-result [result]
       (if (= "json-html" (aget result "type"))
         (jsonhtml->http result)
         result))
-      
     (defn handler [route]
       (fn [req res]
         (go
           (let [t0 (js/Date.now)
-                argext (.split (.slice (.-path req) (.-length route)) ".")
                 query (.-query req)
                 body (.-body req)
                 path (.slice (.-path req) 1)
                 path (if (= (.slice path 0 (.-length route)) route)
                        (.slice path (.-length route))
                        path)
+                path (if (= "." (aget path 0)) (.slice path 1) path)
                 path (if (= "/" (aget path 0)) (.slice path 1) path)
                 arglist (.split path #"[/.]")
-                args (or (parse-json-or-nil (aget query "args"))
-                         (aget body "args")
-                         (.filter (.split (aget argext 0) "/") #(< 0 (.-length %))))
                 callback (aget query "callback")
-                kind (if callback "json" (.join (.slice argext 1) "."))
-                f (or (aget routes route) default-route)
-                o (clj->js { :content-type kind
-                            :client "remote" })
-                result (process-result (<! (.apply f o arglist)) )
+                f (if (local-mbox? route) route :default-route)
+                result (process-result (<! (apply call-local f arglist)) )
                 headers (aget result "http-headers")
                 ]
-            (log 'web route 'arglist arglist)
             (if (and headers (aget headers "Content-Type") (aget result "content"))
               (do
                 (.set res headers)
@@ -81,11 +69,11 @@
 
         (.use app (.json js/bodyParser))
         (.use app (.urlencoded js/bodyParser #js{"extended" false}))
-        (doall (for [k (seq (js/Object.keys routes))]
+        (doall (for [k (local-mboxes)]
                  (.all app (str "/" k "*" ) (handler k))))
         (.all app "*" (handler ""))
         (.listen http-server-instance 9999)
-        (solsort.ws/start-websocket-server http-server-instance)
+        (start-websocket-server http-server-instance)
         (log 'webserver 'starting host port)))
     (set-immediate -start-server)
     (comment end is-nodejs))) 

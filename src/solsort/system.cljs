@@ -30,7 +30,7 @@
 (def is-worker (and (not is-nodejs) (not is-browser)))
 (def is-server (and (not is-browser) (not is-worker)))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
-(def pid pid)
+(def pid solsort.registry/pid)
 
 (def source-file 
   (cond

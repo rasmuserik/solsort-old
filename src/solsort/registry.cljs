@@ -39,7 +39,6 @@
                        (<! result-chan)
                        result-chan)
               info (or (aget o "info") #js{})]
-          (js/console.log o)
           (post (clj->js {:data result
                           :info {}
                           :pid (aget info "rpid")
