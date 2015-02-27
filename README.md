@@ -9,7 +9,7 @@
   - √webserver+api-server (expressjs)
   - √test
   - √logging
-  - •autorestart
+  - √autorestart
   - ÷distsys (webworkers+routing+net)
 - external-api
   - √XHR
@@ -19,6 +19,14 @@
   - √related-service
   - •uccorg-watcher
   - ÷solsort.com website (base,writings,slides)
+
+# notes
+
+- mbox as central communication
+- thread types
+  - nodejs w/ public http-server
+  - browser w/ UI+indexeddb
+  - worker 
 
 # old notes
 
