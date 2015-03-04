@@ -22,11 +22,29 @@
 
 # notes
 
-- mbox as central communication
-- thread types
-  - nodejs w/ public http-server
-  - browser w/ UI+indexeddb
-  - worker 
+
+- process
+  - has one mbox
+  - either worker(webworker), browser(ui+indexeddb), nodejs(w/ public http server)
+- types
+  - handler: msg -> 
+  - msg: pid, mbox, info[reply-to] , data/args
+- api
+  - low-level
+    - handle (mbox, handler) -> mbox | nil
+    - handle (handler) -> mbox
+    - unhandle (mbox) -> success
+    - handled? mbox -> bool
+    - handled -> mbox list
+    - send msg -> nil
+    - msg (pid, mbox, data, info) -> msg
+  - high-level
+    - call-timeout (timeout, pid, mbox, args..) -> result chan
+    - call (pid, mbox, args..) -> result chan
+    - route (mbox, f args... -> result chan) -> nil
+    - local pid
+    - browser pid
+    - random-worker () -> pid
 
 # old notes
 
