@@ -139,7 +139,6 @@
   (str (date-string) "-" (time-string) "." (three-digits (.now js/Date))))
 (def logfile-name (atom nil))
 (def logfile-stream (atom nil))
-(def fs (if is-nodejs (js/require "fs")))
 (defn log [& args]
   (let [msg (string/join " " (concat
                                [(six-digits pid)

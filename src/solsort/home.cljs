@@ -73,7 +73,7 @@
     [:div
      "Open Source • Agile • Full Stack • ClojureScript"]
     [:div {:style {:font-size "300%" :margin "0.5ex 0 1ex 0"}}
-     "HTML5 Apps &\xa0Backend"]
+     "HTML5 Apps &\u00a0Backend"]
     [:div
      "kontakt: Rasmus Erik Voel Jensen" [:br]
      "+45 60703081 hej@solsort.com"
@@ -101,7 +101,7 @@
 (add-entry "Frie Børnesange"
            ["2014" "alpha" "webapp" "open content" "sangbog"]
            "/frie-sange/")
-(add-entry "Learn morse\xa0code"
+(add-entry "Learn morse\u00a0code"
            ["2014" "alpha" "webapp"]
            "/morse-code/")
 (add-entry "Single touch snake"
@@ -122,7 +122,7 @@
 (add-entry "Art quiz"
            ["2013" "alpha" "prototype" "hack4dk"]
            "/hack4dk/quiz/")
-(add-entry "Summer\xa0Hacks Slides"
+(add-entry "Summer\u00a0Hacks Slides"
            ["2013" "done" "copenhagenjs" "presentation" "bibgraph" "skolevej"]
            "/slides/cphjs2013-summer-hacks")
 (add-entry "BibGraph"

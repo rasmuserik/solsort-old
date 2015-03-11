@@ -35,10 +35,10 @@
                    :margin-left (/ img-height 8)
                    }}
 
-     [:h1 "Rasmus\xa0Erik Voel\xa0Jensen"]
+     [:h1 "Rasmus\u00a0Erik Voel\u00a0Jensen"]
      [:div {:style {:font-size "100%"}}
-      "Tingskrivervej\xa021\xa03tv \xa0 2400\xa0København\xa0NV \xa0 \xa0" [:br]
-      "+45\xa060703081 \xa0 hej@solsort.com" 
+      "Tingskrivervej\u00a021\u00a03tv \u00a0 2400\u00a0København\u00a0NV \u00a0 \u00a0" [:br]
+      "+45\u00a060703081 \u00a0 hej@solsort.com" 
       ]]]
    [:div 
     [:div {:style {:display :inline-block
