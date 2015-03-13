@@ -16,6 +16,7 @@
     "nodewebkit": "0.11.6",
     "passport": "0.2.1",
     "react": "^0.12.2",
+    "showdown": "^0.4.0",
     "webworker-threads": "0.5.3",
     "ws": "^0.7.1",
     "xmlhttprequest": "^1.7.0"
