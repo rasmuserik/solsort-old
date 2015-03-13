@@ -3,17 +3,16 @@
 ### 0.4
 
 - travis-ok -> auto git pull
-- update changelog/backlog
+- automatic browser test
+- automatic test with comparison of site
+- √update changelog/backlog
 - √canonize string for notes and in general
-- change test to run in browser and nodejs but no nodewebkit
 - √notes (migrate notes)
 
 ### Soon
 
 - network graph
 - update routing
-- automatic browser test
-- automatic test with comparison of site
 - reimplement kvdb on indexeddb
 
 ### Later
@@ -32,6 +31,21 @@
 - render jsonhtml
 
 ### 0.2
+
+- webserver+router
+- autorestarting dev-server
+
+### 0.1
+
+- travis test
+- basic uccorg restarter
+- nginx
+- logging
+
+### 0.0
+
+- kvdb - leveldb/indexeddb wrapper
+- related webservice
 
 
 ## solsort/solsort notes
@@ -1054,7 +1068,7 @@ Rasmus Erik, 2014
 - `reputil build`, `git commit ...`, `git tag v0.?.?`, `git push --tags`
 - bower register ...
 - npm publish
-- add entry in www/createStatic.coffee, run, and commit (TODO: this should traverse `*/package.json` too)
+- add entry in www/createStatic.coffee, run, and commit (todo: this should traverse `*/package.json` too)
 - login to https://build.phonegap.com - add repos, choose certificate, build, download artifacts
 - login to https://play.google.com/apps/publish/ - upload artifacts, fill out forms - same info as in package.json, click publish
 
