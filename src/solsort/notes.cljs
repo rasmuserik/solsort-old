@@ -23,7 +23,7 @@
        (if markdown (process-daylog markdown)))))
 
 (defn canonize-string [s]
-  (.trim (.toLowerCase s)))
+  (.replace (.trim (.toLowerCase s)) (js/RegExp. "[^a-z0-9]" "g") ""))
 
 (def all-notes 
   (memoize 
@@ -54,6 +54,9 @@
                (if note 
                  {:type "json-html"
                   :title (str (:title note) " - solsort.com")
-                  :json-html (concat [:div] ((aget (js/require "jsxml") "fromXml") (:html note)))
+                  :json-css {".solsortLogoText" { :text-decoration :none} 
+                             "body" {:margin "1ex 10% 0 10%" :padding 0}}
+                  :json-html (concat [:div [:a {:href "/" :className "solsortLogoText"} [:img {:src "/img/logicon.png"} " solsort.com"]]] 
+                                     ((aget (js/require "jsxml") "fromXml") (:html note)))
                   }
                  {}))))))
