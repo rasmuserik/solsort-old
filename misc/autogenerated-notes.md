@@ -168,58 +168,6 @@ Distributed system
   - map - run named function w/ optional data along
   - reduce incl.  - get-all - get-all-keys - get-all-values
   - subscribe
-## Product Values Vision
-
-- Typical product
-  - App, or advanced website-functionality (frontend+backend)
-  - Deadline within weeks or months
-  - Budget € 4.000-40.000 (DKK 30.000-300.000)
-
-- Target customers
-  - Companies/organisations - improve you workflow and quality by getting IT available in the field - expert systems, checklists, digital training tools
-  - Decision makers and management - get data analysed, visualised, available in your hands in real time.
-  - Media companies - I help you deliver, - solve HTML5 problems, special effects, customisable games, ...
-  - Website owners - get the advanced functionality you want on your website
-  - StartUps - get your MVP up and running
-  - Enthusiasts - get your idea turned into an app
-  - Small business - differentiate/profile yourself via an app that demonstrates your expertise
-
-- Priorities
-  - Local, collaborative development - direct communication with stake-holders
-  - Working solution within weeks - rather than perhaps perfect solution someday-maybe
-  - Value driven - strongly prefers open source/data/content, and humanitarian/educational impact
-  - solsort.com technology stack - runs on phones, tablets, computers, web browsers, and future devices... 
-
-- Delivered artifacts (some yet to be applied)
-  - Web app
-  - Android app
-  - iPhone app
-  - Windows Phone app
-  - iPad app
-  - Windows/Linux/OS-X application
-  - Facebook app
-  - node.js server
-  - Web widget or component
-  - Souce code
-  - Addon for Chrome and Firefox
-  - CMS plugin/module/app (WordPress, Drupal, Joomla, Wix,...)
-
-- Distribution channels (some yet to be applied)
-  - The World Wide Web
-  - Firefox Marketplace
-  - Google Play
-  - Node Package Manager
-  - Bower
-  - GitHub
-  - Windows Store
-  - Apple App Store
-  - Facebook App Center
-  - Physical devices
-
-----
-Rasmus Erik, 2014
-
-
 ## Brunch
 
 Checklist fo brunch
@@ -597,58 +545,6 @@ Turn consist of two actions and one step
   - wannsee island
 
 
-## Notes for my son
-
-Various notes about life, 
-
-### Thinking
-
-- mind maps / hierachial lists
-- personal log
-- scrum and lean
-- the conscious vs. the unconscious
-  - taking a walk or a nap not consious on the thing, often opens up for the solution
-  - problem solving
-- 10x10
-
-### Behaviour
-
-- "give it forward"
-- the other is you, everything is connected
-- hvis event er kedeligt, se på hvad du selv gør/giver til det
-- always honesty and truth
-
-### Philosophy and religion
-
-- There are limits of science and thoughts, things exists which can neither be proven nor disproven 
-  - Gödel has even shown mathematically that there are parts of mathematics which are beyond proof. As far as I remember: ZFC consistency is a matter of belief
-
-- The map is not the territory
-  - my or your model of the world is not the world nor how it is
-  - everything we know is through our fallable senses
-
-- God cannot be fully described with words
-
-### Media
-
-- Books
-  - Tao te King
-  - Richard Bach - Illusioner
-  - Hermann Hesse - Sidharta, steppeulven
-  - The Bible - Særligt prædikeren, samt jesus egne ord or handlinger, "elsk gud og din næste"
-  - Rumi digte, todo:muhl-bog-synkronisitet
-  - C.G.Jung's autobiography - especially the ideas about synchronisity and the unconscious
-- Audio
-  - Alan Watts talks
-  - Getting things done seminar
-- Movies
-  - Amelie
-  - Ghandi
-  - Casablanca
-- Art
-  - Escher
-  - Dali
-
 ## CombiGame
 CombiGame is a mobile app, web game and card game. Try it:
 
@@ -793,6 +689,58 @@ Source code at: <http://github.com/rasmuserik/contrast>
 
 ----
 Rasmus Erik, July 2012
+
+## Notes for my son
+
+Various notes about life, 
+
+### Thinking
+
+- mind maps / hierachial lists
+- personal log
+- scrum and lean
+- the conscious vs. the unconscious
+  - taking a walk or a nap not consious on the thing, often opens up for the solution
+  - problem solving
+- 10x10
+
+### Behaviour
+
+- "give it forward"
+- the other is you, everything is connected
+- hvis event er kedeligt, se på hvad du selv gør/giver til det
+- always honesty and truth
+
+### Philosophy and religion
+
+- There are limits of science and thoughts, things exists which can neither be proven nor disproven 
+  - Gödel has even shown mathematically that there are parts of mathematics which are beyond proof. As far as I remember: ZFC consistency is a matter of belief
+
+- The map is not the territory
+  - my or your model of the world is not the world nor how it is
+  - everything we know is through our fallable senses
+
+- God cannot be fully described with words
+
+### Media
+
+- Books
+  - Tao te King
+  - Richard Bach - Illusioner
+  - Hermann Hesse - Sidharta, steppeulven
+  - The Bible - Særligt prædikeren, samt jesus egne ord or handlinger, "elsk gud og din næste"
+  - Rumi digte, todo:muhl-bog-synkronisitet
+  - C.G.Jung's autobiography - especially the ideas about synchronisity and the unconscious
+- Audio
+  - Alan Watts talks
+  - Getting things done seminar
+- Movies
+  - Amelie
+  - Ghandi
+  - Casablanca
+- Art
+  - Escher
+  - Dali
 
 ## Opskrift: Hummus
 ![Hummus](/img/IMG_1556-hummus.jpg)
@@ -963,29 +911,49 @@ Exponential scale, a la planning poker
 
 Useful tool for estimating/finding price without sweating the details
 
+    
        DKK         (+VAT)         Euro
-
-       960          (240)          128
-      1440          (360)          192
-      1920          (480)          256
-      2880          (720)          384
-      3600          (900)          480
-      4800         (1200)          640
-      7200         (1800)          960
-      9600         (2400)         1280
-     14400         (3600)         1920
-     19200         (4800)         2560
-     28800         (7200)         3840
-     36000         (9000)         4800
-     48000        (12000)         6400
-     72000        (18000)         9600
-     96000        (24000)        12800
-    144000        (36000)        19200
-    192000        (40800)        25600
-    288000        (70200)        38400
-    360000        (90000)        48000
-    480000       (120000)        64000
-    720000       (180000)        96000
+    
+         15            (3.75)         2
+         30            (7.5)          4
+         45           (11.25)         6
+         60           (15)            8
+         90           (22.5)         12
+        120           (30)           16
+        180           (45)           24
+        240           (60)           32
+        360           (90)           48
+        480          (120)           64
+        720          (180)           96
+        960          (240)          128
+       1440          (360)          192
+       1920          (480)          256
+       2880          (720)          384
+       3600          (900)          480
+       4800         (1200)          640
+       7200         (1800)          960
+       9600         (2400)         1280
+      14400         (3600)         1920
+      19200         (4800)         2560
+      28800         (7200)         3840
+      36000         (9000)         4800
+      48000        (12000)         6400
+      72000        (18000)         9600
+      96000        (24000)        12800
+     144000        (36000)        19200
+     192000        (48000)        25600
+     288000        (72000)        38400
+     360000        (90000)        48000
+     480000       (120000)        64000
+     720000       (180000)        96000
+     960000       (240000)       128000
+    1440000       (360000)       192000
+    1920000       (480000)       256000
+    2880000       (720000)       384000
+    3600000       (900000)       480000
+    4800000      (1200000)       640000
+    7200000      (1800000)       960000
+    9600000      (2400000)      1280000
 
 ## Productivity hacks
 
@@ -1037,6 +1005,7 @@ Empty inbox • Capture system • Not keeping stuff in the head
 Pomodoros • Network peering
 
 ## Solsort Product
+
 - Typical product
   - App, or advanced website-functionality (frontend+backend)
   - Deadline within weeks or months

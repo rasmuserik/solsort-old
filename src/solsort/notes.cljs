@@ -54,8 +54,10 @@
                  {:type "json-html"
                   :title (str (:title note) " - solsort.com")
                   :json-css {".solsortLogoText" { :text-decoration :none} 
-                             "body" {:margin "1ex 10% 0 10%" :padding 0}}
-                  :json-html (concat [:div [:a {:href "/" :className "solsortLogoText"} [:img {:src "/img/logicon.png"} " solsort.com"]]] 
+                             ".container" { :max-width "72ex" :display "inline-block"}
+                             "body" {:margin "1ex 10% 0 10%" 
+                                     :padding 0}}
+                  :json-html (concat [:div {:className "container"} [:a {:href "/" :className "solsortLogoText"} [:img {:src "/img/logicon.png"} " solsort.com"]]] 
                                      ((aget (js/require "jsxml") "fromXml") (:html note)))
                   }
                  {})))))
