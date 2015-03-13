@@ -1,45 +1,40 @@
 
-## solsort/solsort
-### About
-[![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
+## solsort/solsort backlog
+### 0.4
 
-### Tasks/progress/backlog v0.1.0
+- travis-ok -> auto git pull
+- update changelog/backlog
+- √canonize string for notes and in general
+- change test to run in browser and nodejs but no nodewebkit
+- √notes (migrate notes)
 
-- TODO
-  - update changelog/backlog
-  - canonize string for notes and in general
-  - change test to run in browser and nodejs but no nodewebkit
+### Soon
 
-#### Later
-- solsort-api 
-  - •api-router-registry+exec (•registry,÷local,•http,÷webworker,÷destructor)
-  - •kvdb (√levelup+•indexeddb)
-  - √webserver+api-server (expressjs)
-  - √test
-  - √logging
-  - √autorestart
-  - ÷distsys (webworkers+routing+net)
-- external-api
-  - √XHR
-  - √React
-  - √Clojure
-- apps
-  - √related-service
-  - •uccorg-watcher
-  - ÷solsort.com website (base,writings,slides)
-### Changelog
-#### 0.4
+- network graph
+- update routing
+- automatic browser test
+- automatic test with comparison of site
+- reimplement kvdb on indexeddb
 
-- `/notes/...`
-- extract notes from daylog
+### Later
 
-#### 0.3
-#### 0.2
-#### 0.1
-- travis
+- webworkers
+- solsort slide show
+- uccorg watcher
+- distributed DB
 
-### notes
+## solsort/solsort changelog
+### 0.3
 
+- mboxes, erlang inspired message system
+- /index, /rasmuserik
+- use websockets for communication with clients
+- render jsonhtml
+
+### 0.2
+
+
+## solsort/solsort notes
 
 - process
   - has one mbox
