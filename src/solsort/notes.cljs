@@ -46,8 +46,7 @@
 
 (log 'notes (keys (all-notes)))
 
-(route "notes"
-       (fn [note-name]
+(defn note [note-name]
          (go
            (let [note (get (all-notes) (canonize-string note-name))]
              (clj->js 
@@ -59,4 +58,6 @@
                   :json-html (concat [:div [:a {:href "/" :className "solsortLogoText"} [:img {:src "/img/logicon.png"} " solsort.com"]]] 
                                      ((aget (js/require "jsxml") "fromXml") (:html note)))
                   }
-                 {}))))))
+                 {})))))
+(route "notes" note)
+(route "writings" note)
