@@ -98,6 +98,10 @@
     c))
 
 
+(if (and is-nodejs (not (exists? Showdown)))
+  (aset global "Showdown" (js/require "showdown")))
+
+
 (comment window-React-Worker-etc)
 (if (and is-nodejs (not is-browser)) 
   (do 

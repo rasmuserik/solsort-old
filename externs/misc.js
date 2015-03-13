@@ -25,3 +25,10 @@ ws = function() {};
 ws.Server = function() {};      
 var WSServer;
 WSServer.prototype.on = function() {};
+
+
+
+Showdown = {};
+/** @typedef {function(new:Showdown.converter, ...[*])} */                                           
+Showdown.converter = function() {};
+Showdown.converter.prototype.makeHtml = function() {};
