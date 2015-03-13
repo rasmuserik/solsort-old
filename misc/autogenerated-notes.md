@@ -1,4 +1,4 @@
-# Public Notes
+
 ## Brunch
 
 Checklist fo brunch

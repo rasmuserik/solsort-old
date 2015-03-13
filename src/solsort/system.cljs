@@ -160,7 +160,7 @@
             (reset! logfile-name logname)))
         (.write @logfile-stream (str msg "\n"))))
     (.log js/console msg)))
-
+(defn warn [& args] (apply log 'warn args))
 
 
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
