@@ -1,13 +1,17 @@
 
 ## solsort/solsort backlog
-### 0.4
+### 0.5
 
-- travis-ok -> auto git pull
-- automatic browser test
-- automatic test with comparison of site
-- √update changelog/backlog
-- √canonize string for notes and in general
-- √notes (migrate notes)
+- bibapp
+  - use reagent
+  - single /bib function
+  - css uncapitalise->dash
+  - basic bib webapp w/ ui
+  - design/choose pages
+- test+deploy
+  - automatic test with comparison of site
+  - automatic browser test
+  - travis-ok -> auto git pull / deploy
 
 ### Soon
 
@@ -15,6 +19,7 @@
 - update routing
 - reimplement kvdb on indexeddb
 
+- version id (checksum of unchecked .min.js)
 ### Later
 
 - webworkers
@@ -23,6 +28,12 @@
 - distributed DB
 
 ## solsort/solsort changelog
+### 0.4
+
+- update changelog/backlog
+- canonize string for notes and in general
+- notes (migrate notes)
+
 ### 0.3
 
 - mboxes, erlang inspired message system
