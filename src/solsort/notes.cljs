@@ -1,10 +1,9 @@
 (ns solsort.notes
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [route]]
+    [solsort.mbox :refer [route]]
     [solsort.system :as system :refer [warn log is-browser fs source-file exit is-nodejs set-immediate]]
     [solsort.test :refer [run-tests]]
-    [solsort.ws :refer [broadcast]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (defn process-daylog [markdown]

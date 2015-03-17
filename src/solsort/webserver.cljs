@@ -1,7 +1,8 @@
 (ns solsort.webserver
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase local-mboxes local-mbox? call-local route]]
+    [solsort.registry :refer [testcase]]
+    [solsort.mbox :refer [local-mboxes local-mbox? call local route]]
     [solsort.html :refer [jsonhtml->http]]
     [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
@@ -42,7 +43,7 @@
                           arglist)
                 callback (aget query "callback")
                 f (if (local-mbox? route) route :default-route)
-                result (process-result (<! (apply call-local f arglist)) )
+                result (process-result (<! (apply call local f arglist)) )
                 headers (aget result "http-headers")]
             (if (and headers (aget headers "Content-Type") (aget result "content"))
               (do

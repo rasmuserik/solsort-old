@@ -1,7 +1,7 @@
 (ns solsort.bib-main
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [testcase route]]
+    [solsort.mbox :refer [route]]
     [solsort.system :refer [log]]
     [solsort.kvdb :as kvdb]
     [solsort.bib-related :refer [get-related]]

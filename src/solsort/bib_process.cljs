@@ -4,7 +4,7 @@
     [solsort.system :refer [exec each-lines]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
-    [solsort.registry :refer [route]]
+    [solsort.mbox :refer [route]]
     [solsort.util :refer [print-channel by-first transducer-status]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

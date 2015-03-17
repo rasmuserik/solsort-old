@@ -2,16 +2,18 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase post pid]]
+    [solsort.registry :refer [testcase]]
+    [solsort.mbox :refer [post local msg processes]]
     [solsort.system :refer [is-nodejs is-browser log set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
+(def pid local)
 (def pids (atom {}))
-(declare send-message)
-(defn broadcast [msg]
-  (doall (for [pid (keys @pids)]
-           (send-message pid msg))))
-(defn send-message [pid msg] 
-  (.send (@pids pid) (js/JSON.stringify msg)))
+(defn broadcast [mbox data]
+  (log 'broadcast mbox data)
+  (doseq [pid (keys @pids)]
+    (post pid mbox data)))
+(defn send-message [msg] 
+  (.send (@pids (aget msg "pid")) (js/JSON.stringify msg)))
 
 
 (comment server)
@@ -27,6 +29,7 @@
     (defn close-connection [id] 
       (fn []
         (log 'ws id 'close)
+        (swap! processes dissoc id)
         (swap! pids dissoc id)))
     (defn start-websocket-server [http-server]
       (log 'ws 'start)
@@ -45,6 +48,7 @@
                             (.removeAllListeners ws "message")
                             (.on ws "message" (handle-message pid))
                             (.on ws "close" (close-connection pid))
+                            (swap! processes assoc pid send-message)
                             (swap! pids assoc pid ws)
                             (log 'ws 'added-client pid @pids)
                             )
@@ -62,7 +66,7 @@
     (go 
       (loop []
         (<! (timeout 55000))
-        (broadcast #js{:mbox "keep-alive"})
+        (broadcast "keep-alive" nil)
         (recur)))
 
     (def socket-server
@@ -104,9 +108,11 @@
                             (fn [e] 
                               (log 'ws 'close e pid)
                               (swap! pids dissoc pid)
+                              (swap! processes dissoc pid)
                               (set-immediate ws-connect)))
 
                       (swap! pids assoc pid ws)
+                      (swap! processes assoc pid send-message)
                       (log 'ws 'added-client pid @pids)
                       )
                     (log 'ws 'error-unexpected-first-message data)

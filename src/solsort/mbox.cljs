@@ -30,7 +30,6 @@
 (defn msg "construct a message object"
   ([pid mbox data] (msg pid mbox data #js{}))
   ([pid mbox data info] 
-   (js/console.log "create-message" pid, mbox, data, info)
    #js{:pid pid :mbox mbox :data data :info info}))
 (defn post "send a message to a mbox"
   ([msg] (let [pid (aget msg "pid")
@@ -43,8 +42,8 @@
 (defn handle "register a local handler for messages"
   [mbox handler] (swap! -mboxes assoc mbox handler))
 (defn unhandle [mbox] (swap! -mboxes dissoc mbox))
-(defn handled? [mbox] (contains? @-mboxes mbox))
-(defn handled [mbox] (keys @-mboxes))
+(defn local-mbox? [mbox] (contains? @-mboxes mbox))
+(defn local-mboxes [] (keys @-mboxes))
 
 
 ;; processes / pid-list

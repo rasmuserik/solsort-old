@@ -1,7 +1,7 @@
 (ns solsort.dev-server
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [route register]]
+    [solsort.mbox :refer [route handle msg]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.test :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
@@ -29,7 +29,7 @@
 
 (defn autorestart []
   (if is-nodejs (.watch fs source-file (memoize (fn [] 
-                                                  (broadcast #js{:mbox "reload"})
+                                                  (broadcast "reload" nil)
                                                   (log 'system 'source-change 'restarting) (exit 0))))))
 
 (defn form [a]
@@ -70,4 +70,4 @@
           (run-tests)
           true)))
 
-(if is-browser (register "reload" #(go (<! (timeout 800)) (js/location.reload))))
+(if is-browser (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))

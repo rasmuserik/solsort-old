@@ -1,7 +1,8 @@
 (ns solsort.css
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [testcase route]]
+    [solsort.registry :refer [testcase]]
+    [solsort.mbox :refer [route]]
     [solsort.system :refer [log]]
     [clojure.string :refer [join]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

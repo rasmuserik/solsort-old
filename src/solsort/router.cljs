@@ -1,7 +1,7 @@
 (ns solsort.router
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :as registry :refer [local-mbox? call-local local-mboxes]]
+    [solsort.mbox :refer [local-mbox? call local local-mboxes]]
     [solsort.util :refer [chan?]]
     [solsort.html :refer [render-jsonhtml]]
     [solsort.system :as system :refer [log is-browser]]
@@ -21,7 +21,7 @@
     (go
       (log 'routes 'starting arg)
       (if (local-mbox? arg)
-        (let [result (call-local arg)
+        (let [result (call local arg)
               result (if (chan? result) (<! result) result)]
           (if (and is-browser (= "json-html" (aget result "type")))
             (render-jsonhtml result))

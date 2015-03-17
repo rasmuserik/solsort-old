@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.system :refer [exec log]]
-    [solsort.registry :refer [route]]
+    [solsort.mbox :refer [route]]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 

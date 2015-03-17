@@ -1,7 +1,7 @@
 (ns solsort.home
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [route]]
+    [solsort.mbox :refer [route]]
     [solsort.html :refer [normalise-str hex-color clj->react]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
     [solsort.test :refer [run-tests]]

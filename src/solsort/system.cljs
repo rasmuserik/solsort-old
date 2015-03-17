@@ -3,7 +3,8 @@
     [solsort.system :refer [defapi]]
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase route pid]]
+    [solsort.registry :refer [testcase]]
+    [solsort.mbox :refer [route local]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -145,7 +146,7 @@
 (def logfile-stream (atom nil))
 (defn log [& args]
   (let [msg (string/join " " (concat
-                               [(six-digits pid)
+                               [(six-digits local)
                                 (timestamp-string)]
                                (map pr-str args)))
         date (date-string)
