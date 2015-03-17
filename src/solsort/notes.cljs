@@ -53,11 +53,16 @@
                (if note 
                  {:type "json-html"
                   :title (str (:title note) " - solsort.com")
-                  :json-css {".solsortLogoText" { :text-decoration :none} 
-                             ".container" { :max-width "72ex" :display "inline-block"}
-                             "body" {:margin "1ex 10% 0 10%" 
+                  :json-css {".solsortLogoText" 
+                             { :textDecoration :none} 
+                             ".container" 
+                             { :maxWidth "72ex" :display "inline-block"}
+                             "body" 
+                             {:margin "1ex 10% 0 10%" 
                                      :padding 0}}
-                  :json-html (concat [:div {:className "container"} [:a {:href "/" :className "solsortLogoText"} [:img {:src "/img/logicon.png"} " solsort.com"]]] 
+                  :json-html (concat [:div {:className "container"} 
+                                      [:a {:href "/" :className "solsortLogoText"} 
+                                       [:img {:src "/img/logicon.png"} " solsort.com"]]] 
                                      ((aget (js/require "jsxml") "fromXml") (:html note)))
                   }
                  {})))))

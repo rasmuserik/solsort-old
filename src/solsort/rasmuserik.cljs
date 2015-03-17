@@ -15,56 +15,56 @@
   [:div {:style {:text-align :center}}
    [:div {:style {
                   :display :inline-block
-                  :max-width 720
-                  :text-align :center
-                  :font-size 16 :margin-top (/ img-height 2) :margin-bottom (/ img-height 2)}}
+                  :maxWidth 720
+                  :textAlign :center
+                  :fontSize 16 :marginTop (/ img-height 2) :marginBottom (/ img-height 2)}}
     [:img {:src "/icons/rasmus-erik-voel-jensen"
            :style {:height img-height
                    :width img-height
-                   :border-radius (/ img-height 2)
-                   :vertical-align :middle
-                   :margin-right (/ img-height 8)
-                   :margin-left (/ img-height 8)
-                   :box-shadow "0px 0px 2px #000"
+                   :borderRadius (/ img-height 2)
+                   :verticalAlign :middle
+                   :marginRight (/ img-height 8)
+                   :marginLeft (/ img-height 8)
+                   :boxShadow "0px 0px 2px #000"
                    }}]
     [:div {:style {:display :inline-block
-                   :vertical-align :middle
-                   :text-align :center
+                   :verticalAlign :middle
+                   :textAlign :center
                    :margin 4
-                   :margin-right (/ img-height 8)
-                   :margin-left (/ img-height 8)
+                   :marginRight (/ img-height 8)
+                   :marginLeft (/ img-height 8)
                    }}
 
      [:h1 "Rasmus\u00a0Erik Voel\u00a0Jensen"]
-     [:div {:style {:font-size "100%"}}
+     [:div {:style {:fontSize "100%"}}
       "Tingskrivervej\u00a021\u00a03tv \u00a0 2400\u00a0København\u00a0NV \u00a0 \u00a0" [:br]
       "+45\u00a060703081 \u00a0 hej@solsort.com" 
       ]]]
    [:div 
     [:div {:style {:display :inline-block
                    :width 320
-                   :vertical-align :top
-                   :text-align :left
+                   :verticalAlign :top
+                   :textAlign :left
                    }}
      [:h1 "Professional"]
      [:h2 "Current"]
-     [:ul {:style {:min-height activity-height}}
+     [:ul {:style {:minHeight activity-height}}
       [:li "Write " [:a {:href "//github.com/rasmuserik"} "open source code"] 
        ", focus on HTML5 Apps in ClojureScript"]
       [:li "Design and create solutions in collaboration with non-technical stakeholders"]
       [:li "Run " [:a {:href "//solsort.com"} "my own company"]
        ", with all the aspects of that"]]
      [:h2 "Experience"]
-     [:div  {:style {:margin-bottom 60}}
+     [:div  {:style {:marginBottom 60}}
       "Work as developer and project manager • Conference talks • Taught/created university level courses • Master degree in Computer Science"]]
     [:div {:style {:display :inline-block
                    :width 320
-                   :vertical-align :top
-                   :text-align :left
+                   :verticalAlign :top
+                   :textAlign :left
                    }}
      [:h1 "Personal"]
      [:h2 "Current"]
-     [:ul {:style {:min-height activity-height}}
+     [:ul {:style {:minHeight activity-height}}
       [:li "Fatherhood - I am the father of a wonderful 2½ year old boy"]
       [:li "Dance - "
        [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
@@ -76,10 +76,10 @@
        "rollespil(D&D3.5), bicycle, vegetarian"
        ]]
      [:h2 "Experience"]
-     [:div {:style {:margin-bottom 60}}
+     [:div {:style {:marginBottom 60}}
       "Toastmasters • photography • kbhff • mythology/religion/mysticism • events • nature • couchsurfing • yoga/energy • music/jam • massage • mensa • højskole"]]
     ]
-   [:div {:style {:font-size small-size}} 
+   [:div {:style {:fontSize small-size}} 
     "I very rarely use  social media (linkedin/facebook/twitter/...) so catch me in real life instead :)" 
     [:br] "Updated Winter/Spring 2015"]]
   )
@@ -89,9 +89,9 @@
          (go
            (clj->js {:type "json-html"
                      :title "Rasmus Erik - solsort.com"
-                     :json-css {:h1 {:font-weight :normal
-                                     :margin-top 0}
-                                :h2 {:font-size small-size
-                                     :font-weight :normal
-                                     :text-align :left}}
+                     :json-css {:h1 {:fontWeight :normal
+                                     :marginTop 0}
+                                :h2 {:fontSize small-size
+                                     :fontWeight :normal
+                                     :textAlign :left}}
                      :json-html (html)}))))

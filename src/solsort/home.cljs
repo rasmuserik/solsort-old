@@ -21,19 +21,19 @@
                  :height circle-size
                  :margin 8
                  :display :inline-block
-                 :text-align :left
-                 :border-radius (/ circle-size 2)
-                 :box-shadow "0px 0px 2px #000, 
+                 :textAlign :left
+                 :borderRadius (/ circle-size 2)
+                 :boxShadow "0px 0px 2px #000, 
                              3px 3px 10px rgba(0,0,0,0.4)"
                  }}
      [:img {:src (str "/icons/" (normalise-str title) "")
             :style { :width circle-size
                     :height circle-size
-                    :background-color "#fff"
+                    :backgroundColor "#fff"
                     :position :absolute
                     :margin 0
                     :padding 0
-                    :border-radius (/ circle-size 2)
+                    :borderRadius (/ circle-size 2)
                     }}]
      [:div
       {:style {
@@ -41,45 +41,45 @@
                :height circle-size
                :width circle-size
                :position :absolute
-               :line-height circle-size
-               :text-align :center
-               :font-weight :bold
+               :lineHeight circle-size
+               :textAlign :center
+               :fontWeight :bold
                :color :black; (hex-color (bit-and 0x3f3f3f (hash title))) 
                :backgroundColor "rgba(255,255,255,0.3)"
-               :border-radius (/ circle-size 2)
-               :text-shadow "2px 2px 10px #fff, 2px -2px 10px #fff, -2px 2px 10px #fff, -2px -2px 10px #fff"
-               :font-size (bit-or 0 (* circle-size 0.16))
+               :borderRadius (/ circle-size 2)
+               :textShadow "2px 2px 10px #fff, 2px -2px 10px #fff, -2px 2px 10px #fff, -2px -2px 10px #fff"
+               :fontSize (bit-or 0 (* circle-size 0.16))
                }}
       ;(normalise-str title)
       [:span 
        {:style {:display "inline-block"
-                :vertical-align "middle"
+                :verticalAlign "middle"
                 :width circle-size
-                :line-height :normal
+                :lineHeight :normal
                 :zIndex 10
                 }}
        title]
       ]]))
 
 (defn home-html []
-  [:div {:style {:text-align :center}}
-   [:div {:style {:margin "32px 0 64px 0" :font-size 16}}
+  [:div {:style {:textAlign :center}}
+   [:div {:style {:margin "32px 0 64px 0" :fontSize 16}}
     [:img {:src "/icons/solsort.png"
            :style {:height 64 :width 64}}]
     [:div
-     [:span {:style {:font-size "150%"}} 
+     [:span {:style {:fontSize "150%"}} 
       " solsort.com "]
      "ApS"]
     [:div
      "Open Source • Agile • Full Stack • ClojureScript"]
-    [:div {:style {:font-size "300%" :margin "0.5ex 0 1ex 0"}}
+    [:div {:style {:fontSize "300%" :margin "0.5ex 0 1ex 0"}}
      "HTML5 Apps &\u00a0Backend"]
     [:div
      "kontakt: Rasmus Erik Voel Jensen" [:br]
      "+45 60703081 hej@solsort.com"
      ]
     ]
-   [:div {:style {:text-align :center}} (concat [:div {}] (map entry @entries))]
+   [:div {:style {:textAlign :center}} (concat [:div {}] (map entry @entries))]
    ])
 
 
