@@ -64,3 +64,11 @@
 (testcase 'call-local
           #(go (= "hello" (<! (call-local :echo "hello")))))
 
+(comment msg handle loop)
+(go
+  (loop []
+    (let [msg (<! mbox-incoming)
+          f (@mbox-handlers (aget msg "mbox"))]
+      (if f (f msg)))
+    (recur)))
+

@@ -69,13 +69,13 @@
   - msg: pid, mbox, info[reply-to] , data/args
 - api
   - low-level
+    - msg (pid, mbox, data, info) -> msg
+    - post msg -> nil
     - handle (mbox, handler) -> mbox | nil
     - handle (handler) -> mbox
     - unhandle (mbox) -> success
     - handled? mbox -> bool
     - handled -> mbox list
-    - send msg -> nil
-    - msg (pid, mbox, data, info) -> msg
   - high-level
     - call-timeout (timeout, pid, mbox, args..) -> result chan
     - call (pid, mbox, args..) -> result chan
