@@ -178,9 +178,7 @@
 (defn start []
   (go
     (<! (prepare-data))
-    (log 'bib "starting visual relation server")
+    (log 'bib "relation server data prepared")
     ))
 
-(route "bib-related" start)
-(route "bib/info/" (fn [lid] (kvdb/fetch :bibinfo lid)))
-(route "bib/related/" (fn [lid] (get-related lid)))
+(route "prepare-bib-related" start)

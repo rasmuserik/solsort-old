@@ -4,7 +4,7 @@
 
 - bibapp
   - use reagent
-  - single /bib function
+  - √single /bib function
   - css uncapitalise->dash
   - basic bib webapp w/ ui
   - design/choose pages
@@ -28,32 +28,32 @@
 - distributed DB
 
 ## solsort/solsort changelog
-### 0.4
+### 0.4 /notes
 
 - update changelog/backlog
 - canonize string for notes and in general
 - notes (migrate notes)
 
-### 0.3
+### 0.3 /index, /rasmuserik, mboxes, websockets, render jsonhtml
 
 - mboxes, erlang inspired message system
 - /index, /rasmuserik
 - use websockets for communication with clients
 - render jsonhtml
 
-### 0.2
+### 0.2 autorestarting, webserver, routes
 
 - webserver+router
 - autorestarting dev-server
 
-### 0.1
+### 0.1 travis, uccorg-restarter, nginx
 
 - travis test
 - basic uccorg restarter
 - nginx
 - logging
 
-### 0.0
+### 0.0 kvdb, related-webservice
 
 - kvdb - leveldb/indexeddb wrapper
 - related webservice
