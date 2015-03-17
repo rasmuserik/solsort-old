@@ -7,8 +7,12 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
+(defn css-name [id]
+  (clojure.string/replace (name id) #"[A-Z]" #(str "-" (.toLowerCase %1))))
+(testcase 'css-name
+          #(= (css-name :FooBar) "-foo-bar"))
 (defn handle-rule [[k v]]
-  (str (name k) ":" (if (number? v) (str v "px") (name v))))
+  (str (css-name k) ":" (if (number? v) (str v "px") (name v))))
 (defn handle-block [[id rules]]
   (str (name id) "{" (join ";" (map handle-rule (seq rules))) "}"))
 (defn clj->css [o]
