@@ -61,11 +61,13 @@
 
 (route "dev-server"
        (fn []
-         (log 'dev-server 'start)
-         (start)
-         (autorestart)
-         (run-tests)
-         (solsort.uccorg-monitor/start)
-         true))
+         (go 
+          (log 'dev-server 'start)
+          (start)
+          (autorestart)
+          (solsort.uccorg-monitor/start)
+          (<! (timeout 1000))
+          (run-tests)
+          true)))
 
 (if is-browser (register "reload" #(go (<! (timeout 800)) (js/location.reload))))

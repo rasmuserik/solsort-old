@@ -5,7 +5,7 @@
 - bibapp
   - use reagent
   - √single /bib function
-  - css uncapitalise->dash
+  - √css uncapitalise->dash
   - basic bib webapp w/ ui
   - design/choose pages
 - test+deploy

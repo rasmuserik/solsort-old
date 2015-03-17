@@ -8,7 +8,6 @@
 
 (defn run-tests []
   (go
-    (<! (timeout 1000)) ; wait for system to start up
     (loop [[id f] (first (seq @testcases))
            tests (rest (seq @testcases))]
       (log 'test id)
