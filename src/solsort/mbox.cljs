@@ -14,7 +14,7 @@
 
 ;; private utility functions
 (defn -route-error [msg]
-  (js/console.log "route-error" msg)
+  (js/console.log "route-error" (js/JSON.stringify msg))
   (let [info (aget msg "info")
         rbox (aget info "rbox")]
     (if rbox

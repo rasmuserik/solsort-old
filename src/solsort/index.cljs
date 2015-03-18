@@ -1,4 +1,4 @@
-(ns solsort.home
+(ns solsort.index
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.mbox :refer [route]]
@@ -41,7 +41,7 @@
                :height circle-size
                :width circle-size
                :position :absolute
-               :lineHeight circle-size
+               :lineHeight (str circle-size "px")
                :textAlign :center
                :fontWeight :bold
                :color :black; (hex-color (bit-and 0x3f3f3f (hash title))) 
@@ -50,7 +50,6 @@
                :textShadow "2px 2px 10px #fff, 2px -2px 10px #fff, -2px 2px 10px #fff, -2px -2px 10px #fff"
                :fontSize (bit-or 0 (* circle-size 0.16))
                }}
-      ;(normalise-str title)
       [:span 
        {:style {:display "inline-block"
                 :verticalAlign "middle"
