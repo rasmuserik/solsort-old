@@ -32,38 +32,10 @@
                                                   (broadcast "reload" nil)
                                                   (log 'system 'source-change 'restarting) (exit 0))))))
 
-(defn form [a]
-  [:div {}
-   [:h1 {} "Hello " a]
-   [:div {:style {:background "red"}} "hello " 
-    [:b {} "hullo"] " hi"]
-   [:form
-    [:input {:id "blah"}]]
-   ])
-
-(defn clj->react [o]
-  (if (vector? o)
-    (if (map? (second o))
-      (apply js/React.createElement (name (first o)) (clj->js (second o)) (map clj->react (rest (rest o))))
-      (apply js/React.createElement (name (first o)) nil (map clj->react (rest o))))
-    (str o)))
-
-(defn start []
-  (if is-browser
-    (do
-      (go
-        (loop [i 0]
-          (js/React.render (clj->react (form i) ) js/document.body)
-          (<! (timeout 100))
-          (recur (inc i))
-          ) 
-      ))))
-
 (route "dev-server"
        (fn []
          (go 
           (log 'dev-server 'start)
-          (start)
           (autorestart)
           (solsort.uccorg-monitor/start)
           (<! (timeout 1000))

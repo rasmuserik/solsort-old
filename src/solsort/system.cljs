@@ -43,7 +43,7 @@
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
 
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
-(testcase 'xhr
+#_(testcase 'xhr
           (fn []
             (let [c (chan)
                   xhr (XHR.)

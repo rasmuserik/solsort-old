@@ -11,7 +11,7 @@
 (def small-size 12)
 (def activity-height 130)
 (defn html []
-  [:div {:style {:text-align :center}}
+  [:div {:style {:textAlign :center}}
    [:div {:style {
                   :display :inline-block
                   :maxWidth 720

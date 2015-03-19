@@ -22,9 +22,10 @@
                        #js{:error "not-implemented"}))
     (route :default-route default-route)
     (defn process-result [result]
+      (let [result (clj->js result)]
       (if (= "json-html" (aget result "type"))
         (jsonhtml->http result)
-        result))
+        result)))
     (defn handler [route]
       (fn [req res]
         (go

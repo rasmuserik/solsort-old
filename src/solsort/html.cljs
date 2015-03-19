@@ -3,6 +3,7 @@
   (:require
     [solsort.css :refer [js->css]]
     [solsort.system :refer [log]]
+    [reagent.core :as reagent]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -35,7 +36,6 @@
         "<style id=style>" (if (aget o "json-css") (js->css (aget o "json-css"))) "</style>"
         "</head><body>"
         (js/React.renderToStaticMarkup (js->react (aget o "json-html")))
-        "<script src=\"/react.min.js\"></script>"
         "<script src=\"/solsort.js\"></script>"
         "</body></html>")})
 

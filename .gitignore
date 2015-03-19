@@ -11,8 +11,6 @@ localStorage/
 logs/
 dbs/
 npm-debug.log
-figwheel_server.log
-bower_components/
 lein.log
 tail.pid
 solsort.js*

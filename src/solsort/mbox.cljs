@@ -2,6 +2,7 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [cognitect.transit :as transit]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -13,6 +14,8 @@
 
 
 ;; private utility functions
+(def -writer (transit/writer :json))
+(def -reader (transit/reader :json))
 (defn -route-error [msg]
   (js/console.log "route-error" (js/JSON.stringify msg))
   (let [info (aget msg "info")
@@ -24,6 +27,9 @@
 (defn -unique-id [] (str "id" (swap! -unique-id-counter inc)))
 (defn -local-handler [msg] ((get @-mboxes (aget msg "mbox") @route-error-fn) msg))
 
+
+(defn transit-read [o] (transit/read -reader o))
+(defn transit-write [o] (transit/write -writer o))
 
 ;; internal message passing / low level api
 (def route-error-fn (atom -route-error))
@@ -63,12 +69,12 @@
         handler 
         (fn [msg]
           (unhandle rbox)
-          (let [data (aget msg "data")]
+          (let [data (transit-read (aget msg "data"))]
             (if (nil? data)
               (close! c)
               (put! c data))))]
     (handle rbox handler)
-    (post pid mbox (clj->js args) #js{:rpid local :rbox rbox})
+    (post pid mbox (transit-write args) #js{:rpid local :rbox rbox})
     (if max-wait (go (<! (timeout max-wait)) (handler #js{})))
     c))
 (defn call [pid mbox & args] (apply call-timeout false pid mbox args))
@@ -77,8 +83,8 @@
     mbox 
     (fn [msg]
       (go
-        (let [result (apply f (or (aget msg "data") []))
+        (let [result (apply f (or (transit-read (aget msg "data")) []))
               result (if (instance? ManyToManyChannel result) (<! result) result)
               info (aget msg "info")]
-          (post (aget info "rpid") (aget info "rbox") (clj->js result)))))))
+          (post (aget info "rpid") (aget info "rbox") (transit-write result)))))))
 
