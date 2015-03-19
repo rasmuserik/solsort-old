@@ -3,7 +3,7 @@
   (:require
     [solsort.registry :refer [testcase]]
     [solsort.mbox :refer [local-mboxes local-mbox? call local route]]
-    [solsort.html :refer [jsonhtml->http]]
+    [solsort.html :refer [html->http]]
     [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil]]
@@ -22,10 +22,9 @@
                        #js{:error "not-implemented"}))
     (route :default-route default-route)
     (defn process-result [result]
-      (let [result (clj->js result)]
-      (if (= "json-html" (aget result "type"))
-        (jsonhtml->http result)
-        result)))
+      (if (= "html" (:type result))
+        (html->http result)
+        (clj->js result)))
     (defn handler [route]
       (fn [req res]
         (go

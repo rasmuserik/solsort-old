@@ -78,11 +78,11 @@
      "+45 60703081 hej@solsort.com"
      ]
     ]
-   [:div {:style {:textAlign :center}} (concat [:div {}] (map entry @entries))]
+   [:div {:style {:textAlign :center}} (into [:div {}] (map entry @entries))]
    ])
 
 
-(route "index" (fn [] (go (clj->js {:type "json-html" :title "solsort.com" :json-html (home-html)}))))
+(route "index" (fn [] {:type "html" :title "solsort.com" :html (home-html)}))
 
 ; state: unfinished|alpha|beta|done
 (add-entry "Rasmus Erik Voel Jensen"

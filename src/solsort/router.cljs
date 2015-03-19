@@ -3,7 +3,7 @@
   (:require
     [solsort.mbox :refer [local-mbox? call local local-mboxes]]
     [solsort.util :refer [chan?]]
-    [solsort.html :refer [render-jsonhtml]]
+    [solsort.html :refer [render-html]]
     [solsort.system :as system :refer [log is-browser]]
     ))
 
@@ -23,8 +23,8 @@
       (if (local-mbox? arg)
         (let [result (call local arg)
               result (if (chan? result) (<! result) result)]
-          (if (and is-browser (= "json-html" (aget result "type")))
-            (render-jsonhtml result))
+          (if (and is-browser (= "html" (:type result)))
+            (render-html result))
           result)
         (log 'routes 'no-such-route arg (local-mboxes))))))
 

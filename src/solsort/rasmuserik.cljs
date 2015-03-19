@@ -85,12 +85,11 @@
 
 (route "rasmuserik"
        (fn []
-         (go
-           (clj->js {:type "json-html"
-                     :title "Rasmus Erik - solsort.com"
-                     :json-css {:h1 {:fontWeight :normal
-                                     :marginTop 0}
-                                :h2 {:fontSize small-size
-                                     :fontWeight :normal
-                                     :textAlign :left}}
-                     :json-html (html)}))))
+         {:type "html"
+          :title "Rasmus Erik - solsort.com"
+          :css {:h1 {:fontWeight :normal
+                     :marginTop 0}
+                :h2 {:fontSize small-size
+                     :fontWeight :normal
+                     :textAlign :left}}
+          :html (html)}))

@@ -26,4 +26,5 @@
 (route "test" 
        #(go
           (<! (run-tests))
-          (solsort.system/exit 0)))
+          (solsort.system/exit 0)
+          true))
