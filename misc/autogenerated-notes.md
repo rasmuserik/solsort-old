@@ -2,6 +2,7 @@
 ## solsort/solsort backlog
 ### 0.5
 
+- √mbox reimplementation
 - bibapp
   - use reagent
   - √single /bib function

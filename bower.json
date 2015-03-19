@@ -1,9 +1,0 @@
-{
-  "name": "solsort",
-  "homepage": "https://github.com/solsort/solsort",
-  "private": true,
-  "dependencies": {
-    "react": "~0.12.2",
-    "react-externs": "https://github.com/steida/react-externs.git#~0.12.12"
-  }
-}

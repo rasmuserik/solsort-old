@@ -1,5 +1,4 @@
 npm install
-bower install
 
 killall java
 lein cljsbuild auto solsort > lein.log &
