@@ -4,7 +4,7 @@
 
 - √mbox reimplementation
 - bibapp
-  - use reagent
+  - √use reagent
   - √single /bib function
   - √css uncapitalise->dash
   - basic bib webapp w/ ui
