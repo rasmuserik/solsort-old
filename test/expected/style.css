@@ -1,0 +1,16 @@
+@font-face {
+    font-family: Ubuntu;
+    font-weight: 400;
+    src: url(/font/ubuntu-latin1.ttf)format(truetype)
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: Ubuntu, sans-serif
+}
+
+div {
+    margin: 0px;
+    padding: 0px
+}
