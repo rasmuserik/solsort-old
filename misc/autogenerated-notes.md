@@ -10,9 +10,9 @@
   - basic bib webapp w/ ui
   - design/choose pages
 - test+deploy
-  - automatic test with comparison of site
-  - automatic browser test
-  - travis-ok -> auto git pull / deploy
+  - √automatic test with comparison of site
+  - •automatic browser test
+  - •travis-ok -> auto git pull / deploy
 
 ### Soon
 
@@ -21,6 +21,7 @@
 - reimplement kvdb on indexeddb
 
 - version id (checksum of unchecked .min.js)
+
 ### Later
 
 - webworkers
@@ -189,6 +190,25 @@ Distributed system
   - map - run named function w/ optional data along
   - reduce incl.  - get-all - get-all-keys - get-all-values
   - subscribe
+
+## BibApp
+
+### notes
+- use cases
+  - search/find/discover material
+    - søgning
+    - søge resultater
+    - visning af materiale
+    - bestil
+  - nyheder fra biblioteket
+    - generelle nyheder (også på websiden)
+    - kalender/det-sker
+  - vejviser 
+    - biblioteks-åbningstider
+  - lån/reserveringer
+  - ebøger
+
+
 ## Brunch
 
 Checklist fo brunch
