@@ -3,7 +3,8 @@
 ### 0.5
 
 - √mbox reimplementation
-- fix dispatch for multiparam browser hashes
+- √fix dispatch for multiparam browser hashes
+- √ajax (on both node and browser)
 - bibapp
   - √use reagent
   - √single /bib function
