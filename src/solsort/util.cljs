@@ -113,3 +113,8 @@
 (defn chan? [c] (instance? ManyToManyChannel c))
 (testcase 'chan?-1 #(chan? (chan)))
 (testcase 'chan?-2 #(not (chan? true)))
+
+(defn parse-path [path] (.split (.slice path 1) #"[/.]"))
+
+(def -unique-id-counter (atom 0))
+(defn unique-id [] (str "id" (swap! -unique-id-counter inc)))

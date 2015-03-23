@@ -6,7 +6,7 @@
     [solsort.html :refer [html->http]]
     [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
-    [solsort.util :refer [jsextend parse-json-or-nil]]
+    [solsort.util :refer [jsextend parse-json-or-nil parse-path]]
     [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -30,7 +30,7 @@
           (let [t0 (js/Date.now)
                 query (.-query req)
                 body (.-body req)
-                [route & arglist] (.split (.slice (.-path req) 1) #"[/.]")
+                [route & arglist] (parse-path (.-path req))
                 arglist (if (< 0 (.-length (js/Object.keys body)))
                           (cons body arglist)
                           arglist)
