@@ -3,6 +3,7 @@
 ### 0.5
 
 - √mbox reimplementation
+- fix dispatch for multiparam browser hashes
 - bibapp
   - √use reagent
   - √single /bib function
@@ -193,7 +194,14 @@ Distributed system
 
 ## BibApp
 
+### tasks
+
+- biblioteks-materiale info side
+
+#### later
+
 ### notes
+
 - use cases
   - search/find/discover material
     - søgning
