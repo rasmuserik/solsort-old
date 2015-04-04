@@ -22,13 +22,13 @@
 
 (route "hello" 
        (fn [a b]
-        {:type "html"
-         :html [:div
-                "hello " 
-                (hello "world")
-                (hello (Blah. "foo"))
-                (hello (Blap. "foo"))
-                [:div (str "this is: " a)]
-                [:div [:a {:href "#hello/foo"} "foo"]]
-                [:div [:a {:href "#hello/bar"} "bar"]]
-                ]}))
+         {:type "html"
+          :html [:div
+                 "hello " 
+                 (hello "world")
+                 (hello (Blah. "foo"))
+                 (hello (Blap. "foo"))
+                 [:div (str "this is: " a)]
+                 [:div [:a {:href "#hello/foo"} "foo"]]
+                 [:div [:a {:href "#hello/bar"} "bar"]]
+                 ]}))

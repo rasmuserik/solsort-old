@@ -23,7 +23,7 @@
                  :textAlign :left
                  :borderRadius (/ circle-size 2)
                  :boxShadow "0px 0px 2px #000, 
-                             3px 3px 10px rgba(0,0,0,0.4)"
+                            3px 3px 10px rgba(0,0,0,0.4)"
                  }}
      [:img {:src (str "/icons/" (normalise-str title) "")
             :style { :width circle-size

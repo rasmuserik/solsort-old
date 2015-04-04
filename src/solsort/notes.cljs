@@ -45,19 +45,19 @@
 (log 'notes (keys (all-notes)))
 
 (defn note [note-name]
-         (go
-           (let [note (get (all-notes) (canonize-string note-name))]
-               (if note 
-                 {:type "html"
-                  :title (str (:title note) " - solsort.com")
-                  :css {".solsortLogoText" { :textDecoration :none} 
-                        ".container" { :maxWidth "72ex" :display "inline-block"}
-                        "body" {:margin "1ex 10% 0 10%" 
-                                     :padding 0}}
-                  :rawhtml (str
-                             "<div class=\"container\">"
-                             "<a href=\"/\" class=\"solsortLogoText\"><img src=\"/img/logicon.png\"> solsort.com</img></a>"
-                             "<div>" (:html note) "</div></div>")}
-                 {}))))
+  (go
+    (let [note (get (all-notes) (canonize-string note-name))]
+      (if note 
+        {:type "html"
+         :title (str (:title note) " - solsort.com")
+         :css {".solsortLogoText" { :textDecoration :none} 
+               ".container" { :maxWidth "72ex" :display "inline-block"}
+               "body" {:margin "1ex 10% 0 10%" 
+                       :padding 0}}
+         :rawhtml (str
+                    "<div class=\"container\">"
+                    "<a href=\"/\" class=\"solsortLogoText\"><img src=\"/img/logicon.png\"> solsort.com</img></a>"
+                    "<div>" (:html note) "</div></div>")}
+        {}))))
 (route "notes" note)
 (route "writings" note)

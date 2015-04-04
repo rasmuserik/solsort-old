@@ -29,20 +29,20 @@
 (defn ajax [url & {:keys [post-data CORS jsonp]}]
   (if (and jsonp is-browser)
     (-call-jsonp (str url "?callback="))
-  (let [c (chan)
-        req (js/XMLHttpRequest.)
-        ]
-    (.open req (if post-data "POST" "GET") url true)
-    (if CORS (aset req "withCredentials" true))
-    (aset req "onreadystatechange"
-          (fn []
-            (if (= (aget req "readyState") (or (aget req "DONE") 4))
-              (let [text (aget req "responseText")]
-                (if text
-                  (put! c text)
-                  (close! c))))))
-    (.send req)
-    c)))
+    (let [c (chan)
+          req (js/XMLHttpRequest.)
+          ]
+      (.open req (if post-data "POST" "GET") url true)
+      (if CORS (aset req "withCredentials" true))
+      (aset req "onreadystatechange"
+            (fn []
+              (if (= (aget req "readyState") (or (aget req "DONE") 4))
+                (let [text (aget req "responseText")]
+                  (if text
+                    (put! c text)
+                    (close! c))))))
+      (.send req)
+      c)))
 
 (defn ting [lid bibid]
   (go

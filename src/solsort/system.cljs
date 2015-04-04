@@ -44,18 +44,18 @@
 
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
 #_(testcase 'xhr
-          (fn []
-            (let [c (chan)
-                  xhr (XHR.)
-                  json (js/JSON.stringify #js{:hello "world"})]
-              (.open xhr "POST" (str origin "/xhr-test") true)
-              (set! (.-onload xhr) 
-                    (fn []
-                      (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
-              (set! (.-onerror xhr) #(close! c))
-              (.setRequestHeader xhr "Content-Type" "application/json")
-              (.send xhr json) 
-              c)))
+            (fn []
+              (let [c (chan)
+                    xhr (XHR.)
+                    json (js/JSON.stringify #js{:hello "world"})]
+                (.open xhr "POST" (str origin "/xhr-test") true)
+                (set! (.-onload xhr) 
+                      (fn []
+                        (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
+                (set! (.-onerror xhr) #(close! c))
+                (.setRequestHeader xhr "Content-Type" "application/json")
+                (.send xhr json) 
+                c)))
 
 
 (def fs (if is-nodejs (js/require "fs")))

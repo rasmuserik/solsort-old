@@ -15,7 +15,7 @@
 (defn reagenttest []
   (js/console.log "reagent-test" (reagent/render-to-static-markup html))
   (if is-browser
-  (reagent/render html (.-body js/document)))
+    (reagent/render html (.-body js/document)))
   {:type "html"
    :title "hello"
    :html html})

@@ -34,4 +34,4 @@
 
 (route "style" 
        #(go (clj->js {:http-headers {:Content-Type "text/css"}
-                  :content (clj->css @default-style)})))
+                      :content (clj->css @default-style)})))

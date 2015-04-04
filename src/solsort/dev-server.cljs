@@ -12,18 +12,18 @@
 (enable-console-print!)
 
 #_((if (exists? js/Worker) 
-  (do
-    (def worker (js/Worker. system/source-file))
-    (set! (.-onmessage 
-            worker)
-          (fn [e] 
-            (log "message from worker")
-            (js/console.log e)
-            ))
-    ))
+     (do
+       (def worker (js/Worker. system/source-file))
+       (set! (.-onmessage 
+               worker)
+             (fn [e] 
+               (log "message from worker")
+               (js/console.log e)
+               ))
+       ))
 
-(if system/is-worker
-  (js/postMessage "halo")))
+   (if system/is-worker
+     (js/postMessage "halo")))
 
 
 
@@ -35,11 +35,11 @@
 (route "dev-server"
        (fn []
          (go 
-          (log 'dev-server 'start)
-          (autorestart)
-          (solsort.uccorg-monitor/start)
-          (<! (timeout 1000))
-          (run-tests)
-          true)))
+           (log 'dev-server 'start)
+           (autorestart)
+           (solsort.uccorg-monitor/start)
+           (<! (timeout 1000))
+           (run-tests)
+           true)))
 
 (if is-browser (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))
