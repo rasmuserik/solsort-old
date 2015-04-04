@@ -3,7 +3,7 @@
   (:require
     [solsort.mbox :refer [route handle msg]]
     [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
-    [solsort.test :refer [run-tests]]
+    [solsort.test-runner :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
     [solsort.uccorg-monitor]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

@@ -30,6 +30,18 @@
 - solsort slide show
 - uccorg watcher
 - distributed DB
+- package as real clojure modules
+- loader
+- on-need loading of javascript modules (through cdn or distributed db)
+
+- platforms
+  - √node.js server
+  - √html5 client
+  - firefox addon client
+  - chrome addon client
+  - cordova client
+  - cordova kiosk/
+  - nashorn server
 
 ## solsort/solsort changelog
 ### 0.4 /notes
@@ -298,6 +310,44 @@ Personal notes for practising/learning bass
   - John Clayton Jazz
   - ArtistWorks John Patitucci
 
+## Cooking
+
+- suppeessens røde-linser|quinoa/kartoffel/hvidløg/løg
+- tomatsovs tomat/løg/hvidløg
+- belugasovs beluga/løg/tomat
+- små-kager dadel/banan/mandel
+- hvidløgstapanade tomat/olie/hvidløg
+- ovenbagt-fisk fisk/citron/smør
+- tortilla kartofler/æg/mælk/majsstivelse/olie
+- risengrød grødris/mælk
+- fiskefrikadeller fisk/æg/mælk/havregryn/mel
+- smeltet-chokolade chokolade/tørret-frugt
+- hummus kikærter/citron/olie/hvidløg
+- torskerognssalat torskerogn/citron/skyr
+- æggesalat æg/skyr/salt
+- tsatziki agurk/hvidløg/skyr
+- pandekager mælk/æg/mel
+- boller vand/gær/mel
+- stegt-torskerogn torskerogn/citron
+- grønt: tomat, agurk, broccolli (blanceret), spinat (i fløde), gulerødder
+- ærtemos
+- guacemole avocado/citron/hvidløg
+- sovs smør/mel/mælk
+- fyld - kartofler pasta ris brød(pizza-boller, fyldte etc.) couscous
+- diverse: rejer,
+- rudfrugtsovn / ovnstegte kartofler
+- NB tomatsovs + frossen grønt
+- smoothie banan/mælk/bær
+- butterdej
+- pandekartofler m. tomat/hvidløg og stegt rugbrød
+- grøntsagspostej grøntsager/æg/mælk/mel/havregryn
+- risklatkager
+- grøntsagstærte
+
+NB: more bær,nødder,quinoa,spinat,kål,broccoli,citrus,rosenkål,kokusnød
+
+Fisk: rødspætte,rødtunge,skrubbe,torsk(ikke-lever),kuller,kulmule,sej,rogn,opdrættet ørred og laks
+
 ## d6 simple roleplaying system
 
 Notes about simple roleplaying system
@@ -518,6 +568,23 @@ Turn consist of two actions and one step
     - exit angle
 - tango
 
+## Data sets
+
+- fødevardatabanken
+- coop-indkøbsstatisik
+- nationalbibliografien+adhl
+- cvr+geo
+- vurdering af danske ejendomme + geo giver dk pris heatmap
+- verdenskort + un-data
+- canoe questions
+- dbpl citations
+- github
+- couchsurfing
+- facebook
+- github.com/caesar0301/awesome-public-datasets statsci.org/datasets.html
+- world bank data + geo
+- danmarks statistik
+
 ## Anbefalinger
 
 
@@ -633,6 +700,10 @@ In the online version, it is possible to click on the hint-button to see example
 Rules are mostly the same as the [Set card game](http://en.wikipedia.org/wiki/Set_%28game%29), which is highly recommendable. 
 
 The goal of the original version of CombiGame was just to play Set on the smartphone (with new graphics), - later on it expanded onto physical cards as well.
+
+## CheatSheet
+
+- tmux new -t 0
 
 ## EuroCards
 

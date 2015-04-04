@@ -3,7 +3,6 @@
   (:require
     [solsort.mbox :refer [route]]
     [solsort.system :as system :refer [warn log is-browser fs source-file exit is-nodejs set-immediate]]
-    [solsort.test :refer [run-tests]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (defn process-daylog [markdown]
