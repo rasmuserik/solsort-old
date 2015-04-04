@@ -348,6 +348,14 @@ NB: more bær,nødder,quinoa,spinat,kål,broccoli,citrus,rosenkål,kokusnød
 
 Fisk: rødspætte,rødtunge,skrubbe,torsk(ikke-lever),kuller,kulmule,sej,rogn,opdrættet ørred og laks
 
+## Clojure
+
+- protocols/types
+  - defprotocol ~= interface
+  - deftype implementation
+  - defrecord clojure immutable implementation
+  - reify `{foo: function, bar: function, baz:function}`
+
 ## d6 simple roleplaying system
 
 Notes about simple roleplaying system
