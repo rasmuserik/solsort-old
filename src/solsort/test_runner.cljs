@@ -2,8 +2,8 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [testcases testcase]]
-    [solsort.mbox :refer [route]]
-    [solsort.system :refer [log is-browser]]
+    [solsort.mbox :refer [log route]]
+    [solsort.platform :refer [is-browser]]
     [solsort.util :refer [chan?]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

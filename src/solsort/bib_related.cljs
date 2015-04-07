@@ -2,8 +2,8 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [testcase]]
-    [solsort.mbox :refer [route]]
-    [solsort.system :refer [exec each-lines is-nodejs log]]
+    [solsort.mbox :refer [route log]]
+    [solsort.system :refer [exec each-lines is-nodejs]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.util :refer [print-channel kvdb-store-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]

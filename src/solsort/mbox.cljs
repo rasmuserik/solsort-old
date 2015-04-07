@@ -93,3 +93,4 @@
 
 ;; Logging
 (defn log [& args] (post local "log" (string/join " " (map pr-str args))))
+(defn warn [& args] (apply log 'warn args))

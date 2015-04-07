@@ -1,8 +1,8 @@
 (ns solsort.example
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.mbox :refer [route]]
-    [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
+    [solsort.mbox :refer [route log]]
+    [solsort.system :as system :refer [is-browser fs source-file exit is-nodejs]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (defprotocol TestProtocol

@@ -1,9 +1,9 @@
 (ns solsort.index
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.mbox :refer [route]]
+    [solsort.mbox :refer [route log]]
     [solsort.html :refer [normalise-str hex-color]]
-    [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
+    [solsort.system :as system :refer [is-browser fs source-file exit is-nodejs]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 

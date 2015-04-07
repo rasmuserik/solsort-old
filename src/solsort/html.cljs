@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.css :refer [js->css]]
-    [solsort.system :refer [log]]
+    [solsort.mbox :refer [log]]
     [reagent.core :as reagent]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

@@ -3,8 +3,8 @@
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.registry :refer [testcase]]
-    [solsort.mbox :refer [post local msg processes]]
-    [solsort.system :refer [is-nodejs is-browser log set-immediate]]
+    [solsort.mbox :refer [post local msg log processes]]
+    [solsort.system :refer [is-nodejs is-browser set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (def pid local)
 (def pids (atom {}))

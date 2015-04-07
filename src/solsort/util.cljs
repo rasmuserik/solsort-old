@@ -3,7 +3,7 @@
   (:require
     [solsort.registry :refer [testcase]]
     [solsort.kvdb :as kvdb]
-    [solsort.system :refer [log]]
+    [solsort.mbox :refer [log]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

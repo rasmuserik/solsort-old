@@ -1,10 +1,10 @@
 (ns solsort.router
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.mbox :refer [local-mbox? call local local-mboxes]]
+    [solsort.mbox :refer [local-mbox? call local local-mboxes log]]
     [solsort.util :refer [chan? parse-path]]
     [solsort.html :refer [render-html]]
-    [solsort.system :as system :refer [log is-browser]]
+    [solsort.platform :refer [is-browser set-immediate]]
     ))
 
 (enable-console-print!)
@@ -25,6 +25,6 @@
           result)
         (log 'routes 'no-such-route args (local-mboxes))))))
 
-(system/set-immediate dispatch)
+(set-immediate dispatch)
 (if is-browser
   (aset js/window "onhashchange" dispatch))

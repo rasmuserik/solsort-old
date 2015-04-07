@@ -1,8 +1,8 @@
 (ns solsort.dev-server
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.mbox :refer [route handle msg]]
-    [solsort.system :as system :refer [log is-browser fs source-file exit is-nodejs]]
+    [solsort.mbox :refer [route handle log]]
+    [solsort.system :as system :refer [is-browser fs source-file exit is-nodejs]]
     [solsort.test-runner :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
     [solsort.uccorg-monitor]
