@@ -10,23 +10,6 @@
 
 
 (enable-console-print!)
-
-#_((if (exists? js/Worker) 
-     (do
-       (def worker (js/Worker. system/source-file))
-       (set! (.-onmessage 
-               worker)
-             (fn [e] 
-               (log "message from worker")
-               (js/console.log e)
-               ))
-       ))
-
-   (if system/is-worker
-     (js/postMessage "halo")))
-
-
-
 (defn autorestart []
   (if is-nodejs (.watch fs source-file (memoize (fn [] 
                                                   (broadcast "reload" nil)

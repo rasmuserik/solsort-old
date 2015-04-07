@@ -5,6 +5,7 @@
   (:require
     [solsort.registry :refer [testcase]]
     [solsort.mbox :refer [route local]]
+    [solsort.platform :as platform]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -12,23 +13,14 @@
 (declare log)
 
 
-(def global 
-  (cond
-    (exists? js/window) js/window
-    (exists? js/global) js/global
-    (exists? js/self) js/self
-    :else ((fn [] js/this))))
-(aset global "window" global)
+(def global platform/global)
+(def is-nodejs platform/is-nodejs)
+(def is-browser platform/is-browser)
+(def origin platform/origin)
+(def XHR platform/XHR)
+(def fs platform/fs)
+(def set-immediate platform/set-immediate)
 
-
-(def is-browser (and (exists? js/window) (exists? js/window.document)))
-(def is-nodejs (and
-                 (exists? js/global)
-                 (.hasOwnProperty js/global "process")
-                 (.hasOwnProperty js/global.process "title")))
-
-(def is-worker (and (not is-nodejs) (not is-browser)))
-(def is-server (and (not is-browser) (not is-worker)))
 (def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
 (def source-file 
   (cond
@@ -37,10 +29,6 @@
     :else "/solsort.js"))
 
 
-
-(def origin (if is-nodejs "http://localhost:9999" js/location.origin))
-
-(def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
 
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
 #_(testcase 'xhr
@@ -58,7 +46,6 @@
                 c)))
 
 
-(def fs (if is-nodejs (js/require "fs")))
 (defn read-file-sync [filename]
   (.readFileSync (js/require "fs") filename))
 (defn each-lines [filename]
@@ -99,15 +86,6 @@
     c))
 
 
-(if (and is-nodejs (not (exists? Showdown)))
-  (aset global "Showdown" (js/require "showdown")))
-
-
-(comment window-React-Worker-etc)
-(if (and is-nodejs (not is-browser)) 
-  (do 
-    (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
-    (aset global "React" (js/require "react"))))
 (testcase 'react
           #(= "<h1>Hello</h1>"
               (.renderToStaticMarkup
@@ -116,11 +94,6 @@
                   js/React
                   "h1" nil "Hello"))))
 
-
-(def set-immediate ; "execute function immediately after event-handling"
-  (if (exists? js/setImmediate)
-    js/setImmediate ; node.js and IE (IE might be buggy)
-    (fn [f] (js/setTimeout f 0))))
 
 (defn exit [errcode]
   (go
