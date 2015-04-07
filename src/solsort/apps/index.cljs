@@ -3,7 +3,7 @@
   (:require
     [solsort.mbox :refer [route log]]
     [solsort.html :refer [normalise-str hex-color]]
-    [solsort.system :as system :refer [is-browser fs exit is-nodejs]]
+    [solsort.platform :refer [is-browser fs exit is-nodejs]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 

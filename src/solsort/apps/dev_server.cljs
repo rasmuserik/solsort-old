@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.mbox :refer [route handle log]]
-    [solsort.system :refer [is-browser fs exit is-nodejs]]
+    [solsort.platform :refer [is-browser fs exit is-nodejs]]
     [solsort.test-runner :refer [run-tests]]
     [solsort.net :refer [broadcast]]
     [solsort.uccorg-monitor]

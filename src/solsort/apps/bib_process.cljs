@@ -1,7 +1,7 @@
 (ns solsort.bib-process
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.system :refer [exec each-lines]]
+    [solsort.platform :refer [exec each-lines]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.mbox :refer [route]]

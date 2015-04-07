@@ -7,7 +7,7 @@
     [solsort.net :refer [start-websocket-server]]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil parse-path]]
-    [solsort.system :as system :refer [is-nodejs set-immediate read-file-sync]]
+    [solsort.platform :refer [is-nodejs set-immediate read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (comment is-nodejs) 

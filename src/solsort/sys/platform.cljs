@@ -2,6 +2,7 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.mbox :refer [log]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (enable-console-print!)
@@ -62,4 +63,50 @@
 ;; File system
 (def fs (if is-nodejs (js/require "fs")))
 (defn ensure-dir [dirname] (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
+
+(defn read-file-sync [filename] (.readFileSync (js/require "fs") filename))
+(defn each-lines [filename]
+  (let
+    [c (chan 1)
+     buf (atom "")
+     stream (.createReadStream fs filename)]
+    (.on stream "data"
+         (fn [data]
+           (.pause stream)
+           (go
+             (swap! buf #(str % data))
+             (let [lines (.split @buf "\n")]
+               (swap! buf #(aget lines (- (.-length lines) 1)))
+               (loop [i 0]
+                 (if (< i (- (.-length lines) 1))
+                   (do
+                     (>! c (str (aget lines i) "\n"))
+                     (recur (inc i))))))
+             (.resume stream)
+             )
+           ))
+    (.on stream "close"
+         (fn []
+           (put! c @buf)
+           (close! c)))
+    c))
+
+
+;; OS
+(defn exec [cmd]
+  (let [c (chan)]
+    (.exec (js/require "child_process") cmd
+           (fn [err stdout stderr]
+             (if (= err nil)
+               (put! c stdout)
+               (close! c)
+               )))
+    c))
+
+(defn exit [errcode]
+  (go
+    (<! (timeout 300))
+    (log 'system 'exit errcode)
+    (if is-nodejs
+      (js/process.exit errcode))))
 

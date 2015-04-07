@@ -3,7 +3,7 @@
   (:require
     [solsort.test :refer [testcase]]
     [solsort.mbox :refer [route log]]
-    [solsort.system :refer [exec each-lines is-nodejs]]
+    [solsort.platform :refer [exec each-lines is-nodejs]]
     [solsort.kvdb :as kvdb]
     [solsort.webserver :as webserver]
     [solsort.util :refer [print-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
