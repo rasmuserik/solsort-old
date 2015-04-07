@@ -29,6 +29,24 @@
     :else "/solsort.js"))
 
 
+(defn ajax [url & {:keys [post-data CORS jsonp]}]
+  (if (and jsonp is-browser)
+    (platform/jsonp (str url "?callback="))
+    (let [c (chan)
+          req (XHR.)
+          ]
+      (.open req (if post-data "POST" "GET") url true)
+      (if CORS (aset req "withCredentials" true))
+      (aset req "onreadystatechange"
+            (fn []
+              (if (= (aget req "readyState") (or (aget req "DONE") 4))
+                (let [text (aget req "responseText")]
+                  (if text
+                    (put! c text)
+                    (close! c))))))
+      (.send req)
+      c)))
+
 
 (route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
 #_(testcase 'xhr

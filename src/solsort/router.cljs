@@ -26,4 +26,5 @@
         (log 'routes 'no-such-route args (local-mboxes))))))
 
 (system/set-immediate dispatch)
-(aset js/window "onhashchange" dispatch)
+(if is-browser
+  (aset js/window "onhashchange" dispatch))

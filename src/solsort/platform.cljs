@@ -4,6 +4,7 @@
   (:require
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+
 (def global 
   (cond
     (exists? js/window) js/window
@@ -23,10 +24,28 @@
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
 
-(if (and is-nodejs (not is-browser)) 
-  (do 
-    (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
-    (aset global "React" (js/require "react"))))
-(aset global "window" global)
-(if (and is-nodejs (not (exists? Showdown)))
-  (aset global "Showdown" (js/require "showdown")))
+
+(comment jsonp)
+(when is-browser
+  (def -unique-id-counter (atom 0))
+  (defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
+  (defn jsonp [url]
+    (let [c (chan)    
+          id (unique-id)]
+      (aset global id 
+            (fn [o]
+              ;(log 'call-jsonp id o)
+              (if o 
+                (put! c (js/JSON.stringify o))
+                (close! c))
+              (goog.object.remove global id)))
+      (let [tag (js/document.createElement "script")]
+        (aset tag "src" (str url id))
+        (js/document.head.appendChild tag))
+      c)))
+
+
+(comment global)
+(when (and is-nodejs (not is-browser)) 
+  (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
+  (aset global "React" (js/require "react")))

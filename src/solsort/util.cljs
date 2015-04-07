@@ -30,20 +30,6 @@
               (js->clj (jsextend #js{:foo 1 :bar 1} #js{:bar 2}))))
 
 
-(defn http-req
-  ([url params] (throw "not implemented"))
-  ([url]
-   (let
-     ;TODO ie8/9-cors-support
-     [result (chan)
-      xhr (js/XMLHttpRequest.)]
-     (.open xhr "GET" url true)
-     (set! (.-withCredentials xhr) true)
-     (set! (.-onerror xhr) #(close! result))
-     (set! (.-onload xhr) #(put! result (.-responseText xhr)))
-     (.send xhr)
-     result)))
-
 (defn print-channel [c]
   (go (loop [msg (<! c)]
         (if msg (do (print msg) (recur (<! c)))))))
