@@ -44,8 +44,11 @@
         (js/document.head.appendChild tag))
       c)))
 
+(def worker 
+  (if is-nodejs 
+    (aget (js/require "webworker-threads") "Worker")
+    (aget global "Worker")))
 
 (comment global)
 (when (and is-nodejs (not is-browser)) 
-  (aset global "Worker" (aget (js/require "webworker-threads") "Worker"))
   (aset global "React" (js/require "react")))

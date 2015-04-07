@@ -13,7 +13,6 @@
 (declare log)
 
 
-(def global platform/global)
 (def is-nodejs platform/is-nodejs)
 (def is-browser platform/is-browser)
 (def origin platform/origin)

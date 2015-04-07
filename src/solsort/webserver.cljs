@@ -7,7 +7,7 @@
     [solsort.ws :refer [start-websocket-server]]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil parse-path]]
-    [solsort.system :as system :refer [log is-nodejs set-immediate global read-file-sync]]
+    [solsort.system :as system :refer [log is-nodejs set-immediate read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (comment is-nodejs) 
@@ -59,15 +59,15 @@
                ))))
 
     (defn -start-server []
-      (aset global "bodyParser" (js/require "body-parser"))
       (let [express (js/require "express")
             app (express)
+            body-parser (js/require "body-parser")
             host (or (aget js/process.env "HOST") "localhost")
             port (or (aget js/process.env "PORT") 9999)
             http-server-instance (.createServer (js/require "http") app) ]
 
-        (.use app (.json js/bodyParser))
-        (.use app (.urlencoded js/bodyParser #js{"extended" false}))
+        (.use app ((aget body-parser "json")))
+        (.use app ((aget body-parser "urlencoded")  #js{"extended" false}))
         (.all app "*" handler)
         (.listen http-server-instance 9999)
         (start-websocket-server http-server-instance)

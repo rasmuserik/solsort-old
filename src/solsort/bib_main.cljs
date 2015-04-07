@@ -3,7 +3,6 @@
   (:require
     [solsort.mbox :refer [route]]
     [solsort.system :refer [log ajax]]
-    [solsort.platform :refer [XHR is-browser global]]
     [solsort.kvdb :as kvdb]
     [solsort.util :refer [parse-json-or-nil unique-id]]
     [solsort.bib-related :refer [get-related]]
