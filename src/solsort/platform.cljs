@@ -4,6 +4,7 @@
   (:require
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+(enable-console-print!)
 
 ;; Global+predicates
 (def global 

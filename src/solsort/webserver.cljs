@@ -4,7 +4,7 @@
     [solsort.test :refer [testcase]]
     [solsort.mbox :refer [local-mboxes local-mbox? call local route log]]
     [solsort.html :refer [html->http]]
-    [solsort.ws :refer [start-websocket-server]]
+    [solsort.net :refer [start-websocket-server]]
     [clojure.string :refer [split]]
     [solsort.util :refer [jsextend parse-json-or-nil parse-path]]
     [solsort.system :as system :refer [is-nodejs set-immediate read-file-sync]]

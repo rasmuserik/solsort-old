@@ -7,6 +7,7 @@
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
+(declare log)
 (declare -route-error)
 (declare route-error-fn)
 (declare post)

@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.mbox :refer [route log]]
-    [solsort.system :refer [ajax]]
+    [solsort.net :refer [ajax]]
     [solsort.kvdb :as kvdb]
     [solsort.util :refer [parse-json-or-nil unique-id]]
     [solsort.bib-related :refer [get-related]]

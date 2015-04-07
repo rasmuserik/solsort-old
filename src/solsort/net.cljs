@@ -1,10 +1,10 @@
-(ns solsort.ws
+(ns solsort.net
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.test :refer [testcase]]
     [solsort.mbox :refer [post local msg log processes]]
-    [solsort.system :refer [is-nodejs is-browser set-immediate]]
+    [solsort.platform :refer [is-nodejs is-browser set-immediate XHR]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (def pid local)
 (def pids (atom {}))
@@ -78,6 +78,7 @@
         ))
 
     (defn ws-connect []
+      (log 'ws 'connect)
       (let
         [ws (js/WebSocket. socket-server)]
         (aset ws "onopen" (fn [e] (.send ws (js/JSON.stringify #js{:pid pid}))))
@@ -94,6 +95,7 @@
                   (ws-connect))))
         (aset ws "onmessage" 
               (fn [e] 
+                (log 'ws 'message)
                 (let [data (js/JSON.parse (aget e "data"))
                       pid (aget data "pid")]
                   (if pid
@@ -117,7 +119,26 @@
                       )
                     (log 'ws 'error-unexpected-first-message data)
                     ))))
-        (log 'ws 'message)
         ))
-    (ws-connect)
+    (set-immediate ws-connect)
     ))
+
+
+(defn ajax [url & {:keys [post-data CORS jsonp]}]
+  (if (and jsonp is-browser)
+    (solsort.platform/jsonp (str url "?callback="))
+    (let [c (chan)
+          req (XHR.)
+          ]
+      (.open req (if post-data "POST" "GET") url true)
+      (if CORS (aset req "withCredentials" true))
+      (aset req "onreadystatechange"
+            (fn []
+              (if (= (aget req "readyState") (or (aget req "DONE") 4))
+                (let [text (aget req "responseText")]
+                  (if text
+                    (put! c text)
+                    (close! c))))))
+      (.send req)
+      c)))
+
