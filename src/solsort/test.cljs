@@ -1,4 +1,4 @@
-(ns solsort.registry
+(ns solsort.test
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require

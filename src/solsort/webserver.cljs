@@ -1,7 +1,7 @@
 (ns solsort.webserver
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.test :refer [testcase]]
     [solsort.mbox :refer [local-mboxes local-mbox? call local route log]]
     [solsort.html :refer [html->http]]
     [solsort.ws :refer [start-websocket-server]]

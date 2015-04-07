@@ -77,6 +77,36 @@
 
 ## solsort/solsort notes
 
+- sys/mbox - clj
+- sys/platform - clj
+- sys/test - clj
+- sys/util - clj
+- sys/log - clj
+
+- sys/system - js
+
+- lib/ajax
+
+- lib/test_runner - clj
+- lib/kvdb - clj
+- lib/ws - clj
+- lib/dispatch - js
+- lib/css - js
+- lib/html - js
+- lib/webserver - nodejs
+- apps/uccorg_monitor
+- apps/index
+- apps/rasmuserik
+- apps/notes
+- apps/bib_main
+- apps/bib_process
+- apps/bib_related
+- apps/dev_server
+- apps/example
+
+
+
+
 - process
   - has one mbox
   - either worker(webworker), browser(ui+indexeddb), nodejs(w/ public http server)

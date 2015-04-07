@@ -1,9 +1,10 @@
 (ns solsort.test-runner
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.registry :refer [testcases testcase]]
+    [solsort.test :refer [testcases testcase]]
     [solsort.mbox :refer [log route]]
     [solsort.platform :refer [is-browser]]
+    [solsort.system]
     [solsort.util :refer [chan?]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

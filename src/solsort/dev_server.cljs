@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.mbox :refer [route handle log]]
-    [solsort.system :as system :refer [is-browser fs source-file exit is-nodejs]]
+    [solsort.system :as system :refer [is-browser fs exit is-nodejs]]
     [solsort.test-runner :refer [run-tests]]
     [solsort.ws :refer [broadcast]]
     [solsort.uccorg-monitor]
@@ -11,7 +11,7 @@
 
 (enable-console-print!)
 (defn autorestart []
-  (if is-nodejs (.watch fs source-file (memoize (fn [] 
+  (if is-nodejs (.watch fs js/__filename (memoize (fn [] 
                                                   (broadcast "reload" nil)
                                                   (log 'system 'source-change 'restarting) (exit 0))))))
 

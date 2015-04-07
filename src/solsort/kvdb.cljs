@@ -1,7 +1,7 @@
 (ns solsort.kvdb
   (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.test :refer [testcase]]
     [solsort.platform :refer [is-browser ensure-dir]]
     [cljs.reader :refer [read-string]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))

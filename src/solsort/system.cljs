@@ -3,7 +3,7 @@
     [solsort.system :refer [defapi]]
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.registry :refer [testcase]]
+    [solsort.test :refer [testcase]]
     [solsort.mbox :as mbox :refer [route local log]]
     [solsort.platform :as platform :refer [ensure-dir]]
     [clojure.string :as string]
@@ -18,48 +18,6 @@
 (def XHR platform/XHR)
 (def fs platform/fs)
 (def set-immediate platform/set-immediate)
-
-(def hostname (if is-nodejs (.hostname (js/require "os")) "browser"))
-(def source-file 
-  (cond
-    (exists? js/__filename) js/__filename 
-    (and (exists? js/location) (= "file" (.slice js/location.href 0 4))) "solsort.js" 
-    :else "/solsort.js"))
-
-
-(defn ajax [url & {:keys [post-data CORS jsonp]}]
-  (if (and jsonp is-browser)
-    (platform/jsonp (str url "?callback="))
-    (let [c (chan)
-          req (XHR.)
-          ]
-      (.open req (if post-data "POST" "GET") url true)
-      (if CORS (aset req "withCredentials" true))
-      (aset req "onreadystatechange"
-            (fn []
-              (if (= (aget req "readyState") (or (aget req "DONE") 4))
-                (let [text (aget req "responseText")]
-                  (if text
-                    (put! c text)
-                    (close! c))))))
-      (.send req)
-      c)))
-
-
-(route "xhr-test" (fn [arg] (go (log 'xhr-test arg) (str "hi " (aget arg "hello")))))
-#_(testcase 'xhr
-            (fn []
-              (let [c (chan)
-                    xhr (XHR.)
-                    json (js/JSON.stringify #js{:hello "world"})]
-                (.open xhr "POST" (str origin "/xhr-test") true)
-                (set! (.-onload xhr) 
-                      (fn []
-                        (put! c (= (js/JSON.parse (.-responseText xhr)) "hi world"))))
-                (set! (.-onerror xhr) #(close! c))
-                (.setRequestHeader xhr "Content-Type" "application/json")
-                (.send xhr json) 
-                c)))
 
 
 (defn read-file-sync [filename]
@@ -99,16 +57,6 @@
                )))
     c))
 
-
-(testcase 'react
-          #(= "<h1>Hello</h1>"
-              (.renderToStaticMarkup
-                js/React
-                (.createElement
-                  js/React
-                  "h1" nil "Hello"))))
-
-
 (defn exit [errcode]
   (go
     (<! (timeout 300))
@@ -117,41 +65,21 @@
       (js/process.exit errcode))))
 
 
+(defn ajax [url & {:keys [post-data CORS jsonp]}]
+  (if (and jsonp is-browser)
+    (platform/jsonp (str url "?callback="))
+    (let [c (chan)
+          req (XHR.)
+          ]
+      (.open req (if post-data "POST" "GET") url true)
+      (if CORS (aset req "withCredentials" true))
+      (aset req "onreadystatechange"
+            (fn []
+              (if (= (aget req "readyState") (or (aget req "DONE") 4))
+                (let [text (aget req "responseText")]
+                  (if text
+                    (put! c text)
+                    (close! c))))))
+      (.send req)
+      c)))
 
-(defn two-digits [n] (.slice (str (+ (mod n 100) 300)) 1))
-(defn three-digits [n] (.slice (str (+ (mod n 1000) 3000)) 1))
-(defn six-digits [n] (.slice (str (+ (mod n 1000000) 3000000)) 1))
-(defn date-string []
-  (let [now (js/Date.)]
-    (string/join "" (map two-digits [(.getUTCFullYear now) (inc (.getUTCMonth now)) (.getUTCDate now)]))))
-(defn time-string []
-  (let [now (js/Date.)]
-    (string/join "" (map two-digits [(.getUTCHours now) (.getUTCMinutes now) (.getUTCSeconds now)]))))
-(defn timestamp-string []
-  (str (date-string) "-" (time-string) "." (three-digits (.now js/Date))))
-(def logfile-name (atom nil))
-(def logfile-stream (atom nil))
-(mbox/handle 
-  "log"
-  (fn [o]
-    (let [msg (str (six-digits (aget (aget o "info") "src")) " "
-                   (timestamp-string) " " 
-                   (aget o "data"))
-          date (date-string)
-          logpath "logs/"
-          logname (str logpath hostname "-" date ".log")]
-      (if is-nodejs
-        (do
-          (if (not (= @logfile-name logname))
-            (do
-              (if @logfile-stream
-                (let [oldname @logfile-name]
-                  (.on @logfile-stream "close" (exec (str "xz -9 " oldname)))
-                  (.end @logfile-stream)))
-              (ensure-dir logpath)
-              (reset! logfile-stream (.createWriteStream fs logname #js{:flags "a"}))
-              (reset! logfile-name logname)))
-          (.write @logfile-stream (str msg "\n"))))
-      (.log js/console msg))))
-
-(log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
