@@ -1,5 +1,5 @@
 (ns solsort.kvdb
-  (:require-macros [cljs.core.async.macros :refer [go alt!]])
+  (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]])
   (:require
     [solsort.registry :refer [testcase]]
     [solsort.platform :refer [is-browser ensure-dir]]
@@ -181,6 +181,17 @@
                 (close! c)))
         c))
     ))
+
+
+;; Generic functions
+(defn store-channel [db c]
+  (go-loop 
+    [key-val (<! c)] 
+    (if key-val
+      (let [[k v] key-val]
+        (<! (store db k (clj->js v)))
+        (recur (<! c)))
+      (<! (commit db)))))
 
 
 ;; Test

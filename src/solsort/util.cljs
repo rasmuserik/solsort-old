@@ -2,7 +2,6 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.registry :refer [testcase]]
-    [solsort.kvdb :as kvdb]
     [solsort.mbox :refer [log]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
@@ -33,15 +32,6 @@
 (defn print-channel [c]
   (go (loop [msg (<! c)]
         (if msg (do (print msg) (recur (<! c)))))))
-
-(defn kvdb-store-channel [db c]
-  (go-loop 
-    [key-val (<! c)]
-    (if key-val
-      (let [[k v] key-val]
-        (<! (kvdb/store db k (clj->js v)))
-        (recur (<! c)))
-      (<! (kvdb/commit db)))))
 
 (defn by-first [xf]
   (let [prev-key (atom nil)
