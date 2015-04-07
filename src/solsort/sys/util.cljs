@@ -1,8 +1,8 @@
 (ns solsort.util
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.test :refer [testcase]]
-    [solsort.mbox :refer [log]]
+    [solsort.sys.test :refer [testcase]]
+    [solsort.sys.mbox :refer [log]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

@@ -1,8 +1,8 @@
-(ns solsort.uccorg-monitor
+(ns solsort.apps.uccorg-monitor
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.platform :refer [exec]]
-    [solsort.mbox :refer [route log]]
+    [solsort.sys.platform :refer [exec]]
+    [solsort.sys.mbox :refer [route log]]
     [solsort.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 

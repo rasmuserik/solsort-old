@@ -1,8 +1,8 @@
 (ns solsort.rasmuserik
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.mbox :refer [route log]]
-    [solsort.platform :refer [is-browser fs exit is-nodejs]]
+    [solsort.sys.mbox :refer [route log]]
+    [solsort.sys.platform :refer [is-browser fs exit is-nodejs]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 

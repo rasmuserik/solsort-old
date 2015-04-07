@@ -1,10 +1,10 @@
-(ns solsort.net
+(ns solsort.lib.net
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.test :refer [testcase]]
-    [solsort.mbox :refer [post local msg log processes]]
-    [solsort.platform :refer [is-nodejs is-browser set-immediate XHR]]
+    [solsort.sys.test :refer [testcase]]
+    [solsort.sys.mbox :refer [post local msg log processes]]
+    [solsort.sys.platform :refer [is-nodejs is-browser set-immediate XHR]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (def pid local)
 (def pids (atom {}))
@@ -126,7 +126,7 @@
 
 (defn ajax [url & {:keys [post-data CORS jsonp]}]
   (if (and jsonp is-browser)
-    (solsort.platform/jsonp (str url "?callback="))
+    (solsort.sys.platform/jsonp (str url "?callback="))
     (let [c (chan)
           req (XHR.)
           ]

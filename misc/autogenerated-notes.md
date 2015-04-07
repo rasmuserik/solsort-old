@@ -81,15 +81,10 @@
 - sys/platform - clj
 - sys/test - clj
 - sys/util - clj
-- sys/log - clj
-
-- sys/system - js
-
-- lib/ajax
-
+- lib/log - clj
 - lib/test_runner - clj
 - lib/kvdb - clj
-- lib/ws - clj
+- lib/net - clj ws+ajax
 - lib/dispatch - js
 - lib/css - js
 - lib/html - js
@@ -104,31 +99,29 @@
 - apps/dev_server
 - apps/example
 
-
-
-
-- process
-  - has one mbox
-  - either worker(webworker), browser(ui+indexeddb), nodejs(w/ public http server)
-- types
-  - handler: msg -> 
-  - msg: pid, mbox, info[reply-to] , data/args
-- api
-  - low-level
-    - msg (pid, mbox, data, info) -> msg
-    - post msg -> nil
-    - handle (mbox, handler) -> mbox | nil
-    - handle (handler) -> mbox
-    - unhandle (mbox) -> success
-    - handled? mbox -> bool
-    - handled -> mbox list
-  - high-level
-    - call-timeout (timeout, pid, mbox, args..) -> result chan
-    - call (pid, mbox, args..) -> result chan
-    - route (mbox, f args... -> result chan) -> nil
-    - local pid
-    - browser pid
-    - random-worker () -> pid
+### mbox
+  - process
+    - has one mbox
+    - either worker(webworker), browser(ui+indexeddb), nodejs(w/ public http server)
+  - types
+    - handler: msg -> 
+    - msg: pid, mbox, info[reply-to] , data/args
+  - api
+    - low-level
+      - msg (pid, mbox, data, info) -> msg
+      - post msg -> nil
+      - handle (mbox, handler) -> mbox | nil
+      - handle (handler) -> mbox
+      - unhandle (mbox) -> success
+      - handled? mbox -> bool
+      - handled -> mbox list
+    - high-level
+      - call-timeout (timeout, pid, mbox, args..) -> result chan
+      - call (pid, mbox, args..) -> result chan
+      - route (mbox, f args... -> result chan) -> nil
+      - local pid
+      - browser pid
+      - random-worker () -> pid
 
 ### old notes
 

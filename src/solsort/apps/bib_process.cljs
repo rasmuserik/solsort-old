@@ -1,10 +1,10 @@
 (ns solsort.bib-process
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
-    [solsort.platform :refer [exec each-lines]]
-    [solsort.kvdb :as kvdb]
-    [solsort.webserver :as webserver]
-    [solsort.mbox :refer [route]]
+    [solsort.sys.platform :refer [exec each-lines]]
+    [solsort.lib.kvdb :as kvdb]
+    [solsort.lib.webserver :as webserver]
+    [solsort.sys.mbox :refer [route]]
     [solsort.util :refer [print-channel by-first transducer-status]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))

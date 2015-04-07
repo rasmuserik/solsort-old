@@ -1,8 +1,8 @@
-(ns solsort.platform
+(ns solsort.sys.platform
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.mbox :refer [log]]
+    [solsort.sys.mbox :refer [log]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (enable-console-print!)

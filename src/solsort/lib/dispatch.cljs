@@ -1,10 +1,10 @@
 (ns solsort.dispatch
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.mbox :refer [local-mbox? call local local-mboxes log]]
+    [solsort.sys.mbox :refer [local-mbox? call local local-mboxes log]]
     [solsort.util :refer [chan? parse-path]]
-    [solsort.html :refer [render-html]]
-    [solsort.platform :refer [is-browser set-immediate]]
+    [solsort.lib.html :refer [render-html]]
+    [solsort.sys.platform :refer [is-browser set-immediate]]
     ))
 
 (enable-console-print!)

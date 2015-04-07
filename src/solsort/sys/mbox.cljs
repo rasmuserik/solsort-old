@@ -1,4 +1,4 @@
-(ns solsort.mbox
+(ns solsort.sys.mbox
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require

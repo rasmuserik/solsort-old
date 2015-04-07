@@ -2,8 +2,8 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.platform :as platform :refer [ensure-dir fs is-nodejs is-browser exec]]
-    [solsort.mbox :refer [log handle]]
+    [solsort.sys.platform :as platform :refer [ensure-dir fs is-nodejs is-browser exec]]
+    [solsort.sys.mbox :refer [log handle]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
