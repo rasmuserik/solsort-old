@@ -137,7 +137,7 @@
 (mbox/handle 
   "log"
   (fn [o]
-  (let [msg (str (six-digits local) " "
+  (let [msg (str (six-digits (aget (aget o "info") "src")) " "
                  (timestamp-string) " " 
                  (aget o "data"))
         date (date-string)

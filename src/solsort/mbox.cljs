@@ -26,7 +26,8 @@
 (def -mboxes "mboxes for local process" (atom {}))
 (def -unique-id-counter (atom 0))
 (defn -unique-id [] (str "id" (swap! -unique-id-counter inc)))
-(defn -local-handler [msg] ((get @-mboxes (aget msg "mbox") @route-error-fn) msg))
+(defn -local-handler [msg] 
+  ((get @-mboxes (aget msg "mbox") @route-error-fn) msg))
 
 
 (defn transit-read [o] (transit/read -reader o))
@@ -35,9 +36,9 @@
 ;; internal message passing / low level api
 (def route-error-fn (atom -route-error))
 (defn msg "construct a message object"
-  ([pid mbox data] (msg pid mbox data #js{}))
+  ([pid mbox data] (msg pid mbox data #js{:src local}))
   ([pid mbox data info] 
-   #js{:pid pid :mbox mbox :data data :info info}))
+   #js{:info info :data data :mbox mbox :pid pid}))
 (defn post "send a message to a mbox"
   ([msg] (let [pid (aget msg "pid")
                handler (if (= pid local)
@@ -75,7 +76,7 @@
               (close! c)
               (put! c data))))]
     (handle rbox handler)
-    (post pid mbox (transit-write args) #js{:rpid local :rbox rbox})
+    (post pid mbox (transit-write args) #js{:rpid local :rbox rbox :src local})
     (if max-wait (go (<! (timeout max-wait)) (handler #js{})))
     c))
 (defn call [pid mbox & args] (apply call-timeout false pid mbox args))
