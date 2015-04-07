@@ -5,7 +5,7 @@
   (:require
     [solsort.registry :refer [testcase]]
     [solsort.mbox :as mbox :refer [route local log]]
-    [solsort.platform :as platform]
+    [solsort.platform :as platform :refer [ensure-dir]]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 (comment enable-print)
@@ -89,8 +89,6 @@
            (put! c @buf)
            (close! c)))
     c))
-(defn ensure-dir [dirname]
-  (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
 (defn exec [cmd]
   (let [c (chan)]
     (.exec (js/require "child_process") cmd

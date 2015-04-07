@@ -5,6 +5,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 
+;; Global+predicates
 (def global 
   (cond
     (exists? js/window) js/window
@@ -16,16 +17,23 @@
                  (exists? js/global)
                  (.hasOwnProperty js/global "process")
                  (.hasOwnProperty js/global.process "title")))
+
+
+;; Browser API
 (def origin (if is-nodejs "http://localhost:9999" js/location.origin))
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
-(def fs (if is-nodejs (js/require "fs")))
 (def set-immediate ; "execute function immediately after event-handling"
   (if (exists? js/setImmediate)
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
 
+(def worker 
+  (if is-nodejs 
+    (aget (js/require "webworker-threads") "Worker")
+    (aget global "Worker")))
 
-(comment jsonp)
+
+; jsonp
 (when is-browser
   (def -unique-id-counter (atom 0))
   (defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
@@ -44,11 +52,13 @@
         (js/document.head.appendChild tag))
       c)))
 
-(def worker 
-  (if is-nodejs 
-    (aget (js/require "webworker-threads") "Worker")
-    (aget global "Worker")))
 
-(comment global)
+; react
 (when (and is-nodejs (not is-browser)) 
   (aset global "React" (js/require "react")))
+
+
+;; File system
+(def fs (if is-nodejs (js/require "fs")))
+(defn ensure-dir [dirname] (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
+
