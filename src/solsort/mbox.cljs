@@ -3,6 +3,7 @@
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [cognitect.transit :as transit]
+    [clojure.string :as string]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -88,3 +89,6 @@
               info (aget msg "info")]
           (post (aget info "rpid") (aget info "rbox") (transit-write result)))))))
 
+
+;; Logging
+(defn log [& args] (post local "log" (string/join " " (map pr-str args))))

@@ -4,7 +4,7 @@
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.registry :refer [testcase]]
-    [solsort.mbox :refer [route local]]
+    [solsort.mbox :as mbox :refer [route local]]
     [solsort.platform :as platform]
     [clojure.string :as string]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
@@ -134,11 +134,12 @@
   (str (date-string) "-" (time-string) "." (three-digits (.now js/Date))))
 (def logfile-name (atom nil))
 (def logfile-stream (atom nil))
-(defn log [& args]
-  (let [msg (string/join " " (concat
-                               [(six-digits local)
-                                (timestamp-string)]
-                               (map pr-str args)))
+(mbox/handle 
+  "log"
+  (fn [o]
+  (let [msg (str (six-digits local) " "
+                 (timestamp-string) " " 
+                 (aget o "data"))
         date (date-string)
         logpath "logs/"
         logname (str logpath hostname "-" date ".log")]
@@ -154,11 +155,14 @@
             (reset! logfile-stream (.createWriteStream fs logname #js{:flags "a"}))
             (reset! logfile-name logname)))
         (.write @logfile-stream (str msg "\n"))))
-    (.log js/console msg)))
+    (.log js/console msg))))
+(def log mbox/log)
+
 (defn warn [& args] (apply log 'warn args))
 
 
 (log 'system 'boot (str (if is-nodejs "node") (if is-browser "browser")) hostname source-file)
+(mbox/log :mbox-log "hello")
 
 ;(defapi server server-pid [] pid)
 ;(log 'server-pid (server-pid))
