@@ -77,27 +77,30 @@
 
 ## solsort/solsort notes
 
-- sys/mbox - clj
-- sys/platform - clj
-- sys/test - clj
-- sys/util - clj
-- lib/log - clj
-- lib/test_runner - clj
-- lib/kvdb - clj
-- lib/net - clj ws+ajax
-- lib/dispatch - js
-- lib/css - js
-- lib/html - js
-- lib/webserver - nodejs
-- apps/uccorg_monitor
-- apps/index
-- apps/rasmuserik
-- apps/notes
-- apps/bib_main
-- apps/bib_process
-- apps/bib_related
-- apps/dev_server
-- apps/example
+- sys
+  - mbox - process messaging
+  - platform - platform tests - platform abstraction - (some file system code)
+  - test - asynchronous unit test
+  - util
+- lib
+  - log
+  - test_runner
+  - kvdb
+  - net - ws+ajax
+  - dispatch
+  - css
+  - html
+  - webserver
+- apps
+  - index
+  - rasmuserik
+  - notes
+  - bib_main
+  - bib_process
+  - bib_related
+  - dev_server
+  - uccorg_monitor
+  - example
 
 ### mbox
   - process

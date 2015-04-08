@@ -33,8 +33,9 @@
                    :marginLeft (/ img-height 8)
                    }}
 
-     [:h1 "Rasmus\u00a0Erik Voel\u00a0Jensen"]
+     [:h1 {:style {:marginBottom 10}} "Rasmus\u00a0Erik Voel\u00a0Jensen"]
      [:div {:style {:fontSize "100%"}}
+      "CEO\u00a0" [:a {:href "/" :style {:fontSize "130%" :marginBottom 10}} "solsort.com"] "\u00a0ApS" [:br][:br]
       "Tingskrivervej\u00a021\u00a03tv \u00a0 2400\u00a0København\u00a0NV \u00a0 \u00a0" [:br]
       "+45\u00a060703081 \u00a0 hej@solsort.com" 
       ]]]
@@ -64,22 +65,24 @@
      [:h2 "Current"]
      [:ul {:style {:minHeight activity-height}}
       [:li "Fatherhood - I am the father of a wonderful 2½ year old boy"]
-      [:li "Dance - "
-       [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
+      [:li 
        [:a {:href "http://www.swingshoes.dk/kalender-swingarrangementer/"} "Lindy Hop"] ", "
-       [:a {:href "http://kglteater.dk/det-sker/forestillinger/sason-2014-2015/gratis/gamle-scene/milonga"} "Argentinsk Tango"]]
+       [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
+       [:a {:href "http://kglteater.dk/det-sker/forestillinger/sason-2014-2015/gratis/gamle-scene/milonga"} "Argentinsk\u00a0Tango"] ", "
+       "Yoga"
+       ]
       [:li
        [:a {:href "http://junto.dk"} "Junto"] ", "
        [:a {:href "http://tinkuy.dk"} "Tinkuy"] ", "
-       "rollespil(D&D3.5), bicycle, vegetarian"
+       "Rollespil(D&D3.5), Bicycle, Vegetarian"
        ]]
      [:h2 "Experience"]
      [:div {:style {:marginBottom 60}}
-      "Toastmasters • photography • kbhff • mythology/religion/mysticism • events • nature • couchsurfing • yoga/energy • music/jam • massage • mensa • højskole"]]
+      "Toastmasters • photography • kbhff • mythology/religion/mysticism/energy • events • nature • massage • couchsurfing • music/jam • mensa • højskole"]]
     ]
    [:div {:style {:fontSize small-size}} 
     "I very rarely use  social media (linkedin/facebook/twitter/...) so catch me in real life instead :)" 
-    [:br] "Updated Winter/Spring 2015"]]
+    [:br] "Updated Spring 2015"]]
   )
 
 (route "rasmuserik"
