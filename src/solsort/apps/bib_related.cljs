@@ -6,7 +6,7 @@
     [solsort.sys.platform :refer [exec each-lines is-nodejs]]
     [solsort.lib.kvdb :as kvdb]
     [solsort.lib.webserver :as webserver]
-    [solsort.util :refer [print-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
+    [solsort.sys.util :refer [print-channel by-first transducer-status group-lines-by-first swap-trim transducer-accumulate parse-json-or-nil]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

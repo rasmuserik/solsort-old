@@ -3,7 +3,7 @@
   (:require
     [solsort.sys.platform :refer [exec]]
     [solsort.sys.mbox :refer [route log]]
-    [solsort.util :refer [parse-json-or-nil]]
+    [solsort.sys.util :refer [parse-json-or-nil]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (defn dev-proxy []

@@ -4,7 +4,7 @@
     [solsort.sys.test :refer [testcases testcase]]
     [solsort.sys.mbox :refer [log route]]
     [solsort.sys.platform :refer [is-browser]]
-    [solsort.util :refer [chan?]]
+    [solsort.sys.util :refer [chan?]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 (defn run-tests []

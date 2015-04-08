@@ -4,7 +4,7 @@
     [solsort.sys.mbox :refer [route log]]
     [solsort.lib.net :refer [ajax]]
     [solsort.lib.kvdb :as kvdb]
-    [solsort.util :refer [parse-json-or-nil unique-id]]
+    [solsort.sys.util :refer [parse-json-or-nil unique-id]]
     [solsort.bib-related :refer [get-related]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 

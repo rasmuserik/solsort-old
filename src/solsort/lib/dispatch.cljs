@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.mbox :refer [local-mbox? call local local-mboxes log]]
-    [solsort.util :refer [chan? parse-path]]
+    [solsort.sys.util :refer [chan? parse-path]]
     [solsort.lib.html :refer [render-html]]
     [solsort.sys.platform :refer [is-browser set-immediate]]
     ))
