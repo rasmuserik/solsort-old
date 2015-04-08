@@ -3,7 +3,7 @@ source_map_support.install = function() {};
 
 function setImmediate() {};
 /** @type {function(new:LevelUp, ...[*])} */                                           
-levelup = function() {};      
+var levelup = function() {};      
 /** @typedef {function(new:LevelUp, ...)} */
 var LevelUp;  
 LevelUp.prototype.close = function() {};
@@ -20,7 +20,7 @@ LevelUp.prototype.createValueStream = function() {};
 /** @return {stream.WritableStream} */
 LevelUp.prototype.createWriteStream = function() {};
 
-ws = function() {};      
+var ws = function() {};      
 /** @type {function(new:WSServer, ...[*])} */                                           
 ws.Server = function() {};      
 var WSServer;
@@ -28,7 +28,12 @@ WSServer.prototype.on = function() {};
 
 
 
-Showdown = {};
+var Showdown = {};
 /** @typedef {function(new:Showdown.converter, ...[*])} */                                           
 Showdown.converter = function() {};
 Showdown.converter.prototype.makeHtml = function() {};
+
+navigator.mediaDevices = {}
+navigator.mediaDevices.getUserMedia = function() {};
+var URL = function() {};
+URL.createObjectURL = function() {};
