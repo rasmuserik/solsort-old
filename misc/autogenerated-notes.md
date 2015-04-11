@@ -231,6 +231,95 @@ Distributed system
   - reduce incl.  - get-all - get-all-keys - get-all-values
   - subscribe
 
+
+## Barefoot tango
+
+
+
+
+Price: donate
+
+
+### What is tango
+
+Musicality, amy music, intepretation, following the voices playing your own solos and instruments
+
+Social dance, flow of the dance floor, not just the individual
+
+Queertango. Leader/follower. Historically men danced with men, to learn before they ever danced with a woman. Now you often see women dancing together on the dancefloor.
+
+Dance technique, - tango is very good for learning to lead/follow and musicality, and the techniques you learn here is also very applicable in other dance forms, especially social dances such as Lindy Hop, Swing, Salsa, Balboa, Kizomba, etc.
+
+
+
+### My dance background
+
+- Tango since 2003
+- 
+
+Favorite dance places:
+
+- Tango Trengtan (closed)
+- El Corte 
+- Det kongelige teater
+
+### Tango stories
+
+tango dancer, how did he learn? he answered "the women".
+
+seeing vs trying, ie. dirk-dance
+
+dancing blindfolded
+
+an tango master was dancing the whole night, with a wonderful ease and beautiful soft movements. Somebody asked him what he was doing, and he answered "zen walking meditation".
+
+
+### Technique and exercises
+
+(mostly notes for myself when practicing/teaching)
+
+- musicality
+  - crossed vs. parallel system
+  - going against the beat
+  - different beat for lead and follow
+  - musical structure
+  - following the instruments
+  - getting to know a single song
+  - just walk/solo-dance to the music
+  - listen/follow the mood of the song
+  - only walk+stand
+- connection
+  - feeling the hands - leading them  + increase/decrese intensity
+  - alternative embraces
+  - no hands
+  - hug, then embrace
+  - dance/connect with both sides of the bodies, - story about tanguera-teacher from italy
+  - kizomba weight change, originally seen with two women dancing
+- lead-follow
+  - let lead/follow dance as follow/lead
+  - standing and initiating the moments
+  - listening to the follower, emphasis on her intepretation of the impuls
+  - lead-folow-follow
+  - walking with the feel of the follower
+  - trust, just walking with closed eyes/blindfolded, the other guid you
+  - practise weight shifts
+  - combinatorical dancing, only thre base steps: left+right+forward
+- technicality
+  - difference between leading from hands, arms, shoulders, chest and center
+- flow on the dance floor
+  - lanes in opposing directions + changing places
+  - dance with goal of bumping the couple in front gently
+  - keeping your heel down
+  - never dance backwards - keep the space
+  - dancing to people in the corner
+- misc
+  - tango history immigration
+  - just walk
+  - both blindfolded, extra person taking care of space
+  - angles, forward+90degrees
+
+
+
 ## BibApp
 
 ### tasks
@@ -600,7 +689,6 @@ Turn consist of two actions and one step
     - move top body and rear, 
     - samme figur med forskellige hænder, ie. tuck-turn under lindy-my-day
     - exit angle
-- tango
 
 ## Data sets
 
