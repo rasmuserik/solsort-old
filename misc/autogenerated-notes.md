@@ -232,94 +232,6 @@ Distributed system
   - subscribe
 
 
-## Barefoot tango
-
-
-
-
-Price: donate
-
-
-### What is tango
-
-Musicality, amy music, intepretation, following the voices playing your own solos and instruments
-
-Social dance, flow of the dance floor, not just the individual
-
-Queertango. Leader/follower. Historically men danced with men, to learn before they ever danced with a woman. Now you often see women dancing together on the dancefloor.
-
-Dance technique, - tango is very good for learning to lead/follow and musicality, and the techniques you learn here is also very applicable in other dance forms, especially social dances such as Lindy Hop, Swing, Salsa, Balboa, Kizomba, etc.
-
-
-
-### My dance background
-
-- Tango since 2003
-- 
-
-Favorite dance places:
-
-- Tango Trengtan (closed)
-- El Corte 
-- Det kongelige teater
-
-### Tango stories
-
-tango dancer, how did he learn? he answered "the women".
-
-seeing vs trying, ie. dirk-dance
-
-dancing blindfolded
-
-an tango master was dancing the whole night, with a wonderful ease and beautiful soft movements. Somebody asked him what he was doing, and he answered "zen walking meditation".
-
-
-### Technique and exercises
-
-(mostly notes for myself when practicing/teaching)
-
-- musicality
-  - crossed vs. parallel system
-  - going against the beat
-  - different beat for lead and follow
-  - musical structure
-  - following the instruments
-  - getting to know a single song
-  - just walk/solo-dance to the music
-  - listen/follow the mood of the song
-  - only walk+stand
-- connection
-  - feeling the hands - leading them  + increase/decrese intensity
-  - alternative embraces
-  - no hands
-  - hug, then embrace
-  - dance/connect with both sides of the bodies, - story about tanguera-teacher from italy
-  - kizomba weight change, originally seen with two women dancing
-- lead-follow
-  - let lead/follow dance as follow/lead
-  - standing and initiating the moments
-  - listening to the follower, emphasis on her intepretation of the impuls
-  - lead-folow-follow
-  - walking with the feel of the follower
-  - trust, just walking with closed eyes/blindfolded, the other guid you
-  - practise weight shifts
-  - combinatorical dancing, only thre base steps: left+right+forward
-- technicality
-  - difference between leading from hands, arms, shoulders, chest and center
-- flow on the dance floor
-  - lanes in opposing directions + changing places
-  - dance with goal of bumping the couple in front gently
-  - keeping your heel down
-  - never dance backwards - keep the space
-  - dancing to people in the corner
-- misc
-  - tango history immigration
-  - just walk
-  - both blindfolded, extra person taking care of space
-  - angles, forward+90degrees
-
-
-
 ## BibApp
 
 ### tasks
@@ -1365,6 +1277,116 @@ Skabelon og huskeliste der kan anvendes ved udarbejdelse af naturvidenskabelige 
 
 ----
 Rasmus Erik, 2005
+
+## Tango
+### Tinkuy tango
+
+Dance evening with introduction to argentine tango (experienced tango dancers are also welcome).
+
+
+Some details:
+- Relaxed - feel free to dance in socks, kinasko/maosko, ... the place we are dancing has a strict no-outdoor-shoe policy ;) Everybody dances with everybody, and it is also possible just to relax and socialise in the lounge area.
+- Tango technique - applicable for beginners, experienced tango dancers, swing-dancers, salsa-dancers, etc. The focus will be on the musicality, lead/follow, quality of movement, flow on the dancefloor, and typically without any "figures", also with perspective on how it is usable in other forms of dance and movement.
+- "Queertango" - it is good to try both to lead and follow: following makes you a better leader, and leading makes you a better follower. It also opens up for opportunities to play with the roles within the dance. So at this event we assume everybody is ready to try and dance both roles.
+- Mixed music, there will both be classical tango music, and also various non-tango music which are good to dance to nonetheless
+
+
+The plan for the event:
+
+- 18:01 introduction to tango, and a focus on some aspect of the dance. 
+- 19-20-ish social dancing
+- 21-22-ish end of event at Tinkuy, possibility to go out dancing tango together at a regular milonga afterwards
+
+please be there at six'o'clock.
+
+
+My background: I have been dancing argentine tango for more than a decade, and am currently also dancing Lindy Hop, and Contact Improvisation. The main inspirations for my approach to tango are El-Corte, Trengtan and Tango-legestuen. It is more then 8 years since I have been teaching tango last time, so I may be a bit rusty ;)
+
+Sign-up: send an sms to Rasmus Erik, +45 60703081, to sign up, (need to know how many will be here)
+
+Price: free for members at Tinkuy, others donate as much as you can afford to "Læger uden grænser" (msf.dk), or similar.
+
+
+
+### What is tango
+
+Musicality, amy music, intepretation, following the voices playing your own solos and instruments
+
+Social dance, flow of the dance floor, not just the individual
+
+Queertango. Leader/follower. Historically men danced with men, to learn before they ever danced with a woman. Now you often see women dancing together on the dancefloor.
+
+Dance technique, - tango is very good for learning to lead/follow and musicality, and the techniques you learn here is also very applicable in other dance forms, especially social dances such as Lindy Hop, Swing, Salsa, Balboa, Kizomba, etc.
+
+
+
+### My dance background
+
+- Tango since 2003
+- 
+
+Favorite dance places:
+
+- Tango Trengtan (closed)
+- El Corte 
+- Det kongelige teater
+
+### Tango stories
+
+tango dancer, how did he learn? he answered "the women".
+
+seeing vs trying, ie. dirk-dance
+
+dancing blindfolded
+
+an tango master was dancing the whole night, with a wonderful ease and beautiful soft movements. Somebody asked him what he was doing, and he answered "zen walking meditation".
+
+
+### Technique and exercises
+
+(mostly notes for myself when practicing/teaching)
+
+- musicality
+  - crossed vs. parallel system
+  - going against the beat
+  - different beat for lead and follow
+  - musical structure
+  - following the instruments
+  - getting to know a single song
+  - just walk/solo-dance to the music
+  - listen/follow the mood of the song
+  - only walk+stand
+- connection
+  - feeling the hands - leading them  + increase/decrese intensity
+  - alternative embraces
+  - no hands
+  - hug, then embrace
+  - dance/connect with both sides of the bodies, - story about tanguera-teacher from italy
+  - kizomba weight change, originally seen with two women dancing
+- lead-follow
+  - let lead/follow dance as follow/lead
+  - standing and initiating the moments
+  - listening to the follower, emphasis on her intepretation of the impuls
+  - lead-folow-follow
+  - walking with the feel of the follower
+  - trust, just walking with closed eyes/blindfolded, the other guid you
+  - practise weight shifts
+  - combinatorical dancing, only thre base steps: left+right+forward
+- technicality
+  - difference between leading from hands, arms, shoulders, chest and center
+- flow on the dance floor
+  - lanes in opposing directions + changing places
+  - dance with goal of bumping the couple in front gently
+  - keeping your heel down
+  - never dance backwards - keep the space
+  - dancing to people in the corner
+- misc
+  - tango history immigration
+  - just walk
+  - both blindfolded, extra person taking care of space
+  - angles, forward+90degrees
+
+
 
 ## Ubuntu setup notes
 

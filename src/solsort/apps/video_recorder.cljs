@@ -49,16 +49,28 @@
   (and (exists? js/window)
        (exists? js/MediaRecorder)
        (exists? js/URL)
-       (exists? js/mediaDevices)))
+       (exists? js/navigator)
+       (exists? js/navigator.mediaDevices)
+       ))
+
+(def unsupported-info
+  [:div
+   [:h2 "Unsupported platform"]
+   [:div "Unfortunately your browser doesn't support video recording with the MediaRecorder API, and thus this app will not work."]
+   [:div "The MediaRecorder and navigator.mediaDevices API are emerging HTML5 capabilities, - currently(April 2015) only available on Firefox.  \"MediaStream Recording\" is a working draft of W3C"]])
 
 (route "video-recorder" 
-       (fn [a b]
+       (fn []
+         (log 'video 'supported-platform (supported-platform))
          (when is-browser
            (go (<! (timeout 200))
                (video-record)))
          {:type "html"
           :html [:div
                  [:h1 "firefox test video recorder"]
-                 [:video#video]
-                 [:video#video2 {:loop "true"}]
+                 (if (supported-platform)
+                   [:div
+                  [:video#video]
+                  [:video#video2 {:loop "true"}]]
+                   unsupported-info)
                  ]}))
