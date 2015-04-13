@@ -25,17 +25,18 @@
     c))
 
 (defn create-url [o] (js/URL.createObjectURL o))
+(defn revoke-url [o] (js/URL.revokeObjectURL o))
 
-(defn download-blob [blob filename]
-  (let [a (js/document.createElement "a")
-        src (create-url blob)]
+(defn download-url [src filename]
+  (let [a (js/document.createElement "a")]
     (aset a "href" src)
     (aset a "download" filename)
     (js/document.body.appendChild a)
     (.click a)
-    ;(js/document.removeChild a)
+    (go
+      (<! (timeout 1000))
+      (js/document.removeChild a))
     ))
-
 
 (def loop-time (atom 0))
 (defn status-wait [text max-time]
@@ -48,31 +49,34 @@
         (<! (timeout 1000))
         (recur (inc i))))))
 
+(defn resize [o] (aset (.-style o) "height" (str (- js/window.innerHeight 10) "px")))
+
+(def prev-url (atom))
 (defn video-record-non-reentrant []
   (go
     (let [stream (<! (init-camera))
           video (js/document.getElementById "video")]
       (loop []
-        (let [src (js/URL.createObjectURL stream)
+        (let [src (create-url stream)
               recorder (js/MediaRecorder. stream)
               output (recorder-output recorder)]
           (aset video "src" src)
-          (aset video "controls" false)
+          (resize video)
           (set! (.-volume video) 0)
           (.play video)
           (.start recorder)
-          (log 'video 'recording)
           (<! (status-wait "recording" js/Number.POSITIVE_INFINITY))
           (.stop recorder)
-          (log 'video 'stopped)
-          (let [blob (<! output)]
-            (log 'video 'output)
-            (js/console.log blob)
-            (aset video "src" (create-url blob))
-            (aset video "controls" false)
+          (let [blob (<! output)
+                src (create-url blob)]
+            (when @prev-url
+              (revoke-url @prev-url))
+            (revoke-url src)
+            (reset! prev-url src)
+            (aset video "src" src)
             (set! (.-volume video) 1)
             (.play video)
-            (aset (js/document.getElementById "save") "onclick" #(download-blob blob "foo.webm"))
+            (aset (js/document.getElementById "save") "onclick" #(download-url src "video.webm"))
             (<! (status-wait "playback" @loop-time))))
         (recur)))))
 (defn run-once [f]
@@ -111,6 +115,7 @@
                      [:span#save.button "save previous"]
                      [:a.button {:href "#repeat-record/5"} "5s"]
                      [:a.button {:href "#repeat-record/10"} "10s"]
+                     [:a.button {:href "#repeat-record/15"} "15s"]
                      [:a.button {:href "#repeat-record/20"} "20s"]
                      [:a.button {:href "#repeat-record/30"} "30s"]
                      [:a.button {:href "#repeat-record/60"} "1min"]
