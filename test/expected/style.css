@@ -4,6 +4,17 @@
     src: url(/font/ubuntu-latin1.ttf)format(truetype)
 }
 
+.container {
+    margin: 5%
+}
+
+.button {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black
+}
+
 body {
     margin: 0px;
     padding: 0px;
