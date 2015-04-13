@@ -7,12 +7,10 @@
 
 
 (defn init-camera []
-  (let [c (chan)]
-    (.then (js/navigator.mediaDevices.getUserMedia #js{:audio true :video true})
-           (fn [stream]
-             (if stream 
-               (put! c stream) 
-               (log 'video 'error-getting-stream))))
+  (let [c (chan)
+        user-media (js/navigator.mediaDevices.getUserMedia #js{:audio true :video true}) ]
+    (.then user-media (fn [stream] (put! c stream) ))
+    (go (<! (timeout 10000)) (close! c))
     c))
 
 (defn recorder-output [recorder]
@@ -56,6 +54,8 @@
   (go
     (let [stream (<! (init-camera))
           video (js/document.getElementById "video")]
+      (when-not stream
+        (js/location.reload))
       (loop []
         (let [src (create-url stream)
               recorder (js/MediaRecorder. stream)
@@ -67,11 +67,11 @@
           (.start recorder)
           (<! (status-wait "recording" js/Number.POSITIVE_INFINITY))
           (.stop recorder)
+          (revoke-url src)
           (let [blob (<! output)
                 src (create-url blob)]
             (when @prev-url
               (revoke-url @prev-url))
-            (revoke-url src)
             (reset! prev-url src)
             (aset video "src" src)
             (set! (.-volume video) 1)
@@ -81,7 +81,6 @@
         (recur)))))
 (defn run-once [f]
   (let [has-run (atom false)]
-    (log 'here @has-run)
     (fn [] (when-not @has-run (reset! has-run true) (f)))))
 
 (def video-record (run-once video-record-non-reentrant))
@@ -102,8 +101,7 @@
 
 (route "repeat-record" 
        (fn [a]
-         (log 'video 'supported-platform (supported-platform))
-         (when is-browser
+         (when (supported-platform)
            (reset! loop-time (or (js/parseInt a 10) 10))
            (go (<! (timeout 200)) (video-record)))
          {:type "html"
