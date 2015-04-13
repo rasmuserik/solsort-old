@@ -1,9 +1,10 @@
-(ns solsort.video-recorder
+(ns solsort.repeat-record
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.mbox :refer [route log]]
     [solsort.sys.platform :refer [is-browser fs exit is-nodejs global]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
+
 
 (defn video-record []
   (let [user-media (js/navigator.mediaDevices.getUserMedia #js{:audio true :video true})]
