@@ -87,6 +87,9 @@
 (add-entry "Rasmus Erik Voel Jensen"
            ["developer" "company owner" "computer scientist"]
            "/rasmuserik.html")
+(add-entry "Repeat record"
+           ["2015" "utility" "webapp" "firefox-only" "video"]
+           "/#repeat-record/10")
 (add-entry "Anbefalings-webservice"
            ["2015" "beta" "visualisering af relationer" "webservice" "ClojureScript"]
            "/visualisering-af-relationer/compare.html#relvis/cir870970-basis:05625351")

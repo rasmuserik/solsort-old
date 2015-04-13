@@ -109,7 +109,9 @@
                    [:div
                     [:div
                      [:span#save.button "save previous"]
+                     [:a.button {:href "#repeat-record/5"} "5s"]
                      [:a.button {:href "#repeat-record/10"} "10s"]
+                     [:a.button {:href "#repeat-record/20"} "20s"]
                      [:a.button {:href "#repeat-record/30"} "30s"]
                      [:a.button {:href "#repeat-record/60"} "1min"]
                      [:a.button {:href "#repeat-record/90"} "1½min"]
@@ -122,4 +124,13 @@
                     [:br]
                     [:video#video]]
                    unsupported-info)
+                 [:h2 "About"]
+                 [:div "Code idea: repeat record a short movie (typically 1-7 minutes) and play it back."]
+                 [:div "This is useful for practicing, for example when preparing toastmaster talks, or learning new dance moves."]
+                 [:div "Base version features"
+                  [:ul
+                   [:li "just successive record and playback"]
+                   [:li "choose time through buttons"]
+                   [:li "option to save latest recording"]
+                   [:li "about-info and sensible warning on unsupported platform"]]]
                  ]}))

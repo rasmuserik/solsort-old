@@ -1159,31 +1159,6 @@ Empty inbox • Capture system • Not keeping stuff in the head
 ###### Junto
 Pomodoros • Network peering
 
-## Repeat record
-### Utility for repeated practise
-
-Core idea: repeat record a short movie (typically 1-7 minutes) and play it back.
-
-This is useful for practicing, for example when preparing toastmaster talks, or learning new dance moves. 
-
-- Base version
-  - just successive record and playback
-  - time entered in a text field, read on record start
-  - notes with info, and show sensible warning on unsupported platforms
-- Full version
-  - timer when recording
-  - optionally play other video while recording, ie. music or similar
-  - key/button for restart now
-  - replay previous recording
-  - capability of downloading previous recording
-
-
-- implementation notes
-  - recorder: 
-    - start max-time target-canvas
-    - stop
-    - output
-
 ## Solsort Product
 
 - Typical product
