@@ -6,45 +6,54 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
-(defn video-record []
-  (let [user-media (js/navigator.mediaDevices.getUserMedia #js{:audio true :video true})]
-    (.then user-media 
+(defn init-camera []
+  (let [c (chan)]
+    (.then (js/navigator.mediaDevices.getUserMedia #js{:audio true :video true})
            (fn [stream]
-             (let [video (js/document.getElementById "video")
-                   src (js/URL.createObjectURL stream)
-                   recorder (js/MediaRecorder. stream)]
-               (js/console.log stream src recorder)
-               (aset video "src" src)
-               (.play video)
-               (go
-                 (set! (.-ondataavailable recorder)
-                       (fn [e]
-                         (js/console.log "dataavailable" recorder (aget e "data"))
-                         (aset global "e" e)
-                         (aset global "r" r)
-                         ;(aset video "loop" true)
-                         ;(aset video "src" (js/URL.createObjectURL (aget e "data")))
-                         (let [a (js/document.createElement "a")
-                               blob (js/Blob. #js[(.-data e)] #js{:type (.-type (.-data e))})
-                               video (js/document.getElementById "video2")
-                               src (js/URL.createObjectURL blob)
-                               ]
-                           (aset video "src" src)
-                           (.play video)
-                           (aset a "href" src)
-                           (aset a "download" "video.webm")
-                           (js/document.body.appendChild a)
-                           (js/console.log a)
-                           ;(.click a)
-                           )
-                         ))
-                 (.start recorder)
-                 (log 'video 'recording)
-                 (<! (timeout 10000))
-                 (.stop recorder)
-                 (log 'video 'stopped)
-                 )
-               )))))
+             (if stream 
+               (put! c stream) 
+               (log 'video 'error-getting-stream))))
+    c))
+
+
+(defn video-record []
+  (go
+    (let [stream (<! (init-camera))
+          video (js/document.getElementById "video")
+          src (js/URL.createObjectURL stream)
+          recorder (js/MediaRecorder. stream)]
+      (js/console.log stream src recorder)
+      (aset video "src" src)
+      (.play video)
+      (go
+        (set! (.-ondataavailable recorder)
+              (fn [e]
+                (js/console.log "dataavailable" recorder (aget e "data"))
+                (aset global "e" e)
+                (aset global "r" r)
+                ;(aset video "loop" true)
+                ;(aset video "src" (js/URL.createObjectURL (aget e "data")))
+                (let [a (js/document.createElement "a")
+                      blob (js/Blob. #js[(.-data e)] #js{:type (.-type (.-data e))})
+                      video (js/document.getElementById "video2")
+                      src (js/URL.createObjectURL blob)
+                      ]
+                  (aset video "src" src)
+                  (.play video)
+                  (aset a "href" src)
+                  (aset a "download" "video.webm")
+                  (js/document.body.appendChild a)
+                  (js/console.log a)
+                  ;(.click a)
+                  )
+                ))
+        (.start recorder)
+        (log 'video 'recording)
+        (<! (timeout 10000))
+        (.stop recorder)
+        (log 'video 'stopped)
+        )
+      )))
 
 (defn supported-platform []
   (and (exists? js/window)
@@ -67,11 +76,11 @@
            (go (<! (timeout 200))
                (video-record)))
          {:type "html"
-          :html [:div
-                 [:h1 "firefox test video recorder"]
+          :html [:div.container
+                 [:h1 "repeat record - utility for repeated practice"]
                  (if (supported-platform)
                    [:div
-                  [:video#video]
-                  [:video#video2 {:loop "true"}]]
+                    [:video#video]
+                    [:video#video2 {:loop "true"}]]
                    unsupported-info)
                  ]}))
