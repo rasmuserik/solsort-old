@@ -45,6 +45,12 @@
                  )
                )))))
 
+(defn supported-platform []
+  (and (exists? js/window)
+       (exists? js/MediaRecorder)
+       (exists? js/URL)
+       (exists? js/mediaDevices)))
+
 (route "video-recorder" 
        (fn [a b]
          (when is-browser
