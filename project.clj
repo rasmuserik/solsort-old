@@ -2,9 +2,9 @@
   :description "solsort.com server"
   :url "http://solsort.com"
 
-  :dependencies [[org.clojure/clojure "1.7.0-alpha5"]
-                 [org.clojure/clojurescript "0.0-3058"]
-                 [com.cognitect/transit-cljs "0.8.205"]
+  :dependencies [[org.clojure/clojure "1.7.0-beta1"]
+                 [org.clojure/clojurescript "0.0-3196"]
+                 [com.cognitect/transit-cljs "0.8.207"]
                  ;[net.mikera/core.matrix "0.34.0"]
                  [reagent "0.5.0"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]]

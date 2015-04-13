@@ -23,11 +23,12 @@
           #(= (clj->css {:h1 {:fontWeight :normal :fontSize 14} :.div {:background :blue}})
               "h1{font-weight:normal;font-size:14px}.div{background:blue}"))
 
-
 (def default-style 
   (atom { "@font-face" {:fontFamily "Ubuntu"
                         :fontWeight "400"
                         :src "url(/font/ubuntu-latin1.ttf)format(truetype)"}
+         :.container {:margin "5%" }
+         :.button {:margin 5 :padding 5 :borderRadius 5 :border "1px solid black"}
          :body {:margin 0 :padding 0 :fontFamily "Ubuntu, sans-serif"}
          :div {:margin 0 :padding 0} }))
 

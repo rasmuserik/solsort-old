@@ -15,45 +15,72 @@
                (log 'video 'error-getting-stream))))
     c))
 
+(defn recorder-output [recorder]
+  (let [c (chan)]
+    (set! (.-ondataavailable recorder)
+          (fn [e]
+            (let [data (.-data e)
+                  blob (js/Blob. #js[data] #js{:type (.-type data)})]
+              (put! c blob))))
+    c))
 
-(defn video-record []
+(defn create-url [o] (js/URL.createObjectURL o))
+
+(defn download-blob [blob filename]
+  (let [a (js/document.createElement "a")
+        src (create-url blob)]
+    (aset a "href" src)
+    (aset a "download" filename)
+    (js/document.body.appendChild a)
+    (.click a)
+    ;(js/document.removeChild a)
+    ))
+
+
+(def loop-time (atom 0))
+(defn status-wait [text max-time]
+  (go
+    (loop [i 0]
+      (when (< i (min @loop-time max-time))
+        (aset (js/document.getElementById "info")
+              "innerHTML"
+              (str text " " (- (min @loop-time max-time) i) "s"))
+        (<! (timeout 1000))
+        (recur (inc i))))))
+
+(defn video-record-non-reentrant []
   (go
     (let [stream (<! (init-camera))
-          video (js/document.getElementById "video")
-          src (js/URL.createObjectURL stream)
-          recorder (js/MediaRecorder. stream)]
-      (js/console.log stream src recorder)
-      (aset video "src" src)
-      (.play video)
-      (go
-        (set! (.-ondataavailable recorder)
-              (fn [e]
-                (js/console.log "dataavailable" recorder (aget e "data"))
-                (aset global "e" e)
-                (aset global "r" r)
-                ;(aset video "loop" true)
-                ;(aset video "src" (js/URL.createObjectURL (aget e "data")))
-                (let [a (js/document.createElement "a")
-                      blob (js/Blob. #js[(.-data e)] #js{:type (.-type (.-data e))})
-                      video (js/document.getElementById "video2")
-                      src (js/URL.createObjectURL blob)
-                      ]
-                  (aset video "src" src)
-                  (.play video)
-                  (aset a "href" src)
-                  (aset a "download" "video.webm")
-                  (js/document.body.appendChild a)
-                  (js/console.log a)
-                  ;(.click a)
-                  )
-                ))
-        (.start recorder)
-        (log 'video 'recording)
-        (<! (timeout 10000))
-        (.stop recorder)
-        (log 'video 'stopped)
-        )
-      )))
+          video (js/document.getElementById "video")]
+      (loop []
+        (let [src (js/URL.createObjectURL stream)
+              recorder (js/MediaRecorder. stream)
+              output (recorder-output recorder)]
+          (aset video "src" src)
+          (aset video "controls" false)
+          (set! (.-volume video) 0)
+          (.play video)
+          (.start recorder)
+          (log 'video 'recording)
+          (<! (status-wait "recording" js/Number.POSITIVE_INFINITY))
+          (.stop recorder)
+          (log 'video 'stopped)
+          (let [blob (<! output)]
+            (log 'video 'output)
+            (js/console.log blob)
+            (aset video "src" (create-url blob))
+            (aset video "controls" false)
+            (set! (.-volume video) 1)
+            (.play video)
+            (aset (js/document.getElementById "save") "onclick" #(download-blob blob "foo.webm"))
+            (<! (status-wait "playback" @loop-time))))
+        (recur)))))
+(defn run-once [f]
+  (let [has-run (atom false)]
+    (log 'here @has-run)
+    (fn [] (when-not @has-run (reset! has-run true) (f)))))
+
+(def video-record (run-once video-record-non-reentrant))
 
 (defn supported-platform []
   (and (exists? js/window)
@@ -69,18 +96,30 @@
    [:div "Unfortunately your browser doesn't support video recording with the MediaRecorder API, and thus this app will not work."]
    [:div "The MediaRecorder and navigator.mediaDevices API are emerging HTML5 capabilities, - currently(April 2015) only available on Firefox.  \"MediaStream Recording\" is a working draft of W3C"]])
 
-(route "video-recorder" 
-       (fn []
+(route "repeat-record" 
+       (fn [a]
          (log 'video 'supported-platform (supported-platform))
          (when is-browser
-           (go (<! (timeout 200))
-               (video-record)))
+           (reset! loop-time (or (js/parseInt a 10) 10))
+           (go (<! (timeout 200)) (video-record)))
          {:type "html"
           :html [:div.container
                  [:h1 "repeat record - utility for repeated practice"]
                  (if (supported-platform)
                    [:div
-                    [:video#video]
-                    [:video#video2 {:loop "true"}]]
+                    [:div
+                     [:span#save.button "save previous"]
+                     [:a.button {:href "#repeat-record/10"} "10s"]
+                     [:a.button {:href "#repeat-record/30"} "30s"]
+                     [:a.button {:href "#repeat-record/60"} "1min"]
+                     [:a.button {:href "#repeat-record/90"} "1½min"]
+                     [:a.button {:href "#repeat-record/120"} "2min"]
+                     [:a.button {:href "#repeat-record/180"} "3min"]
+                     [:a.button {:href "#repeat-record/300"} "5min"]
+                     [:a.button {:href "#repeat-record/620"} "7min"]
+                     [:span#info]
+                     ]
+                    [:br]
+                    [:video#video]]
                    unsupported-info)
                  ]}))
