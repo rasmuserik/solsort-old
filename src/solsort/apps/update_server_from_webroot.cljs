@@ -7,6 +7,7 @@
 
 (def shell-commands
   (str
+    "git pull &&"
     "cd ../webroot &&"
     "git pull &&"
     "cp solsort.js ../solsort/solsort.js"))
