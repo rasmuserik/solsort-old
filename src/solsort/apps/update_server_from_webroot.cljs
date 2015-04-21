@@ -9,6 +9,7 @@
   (str
     "git pull &&"
     "cd ../webroot &&"
+    "git checkout . &&"
     "git pull &&"
     "cp solsort.js ../solsort/solsort.js"))
 
