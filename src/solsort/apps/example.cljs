@@ -20,11 +20,11 @@
   (hello [this] (str this "hihi" x))
   )
 
-(route "hello" 
+(route "example" 
        (fn [a b]
          {:type "html"
           :html [:div
-                 "hello " 
+                 "Does it work? " 
                  (hello "world")
                  (hello (Blah. "foo"))
                  (hello (Blap. "foo"))

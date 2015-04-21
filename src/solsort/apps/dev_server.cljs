@@ -23,4 +23,7 @@
            (run-tests)
            true)))
 
-(if is-browser (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))
+(when is-browser 
+  (when (exists? js/applicationCache)
+    (aset js/applicationCache "onupdateready" #(js/location.reload)))
+  (handle "reload" #(go (<! (timeout 800)) (js/location.reload))))
