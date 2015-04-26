@@ -68,7 +68,8 @@
       [:li 
        [:a {:href "http://www.swingshoes.dk/kalender-swingarrangementer/"} "Lindy Hop"] ", "
        [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
-       [:a {:href "http://kglteater.dk/det-sker/forestillinger/sason-2014-2015/gratis/gamle-scene/milonga"} "Argentinsk\u00a0Tango"] ", "
+       "Argentinsk\u00a0Tango" ", "
+       "Salsa" ", "
        "Yoga"
        ]
       [:li
