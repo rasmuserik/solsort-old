@@ -1279,6 +1279,30 @@ Skabelon og huskeliste der kan anvendes ved udarbejdelse af naturvidenskabelige 
 Rasmus Erik, 2005
 
 ## Tango
+### Barefoot Tango
+
+Introduction and dance evening with Argentine Tango:
+
+• We will work with tango technique, connection, musicality, etc. also with a focus on how it is applicable in other dances such as Swing / Lindy-Hop, Salsa, Kizomba, etc.
+• Barefoot - no (outdoor) shoes are allowed at the dance place Tinkuy - this also puts the focus on more straight movements
+• We both lead and follow within the dance - following makes you a better leader and leading makes you a better follower. This is sometimes called "queertango", and also eliminate the issue of possible gender imbalance.
+• It is a social dance, and everybody dances with everybody, - we will change dance partners regularly during the practise - you can come with or without a partner.
+
+
+Plan:
+
+• Introduction to argentine tango - the focus will be on basic technique and musicality, which is suitable for both beginners and experienced dancers :)
+• Social dancing - after the introduction it will gradually change into social dancing, both with traditional tango music, and also other music that is good for tango dancing.
+
+We start at 19:01, so please be here on time.
+
+
+Sign-up: send an sms to Rasmus Erik, +45 60703081, to sign up, (need to know how many will be here)
+
+Price: free for members at Tinkuy, others donate as much as you can afford to "Læger uden grænser" (msf.dk), or similar.
+
+
+
 ### Tinkuy tango
 
 Dance evening with introduction to argentine tango (experienced tango dancers are also welcome).

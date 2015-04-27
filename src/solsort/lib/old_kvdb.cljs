@@ -1,4 +1,4 @@
-(ns solsort.lib.kvdb
+(ns solsort.lib.old-kvdb
   (:require-macros [cljs.core.async.macros :refer [go alt! go-loop]])
   (:require
     [solsort.sys.test :refer [testcase]]

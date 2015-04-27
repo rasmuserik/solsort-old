@@ -2,7 +2,6 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.platform :refer [exec each-lines]]
-    [solsort.lib.kvdb :as kvdb]
     [solsort.lib.webserver :as webserver]
     [solsort.sys.mbox :refer [route]]
     [solsort.sys.util :refer [print-channel by-first transducer-status]]
