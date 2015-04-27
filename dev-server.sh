@@ -7,9 +7,10 @@ kill `cat tail.pid`
 tail -f lein.log &
 echo $! > tail.pid
 
+
 while true
 do
-  node solsort.js dev-server &
+  node solsort.js ${1:-dev-server} &
   NODE_PID=$!
   cp solsort.js ../webroot/solsort.js
   echo CACHE\ MANIFEST\ > ../webroot/solsort.appcache
