@@ -10,6 +10,8 @@
 
 
 (def dbs (atom {}))
+
+
 (when is-nodejs
   (defn open-db [db]
     (log 'kvdb 'open-db db)
@@ -18,6 +20,7 @@
     (go))
   )
 
+
 (when is-browser
   (def indexed-db (atom nil))
   (defn open-db [db]
@@ -25,6 +28,7 @@
     (let [c (chan)
           store-list (conj (set (read-string (or (.getItem js/localStorage "kvdbs") ""))) db)
           req (.open js/indexedDB "kvdb" (inc (count store-list)))]
+      (reset! dbs store-list)
       (.setItem js/localStorage "kvdbs" (str store-list))
       (log 'kvdb 'open-db db store-list)
       (set! (.-onupgradeneeded req)
@@ -43,11 +47,18 @@
               (close! c)))
       c))
   (defn execute-transaction [queries stores]
-    (let [c (chan)]
+    (let [c (chan)
+          read-only (= 0 (count stores))
+          dbs (into (into #{} (keys queries)) (keys stores))
+          _ (log 'dbs dbs)
+          transaction (.transaction @indexed-db 
+                                    (clj->js (seq dbs))
+                                    (if read-only "readonly" "readwrite"))
+          ]
+      (log 'transaction queries stores dbs read-only)
+      ;TODO
       (close! c)
-      c))
-  )
-
+      c)))
 
 
 (declare commit)
@@ -64,10 +75,11 @@
     (log 'kvdb 'run-transaction queries stores)
     (loop [db-list (seq (into (into #{} (keys queries)) (keys stores)))]
       (when (first db-list)
-        (when (nil? (get dbs (first db-list)))
+        (when-not (contains? dbs (first db-list))
           (<! (open-db (first db-list))))
         (recur (rest db-list))))
-    (<! (execute-transaction queries stores))))
+    (when (< 0 (+ (count queries) (count stores)))
+      (<! (execute-transaction queries stores)))))
 
 (defn transaction-loop []
   (go
@@ -112,9 +124,9 @@
           (<! (db-fetch db k)))))
 
 (when is-browser
-  (fetch 'a 'b)
-  (fetch 'a 'b)
-  (store :foo :bar :baz)
+  (fetch "a" 'b)
+  (fetch "a" 'b)
+  (store "foo" :bar :baz)
   (go
     (timeout 100)
     (log 'kvdb-queries queries)
