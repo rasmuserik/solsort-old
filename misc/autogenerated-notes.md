@@ -18,6 +18,7 @@
 
 ### Soon
 
+- kvdb should handle binary data (typed arrays), and clojure data structures
 - network graph
 - update routing
 - reimplement kvdb on indexeddb
@@ -44,6 +45,9 @@
   - nashorn server
 
 ## solsort/solsort changelog
+
+- new implementation of kvdb
+
 ### 0.4 /notes
 
 - update changelog/backlog

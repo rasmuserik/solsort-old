@@ -15,14 +15,44 @@
 (when is-nodejs
   (defn open-db [db]
     (go
-    (log 'kvdb 'open-db db)
-    (ensure-dir "./dbs")
-    (swap! dbs assoc db ((js/require "levelup")
-                         (str "./dbs/kvdb-" (.replace (str db) #"[^a-zA-Z0-9]" "_") ".leveldb")
-                         #js{"valueEncoding" "json"}))))
+      (ensure-dir "./dbs")
+      (swap! dbs assoc db ((js/require "levelup")
+                           (str "./dbs/kvdb-" (.replace (str db) #"[^a-zA-Z0-9]" "_") ".leveldb")
+                           #js{"valueEncoding" "json"}))))
   (defn execute-transaction [queries stores]
-    (go))
-  )
+    (let [c (chan)
+          writes-left (atom (count stores))
+          ]
+      (when (= 0 (count stores)) (close! c))
+      (doall 
+        (for [query (seq stores)]
+          (let [db-name (first query)
+                db (get @dbs db-name)
+                kvs (second query)]
+            (.batch db
+                    (clj->js (for [[k v] (seq kvs)] {:type "put" :key k :value v}))
+                    (fn [err]
+                      (when err (log 'kvdb 'get 'error err))
+                      (when (= 0 (swap! writes-left dec)) (close! c)))))))
+      (doall 
+        (for [query queries]
+          (let [db-name (first query)
+                db (get @dbs db-name)
+                kvs (second query)]
+            (doall 
+              (for [[k listeners] (seq kvs)]
+                (.get db k 
+                      (fn [err result]
+                        (when (and err (not= (aget err "type") "NotFoundError"))
+                          (log 'kvdb 'get 'error err))
+                        (doall 
+                          (for [listener listeners]
+                            (if result
+                              (put! listener result)
+                              (close! listener)))))))))))
+
+
+      c)))
 
 
 (when is-browser
@@ -83,14 +113,12 @@
                   (aset req "onsuccess"
                         (fn []
                           (let [result (.-result req)]
-                            (log 'onsuccess result listeners)
                             (doall 
                               (for [listener listeners]
                                 (if result
                                   (put! listener result)
                                   (close! listener)))))))))))))
-      (close! c)
-      c)))
+      (go (<! (timeout 0))))))
 
 
 (declare commit)
@@ -106,7 +134,7 @@
   (go
     (loop [db-list (seq (into (into #{} (keys queries)) (keys stores)))]
       (when (first db-list)
-        (when-not (contains? dbs (first db-list))
+        (when-not (contains? @dbs (first db-list))
           (<! (open-db (first db-list))))
         (recur (rest db-list))))
     (when (< 0 (+ (count queries) (count stores)))
@@ -144,40 +172,71 @@
 
 
 (defn store [db k v]
-  (let [db (name db)
-        k (name k)]
+  (let [db (str db)
+        k (str k)]
     (swap! cache assoc-in [db k] v)
     (when (= @store-count 0) (transact))
     (swap! store-count inc)
     (if (< @store-count 1000) (go) (commit))))
 
 (defn fetch [db k]
-  (let [db (name db)
-        k (name k)]
+  (let [db (str db)
+        k (str k)]
     (go (or (get-in @cache [db k])
             (get-in @prev-cache [db k])
             (<! (db-fetch db k))))))
 
 (defn commit []
   (let [c (chan 1)]
-    (swap! conj transaction-listeners c)
+    (swap! transaction-listeners conj c)
     (transact)
     c))
 
 
+(defn time-async [text f & args]
+  (go
+    (let [t0 (js/Date.now)
+          result (<! (apply f args))
+          t (- (js/Date.now) t0)]
+      (log 'time-async text t)
+      result)))
+
+(defn bench []
+  (go
+    (<! (time-async 
+          "writes"
+          #(go
+             (loop [i 10000]
+               (<! (store 'kvdb-bench (str i) i))
+               (when (< 0 i)
+                 (recur (dec i))))
+             (<! (commit)))))
+    (<! (time-async 
+          "reads"
+          #(go
+             (log 'kvdb-bench 'sum 
+                  (loop [i 1000 sum 0]
+                    (when (< 0 i)
+                      (recur (dec i) (+ sum (<! (fetch 'kvdb-bench (str i))))))))
+             )))
+    ))
 (route "kvdb" 
        #(go
           (log 'kvdb 'test-start)
           (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
+          (log 'kvdb 'ab0 (.-constructor (<! (fetch "a" 'b))))
           (fetch "a" "b")
           (fetch "a" "b")
           (store "foo" :bar :baz)
+          (store "foo" :quu :baz)
+          (store "foo" :bla :baz)
           (store 'a 'b "hello")
           (log 'kvdb 'ab1 (<! (fetch "a" 'b)))
-          (store 'a 'b "blah")
-          (timeout 100)
+          (store "foo" :quu nil)
+          (store 'a 'b (js/ArrayBuffer. 20))
           (log 'kvdb-queries queries)
           (log 'kvdb-cache cache)
+          (<! (bench))
           ))
 
 
