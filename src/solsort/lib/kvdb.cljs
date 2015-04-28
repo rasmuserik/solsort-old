@@ -59,33 +59,33 @@
           (let [db (first query)
                 kvs (second query)
                 object-store (.objectStore transaction db)]
-          (doall 
-            (for [[k listeners] (seq kvs)]
-              (let [req (.get object-store k)]
-                (aset req "onsuccess"
-                      (fn []
-                        (let [result (.-result req)]
-                          (log 'onsuccess result listeners)
-                          (doall 
-                            (for [listener listeners]
-                               (if result
-                                 (put! listener result)
-                                 (close! listener)))))))))))))
+            (doall 
+              (for [[k listeners] (seq kvs)]
+                (let [req (.get object-store k)]
+                  (aset req "onsuccess"
+                        (fn []
+                          (let [result (.-result req)]
+                            (log 'onsuccess result listeners)
+                            (doall 
+                              (for [listener listeners]
+                                (if result
+                                  (put! listener result)
+                                  (close! listener)))))))))))))
       #_(doall 
-        (for [query store]
-          (let [db (first query)
-                kvs (second query)
-                object-store (.objectStore transaction db)]
-          (doall 
-            (for [[k v] (seq kvs)]
-              (let [req (.put object-store v k)]
-                (aset req "onabort"
-                      (fn []
-                        (log 'kvdb 'put-abort db k v)))
-                (aset req "onerror"
-                      (fn []
-                        (log 'kvdb 'put-error db k v)))
-                ))))))
+          (for [query store]
+            (let [db (first query)
+                  kvs (second query)
+                  object-store (.objectStore transaction db)]
+              (doall 
+                (for [[k v] (seq kvs)]
+                  (let [req (.put object-store v k)]
+                    (aset req "onabort"
+                          (fn []
+                            (log 'kvdb 'put-abort db k v)))
+                    (aset req "onerror"
+                          (fn []
+                            (log 'kvdb 'put-error db k v)))
+                    ))))))
       ;TODO
       (close! c)
       c)))
@@ -144,17 +144,17 @@
 (defn store [db k v]
   (let [db (name db)
         k (name k)]
-  (swap! cache assoc-in [db k] v)
-  (when (= @store-count 0) (transact))
-  (swap! store-count inc)
-  (if (< @store-count 1000) (go) (commit))))
+    (swap! cache assoc-in [db k] v)
+    (when (= @store-count 0) (transact))
+    (swap! store-count inc)
+    (if (< @store-count 1000) (go) (commit))))
 
 (defn fetch [db k]
   (let [db (name db)
         k (name k)]
-  (go (or (get-in @cache [db k])
-          (get-in @prev-cache [db k])
-          (<! (db-fetch db k))))))
+    (go (or (get-in @cache [db k])
+            (get-in @prev-cache [db k])
+            (<! (db-fetch db k))))))
 
 (defn commit []
   (let [c (chan 1)]
@@ -163,19 +163,19 @@
     c))
 
 
-(route "kvdb" (fn []
-  (go
-  (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
-  (fetch "a" "b")
-  (fetch "a" "b")
-  (store "foo" :bar :baz)
-  (store 'a 'b "hello")
-  (log 'kvdb 'ab1 (<! (fetch "a" 'b)))
-  (store 'a 'b "blah")
-    (timeout 100)
-    (log 'kvdb-queries queries)
-    (log 'kvdb-cache cache)
-    )))
+(route "kvdb" 
+       #(go
+          (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
+          (fetch "a" "b")
+          (fetch "a" "b")
+          (store "foo" :bar :baz)
+          (store 'a 'b "hello")
+          (log 'kvdb 'ab1 (<! (fetch "a" 'b)))
+          (store 'a 'b "blah")
+          (timeout 100)
+          (log 'kvdb-queries queries)
+          (log 'kvdb-cache cache)
+          ))
 
 
 ;; Generic functions
