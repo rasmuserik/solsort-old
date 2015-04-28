@@ -30,7 +30,6 @@
           req (.open js/indexedDB "kvdb" (inc (count store-list)))]
       (reset! dbs store-list)
       (.setItem js/localStorage "kvdbs" (str store-list))
-      (log 'kvdb 'open-db db store-list)
       (set! (.-onupgradeneeded req)
             (fn [req]          
               (let [db (.-result (.-target req))]
@@ -50,12 +49,43 @@
     (let [c (chan)
           read-only (= 0 (count stores))
           dbs (into (into #{} (keys queries)) (keys stores))
-          _ (log 'dbs dbs)
           transaction (.transaction @indexed-db 
                                     (clj->js (seq dbs))
                                     (if read-only "readonly" "readwrite"))
           ]
       (log 'transaction queries stores dbs read-only)
+      (doall 
+        (for [query queries]
+          (let [db (first query)
+                kvs (second query)
+                object-store (.objectStore transaction db)]
+          (doall 
+            (for [[k listeners] (seq kvs)]
+              (let [req (.get object-store k)]
+                (aset req "onsuccess"
+                      (fn []
+                        (let [result (.-result req)]
+                          (log 'onsuccess result listeners)
+                          (doall 
+                            (for [listener listeners]
+                               (if result
+                                 (put! listener result)
+                                 (close! listener)))))))))))))
+      #_(doall 
+        (for [query store]
+          (let [db (first query)
+                kvs (second query)
+                object-store (.objectStore transaction db)]
+          (doall 
+            (for [[k v] (seq kvs)]
+              (let [req (.put object-store v k)]
+                (aset req "onabort"
+                      (fn []
+                        (log 'kvdb 'put-abort db k v)))
+                (aset req "onerror"
+                      (fn []
+                        (log 'kvdb 'put-error db k v)))
+                ))))))
       ;TODO
       (close! c)
       c)))
@@ -72,7 +102,6 @@
 
 (defn run-transaction [queries stores]
   (go
-    (log 'kvdb 'run-transaction queries stores)
     (loop [db-list (seq (into (into #{} (keys queries)) (keys stores)))]
       (when (first db-list)
         (when-not (contains? dbs (first db-list))
@@ -113,30 +142,40 @@
 
 
 (defn store [db k v]
+  (let [db (name db)
+        k (name k)]
   (swap! cache assoc-in [db k] v)
   (when (= @store-count 0) (transact))
   (swap! store-count inc)
-  (if (< @store-count 1000) (go) (commit)))
+  (if (< @store-count 1000) (go) (commit))))
 
 (defn fetch [db k]
+  (let [db (name db)
+        k (name k)]
   (go (or (get-in @cache [db k])
           (get-in @prev-cache [db k])
-          (<! (db-fetch db k)))))
+          (<! (db-fetch db k))))))
 
-(when is-browser
-  (fetch "a" 'b)
-  (fetch "a" 'b)
-  (store "foo" :bar :baz)
-  (go
-    (timeout 100)
-    (log 'kvdb-queries queries)
-    (log 'kvdb-cache cache)
-    ))
 (defn commit []
   (let [c (chan 1)]
     (swap! conj transaction-listeners c)
     (transact)
     c))
+
+
+(route "kvdb" (fn []
+  (go
+  (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
+  (fetch "a" "b")
+  (fetch "a" "b")
+  (store "foo" :bar :baz)
+  (store 'a 'b "hello")
+  (log 'kvdb 'ab1 (<! (fetch "a" 'b)))
+  (store 'a 'b "blah")
+    (timeout 100)
+    (log 'kvdb-queries queries)
+    (log 'kvdb-cache cache)
+    )))
 
 
 ;; Generic functions
