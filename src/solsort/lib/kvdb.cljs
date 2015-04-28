@@ -14,8 +14,12 @@
 
 (when is-nodejs
   (defn open-db [db]
+    (go
     (log 'kvdb 'open-db db)
-    (go))
+    (ensure-dir "./dbs")
+    (swap! dbs assoc db ((js/require "levelup")
+                         (str "./dbs/kvdb-" (.replace (str db) #"[^a-zA-Z0-9]" "_") ".leveldb")
+                         #js{"valueEncoding" "json"}))))
   (defn execute-transaction [queries stores]
     (go))
   )
@@ -53,7 +57,21 @@
                                     (clj->js (seq dbs))
                                     (if read-only "readonly" "readwrite"))
           ]
-      (log 'transaction queries stores dbs read-only)
+      (doall 
+        (for [query stores]
+          (let [db (first query)
+                kvs (second query)
+                object-store (.objectStore transaction db)]
+            (doall 
+              (for [[k v] (seq kvs)]
+                (let [req (.put object-store v k)]
+                  (aset req "onabort"
+                        (fn []
+                          (log 'kvdb 'put-abort db k v)))
+                  (aset req "onerror"
+                        (fn []
+                          (log 'kvdb 'put-error db k v)))
+                  ))))))
       (doall 
         (for [query queries]
           (let [db (first query)
@@ -71,22 +89,6 @@
                                 (if result
                                   (put! listener result)
                                   (close! listener)))))))))))))
-      #_(doall 
-          (for [query store]
-            (let [db (first query)
-                  kvs (second query)
-                  object-store (.objectStore transaction db)]
-              (doall 
-                (for [[k v] (seq kvs)]
-                  (let [req (.put object-store v k)]
-                    (aset req "onabort"
-                          (fn []
-                            (log 'kvdb 'put-abort db k v)))
-                    (aset req "onerror"
-                          (fn []
-                            (log 'kvdb 'put-error db k v)))
-                    ))))))
-      ;TODO
       (close! c)
       c)))
 
@@ -165,6 +167,7 @@
 
 (route "kvdb" 
        #(go
+          (log 'kvdb 'test-start)
           (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
           (fetch "a" "b")
           (fetch "a" "b")
