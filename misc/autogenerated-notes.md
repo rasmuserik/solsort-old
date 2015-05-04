@@ -236,6 +236,69 @@ Distributed system
   - subscribe
 
 
+## Anbefalinger
+
+
+- Dagligt forbrug
+  - Københavns Fødevarefællesskab - ideologisk lokal økologiske madvarer non-profit
+  - Coop - medlemsejede supermarkeder, overskud går til forbrugerne/medlemmerne, og ikke store coorporations
+  - cykel frem for bil eller offentlig transport
+  - lejebolig - fsb og lignende, fleksibilitet
+- Special Forbrug
+  - non-profit genbrugsbutikker - røde kors, folkekirkens nødhjælp, etc. minimalt miljømæssigt impact, og pengene går til godt formål
+  - thewritingdesk.co.uk - skriveredskaber
+  - Mimers cykler - lokal og god kvalitet/service, 
+  - kontrabas.com - lokal og god kvalitet/service
+  - naturlig fod - lokal og god kvalitet/service
+  - trævarer - 
+- Finans
+  - Merkur bank - ideologisk bank
+  - lsb - fagforeningsejet, ekstremt god rente på indlån op til 50K.
+  - ¿AP-pension? ¿ideologisk pension? kundeejet kigger på at skifte til dette ASAP
+  - Triodos investeringsforeninger - ideologisk placering/investering af ens midlere
+  - lærestandens brandforsikring - medlemsejet, bedste forsikringstilbud
+- IT
+  - Mozilla / firefox - ideologisk bedste (og teknisk bedste sammen med blink(chrome/opera)) webbrowser
+  - fsf og openknowledge - kæmper for open source og åbne data
+  - github - central infrastruktur for open source
+  - laptops.dk - god erfaring med kundeservice, leverance og pris, I need http://xkcd.com/243/
+  - gratisdns - gode erfaringer med denne leverandør
+- Outgoing
+  - De danske biblioteker
+  - Tinkuy
+  - cafe retro
+  - studenterhuset - lindy hop
+  - det kongelige teater - tango
+  - ci-cph
+  - falaffelkælderen
+  - morgenstedet
+  - bewelcome
+  - toastmasters
+
+## Barefoot Tango
+
+Argentine tango introductory class, and milonga (dance evening) at [Tinkuy](https://tinkuy.dk), Skyttegade 3, 2200 Kbh.N, on Wednesday May 13. 7pm.
+
+- We will work with tango technique, connection, musicality, etc. also with a focus on how it is applicable in other social dances, for example lindy-hop/swing
+- Barefoot - no (outdoor) shoes are allowed at the dance place Tinkuy - this also puts the focus on more straight movements
+- We both lead and follow within the dance - following makes you a better leader and leading makes you a better follower. This is sometimes called "queertango", and also eliminate the issue of possible gender imbalance.
+- It is a social dance, and everybody dances with everybody, - we will change dance partners regularly during the practise - you can come with or without a partner.
+
+
+Plan:
+
+- Introduction to argentine tango - the focus will be on basic technique and musicality, which is suitable for both beginners and experienced dancers :)
+- Social dancing - after the introduction it will gradually change into social dancing, both with traditional tango music, and also other music that is good for tango dancing.
+
+We start at 19:01, so please be here on time.
+
+
+Sign-up: send an sms to Rasmus Erik, +45 60703081 (as I would like to know how many will be here)
+
+Price: free, - pay it forward, or give a donation to a good cause instead :)
+
+
+
 ## BibApp
 
 ### tasks
@@ -341,6 +404,95 @@ Personal notes for practising/learning bass
   - John Clayton Jazz
   - ArtistWorks John Patitucci
 
+## Berlin
+
+- raise a smile berlin
+- dans
+  - wed tango 20:00 Strandbar Mitte Monbijoustr.  Berlin
+  - wed lindy 22:00 Clärchens Ballhaus, Auguststr. 24, Berlin-Mitte
+  - thu tango 18:30 Himmelbeet. Ruheplatzstr. 12.
+  - thu lindy 21:30 Frannz, Schönhauser Alle 36 · 10435 Berlin
+- food
+  - baharet falaffel Winterfeldtstr. 37, Nollendorplatz 
+  - lucky leek Kollwitzstraße 54 10405 Berlin
+  - yoyo Gartnerstrasse 27 Berlin, Germany 10245
+  - ohlala pastery Mainzer Strasse 18 (Frankfurter Allee) 
+  - vegetarian club
+- museum
+  - naturkunde Invalidenstraße 43 10115 Berlin
+  - technik Trebbiner Straße 9 D-10963 Berlin-Kreuzberg
+  - musikinstrumenten   Tiergartenstr. 1 10785 Berlin 
+  - design panoptikum Torstraße 201, Berlin, 10115, 
+- city
+  - buy tea at large eco-store
+  - escape game
+  - betahaus thursday breakfast 9:30 filmtruppe berlin, tightops, and fattelo
+  - east side gallery
+  - holocaust-memorial, east-side gallery
+  - alternative tour 11,13,15 Our Free day tours meet at Alexanderplatz TV TOWER next to entrance of Star.uck’s
+  - Universitet?
+  - (Berlin exploratorium 24.07.2014 um 19:30 - 21:30 Nichts und alles Impro-Treff, Saal 2 ) ???
+  - musikbutik - ukulele
+- nature
+  - grünewald - ¿ddr?
+  - swim
+  - ¿treptower park?
+  - boat - wannsee Bootsverleih Wannsee Wannseebadweg 25
+  - botanische garden
+  - wannsee island
+
+
+## CheatSheet
+
+- tmux new -t 0
+
+## Clojure
+
+- protocols/types
+  - defprotocol ~= interface
+  - deftype implementation
+  - defrecord clojure immutable implementation
+  - reify `{foo: function, bar: function, baz:function}`
+
+## CombiGame
+CombiGame is a mobile app, web game and card game. Try it:
+
+- [online](/solsort/combigame) (runs in a web browser)
+    - [android version](https://play.google.com/store/apps/details?id=com.solsort.combigame)
+- as a cardgame
+    - [buy it online from TheGameCrafter](https://www.thegamecrafter.com/games/combigame)
+    - catch me in person ;) and try it or buy it (DKK 120)
+
+Game objectives: spot combinations of three figures where color, count, shape and fill, are either the same or all different.
+
+For example the figures in:
+
+![combigame combi](/img/combigame-combi.png)
+
+are a valid combination, as they have different color, count and shape, and the same fill,
+whereas:
+
+![combigame invalid](/img/combigame-invalid.png)
+
+are invalid as the color is neither all different or the same.
+
+The card game goes as follows:
+
+- put 12 cards on table face up
+- when a player spots a valid combination, she tap on the table to indicate that she spotted it first, and the collect the combination
+- when no valid combinations can be spotted, deal 3 more cards from the deck face up
+- when all of the deck is dealt, and no more combinations can be spotted, the player who collected most combinations won.
+
+When played on a phone/tablet/computer, the computer deals such that there is always at least one valid combination 12 figures on the screen.
+
+In the online version, it is possible to click on the hint-button to see examples of valid combinations.
+
+#### Credits
+
+Rules are mostly the same as the [Set card game](http://en.wikipedia.org/wiki/Set_%28game%29), which is highly recommendable. 
+
+The goal of the original version of CombiGame was just to play Set on the smartphone (with new graphics), - later on it expanded onto physical cards as well.
+
 ## Cooking
 
 - suppeessens røde-linser|quinoa/kartoffel/hvidløg/løg
@@ -378,14 +530,6 @@ Personal notes for practising/learning bass
 NB: more bær,nødder,quinoa,spinat,kål,broccoli,citrus,rosenkål,kokusnød
 
 Fisk: rødspætte,rødtunge,skrubbe,torsk(ikke-lever),kuller,kulmule,sej,rogn,opdrættet ørred og laks
-
-## Clojure
-
-- protocols/types
-  - defprotocol ~= interface
-  - deftype implementation
-  - defrecord clojure immutable implementation
-  - reify `{foo: function, bar: function, baz:function}`
 
 ## d6 simple roleplaying system
 
@@ -622,126 +766,6 @@ Turn consist of two actions and one step
 - github.com/caesar0301/awesome-public-datasets statsci.org/datasets.html
 - world bank data + geo
 - danmarks statistik
-
-## Anbefalinger
-
-
-- Dagligt forbrug
-  - Københavns Fødevarefællesskab - ideologisk lokal økologiske madvarer non-profit
-  - Coop - medlemsejede supermarkeder, overskud går til forbrugerne/medlemmerne, og ikke store coorporations
-  - cykel frem for bil eller offentlig transport
-  - lejebolig - fsb og lignende, fleksibilitet
-- Special Forbrug
-  - non-profit genbrugsbutikker - røde kors, folkekirkens nødhjælp, etc. minimalt miljømæssigt impact, og pengene går til godt formål
-  - thewritingdesk.co.uk - skriveredskaber
-  - Mimers cykler - lokal og god kvalitet/service, 
-  - kontrabas.com - lokal og god kvalitet/service
-  - naturlig fod - lokal og god kvalitet/service
-  - trævarer - 
-- Finans
-  - Merkur bank - ideologisk bank
-  - lsb - fagforeningsejet, ekstremt god rente på indlån op til 50K.
-  - ¿AP-pension? ¿ideologisk pension? kundeejet kigger på at skifte til dette ASAP
-  - Triodos investeringsforeninger - ideologisk placering/investering af ens midlere
-  - lærestandens brandforsikring - medlemsejet, bedste forsikringstilbud
-- IT
-  - Mozilla / firefox - ideologisk bedste (og teknisk bedste sammen med blink(chrome/opera)) webbrowser
-  - fsf og openknowledge - kæmper for open source og åbne data
-  - github - central infrastruktur for open source
-  - laptops.dk - god erfaring med kundeservice, leverance og pris, I need http://xkcd.com/243/
-  - gratisdns - gode erfaringer med denne leverandør
-- Outgoing
-  - De danske biblioteker
-  - Tinkuy
-  - cafe retro
-  - studenterhuset - lindy hop
-  - det kongelige teater - tango
-  - ci-cph
-  - falaffelkælderen
-  - morgenstedet
-  - bewelcome
-  - toastmasters
-
-## Berlin
-
-- raise a smile berlin
-- dans
-  - wed tango 20:00 Strandbar Mitte Monbijoustr.  Berlin
-  - wed lindy 22:00 Clärchens Ballhaus, Auguststr. 24, Berlin-Mitte
-  - thu tango 18:30 Himmelbeet. Ruheplatzstr. 12.
-  - thu lindy 21:30 Frannz, Schönhauser Alle 36 · 10435 Berlin
-- food
-  - baharet falaffel Winterfeldtstr. 37, Nollendorplatz 
-  - lucky leek Kollwitzstraße 54 10405 Berlin
-  - yoyo Gartnerstrasse 27 Berlin, Germany 10245
-  - ohlala pastery Mainzer Strasse 18 (Frankfurter Allee) 
-  - vegetarian club
-- museum
-  - naturkunde Invalidenstraße 43 10115 Berlin
-  - technik Trebbiner Straße 9 D-10963 Berlin-Kreuzberg
-  - musikinstrumenten   Tiergartenstr. 1 10785 Berlin 
-  - design panoptikum Torstraße 201, Berlin, 10115, 
-- city
-  - buy tea at large eco-store
-  - escape game
-  - betahaus thursday breakfast 9:30 filmtruppe berlin, tightops, and fattelo
-  - east side gallery
-  - holocaust-memorial, east-side gallery
-  - alternative tour 11,13,15 Our Free day tours meet at Alexanderplatz TV TOWER next to entrance of Star.uck’s
-  - Universitet?
-  - (Berlin exploratorium 24.07.2014 um 19:30 - 21:30 Nichts und alles Impro-Treff, Saal 2 ) ???
-  - musikbutik - ukulele
-- nature
-  - grünewald - ¿ddr?
-  - swim
-  - ¿treptower park?
-  - boat - wannsee Bootsverleih Wannsee Wannseebadweg 25
-  - botanische garden
-  - wannsee island
-
-
-## CombiGame
-CombiGame is a mobile app, web game and card game. Try it:
-
-- [online](/solsort/combigame) (runs in a web browser)
-    - [android version](https://play.google.com/store/apps/details?id=com.solsort.combigame)
-- as a cardgame
-    - [buy it online from TheGameCrafter](https://www.thegamecrafter.com/games/combigame)
-    - catch me in person ;) and try it or buy it (DKK 120)
-
-Game objectives: spot combinations of three figures where color, count, shape and fill, are either the same or all different.
-
-For example the figures in:
-
-![combigame combi](/img/combigame-combi.png)
-
-are a valid combination, as they have different color, count and shape, and the same fill,
-whereas:
-
-![combigame invalid](/img/combigame-invalid.png)
-
-are invalid as the color is neither all different or the same.
-
-The card game goes as follows:
-
-- put 12 cards on table face up
-- when a player spots a valid combination, she tap on the table to indicate that she spotted it first, and the collect the combination
-- when no valid combinations can be spotted, deal 3 more cards from the deck face up
-- when all of the deck is dealt, and no more combinations can be spotted, the player who collected most combinations won.
-
-When played on a phone/tablet/computer, the computer deals such that there is always at least one valid combination 12 figures on the screen.
-
-In the online version, it is possible to click on the hint-button to see examples of valid combinations.
-
-#### Credits
-
-Rules are mostly the same as the [Set card game](http://en.wikipedia.org/wiki/Set_%28game%29), which is highly recommendable. 
-
-The goal of the original version of CombiGame was just to play Set on the smartphone (with new graphics), - later on it expanded onto physical cards as well.
-
-## CheatSheet
-
-- tmux new -t 0
 
 ## EuroCards
 
@@ -1283,30 +1307,6 @@ Skabelon og huskeliste der kan anvendes ved udarbejdelse af naturvidenskabelige 
 Rasmus Erik, 2005
 
 ## Tango
-### Barefoot Tango
-
-Introduction and dance evening with Argentine Tango:
-
-• We will work with tango technique, connection, musicality, etc. also with a focus on how it is applicable in other dances such as Swing / Lindy-Hop, Salsa, Kizomba, etc.
-• Barefoot - no (outdoor) shoes are allowed at the dance place Tinkuy - this also puts the focus on more straight movements
-• We both lead and follow within the dance - following makes you a better leader and leading makes you a better follower. This is sometimes called "queertango", and also eliminate the issue of possible gender imbalance.
-• It is a social dance, and everybody dances with everybody, - we will change dance partners regularly during the practise - you can come with or without a partner.
-
-
-Plan:
-
-• Introduction to argentine tango - the focus will be on basic technique and musicality, which is suitable for both beginners and experienced dancers :)
-• Social dancing - after the introduction it will gradually change into social dancing, both with traditional tango music, and also other music that is good for tango dancing.
-
-We start at 19:01, so please be here on time.
-
-
-Sign-up: send an sms to Rasmus Erik, +45 60703081, to sign up, (need to know how many will be here)
-
-Price: free for members at Tinkuy, others donate as much as you can afford to "Læger uden grænser" (msf.dk), or similar.
-
-
-
 ### Tinkuy tango
 
 Dance evening with introduction to argentine tango (experienced tango dancers are also welcome).
