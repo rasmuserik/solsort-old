@@ -87,6 +87,9 @@
 (add-entry "Rasmus Erik Voel Jensen"
            ["developer" "company owner" "computer scientist"]
            "/rasmuserik.html")
+(add-entry "Barefoot Tango"
+           ["2015"]
+           "/notes/barefoot-tango")
 (add-entry "Repeat record"
            ["2015" "utility" "webapp" "firefox-only" "video"]
            "/#repeat-record/10")

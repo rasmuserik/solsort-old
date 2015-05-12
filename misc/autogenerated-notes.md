@@ -1416,6 +1416,40 @@ an tango master was dancing the whole night, with a wonderful ease and beautiful
 
 
 
+## Træningsprogram
+
+- yoga
+  - rotationer
+    - nakkerotation
+    - skulderrotation
+    - lend-rotation
+  - 5x solhilsen
+  - skulderstand m. bensænk, plov og fisk, goal: nå gulv i plow. Derefter rygrul + happy baby
+  - sid i fuld lotus n breathings
+  - ben+universalstræk
+    - hold om begge fødder, in/out-breath, relax neck
+    - enkelt ben op strakt så langt som muligt
+    - ben hold om fod liggende på ryggen
+    - hold om fod, universalstræk-agtig
+    - hold om fod til anden siden end universalstræk
+  - hovedstand og lær skorpion. Klovn+arbstand
+  - core - hold ben+arme oppe
+- 7min inspireret - rep/breath-count instead of timed
+  - ¿englehop?
+  - armbøjninger
+  - gulvklap-klap-over-hovedet
+  - planke
+  - gå op/ned stol
+  - armhæv op/ned stol
+  - løb på stedet
+  - squats
+  - armbøj + op på én arm m. anden løftet
+- stå på hænder, lær vejrmølle+gå-på-hænder
+- kolbøtte-forlæns
+- glid/rul på gulv
+- alternating nose breathing
+- savasana
+
 ## Ubuntu setup notes
 
 
