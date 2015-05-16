@@ -298,6 +298,43 @@ Sign-up: send an sms to Rasmus Erik, +45 60703081 (as I would like to know how m
 Price: free, - pay it forward, or give a donation to a good cause instead :)
 
 
+----
+
+### Notes
+
+- intro
+  - what is tango
+  - introductions / dance/movement background
+- embrace
+  - hand to hand
+  - pratise embrace
+  - tango embrace / hug
+  - chest / leading from the arms vs. shoulders vs. center
+  - living embrace, head, shoulders, ...
+- "steps" and flow of dance
+  - weight shift
+  - initiating the movement
+  - forward step
+  - side step
+  - changing steps
+  - parallel same lane vs. on outside
+  - change of embrace during sidestep
+  - rectangular movements, and turning
+- musicality
+  - musicality - focus on single piece of music - ie el choclo, ABC-sections
+  - individual instruments
+  - sections of the music
+  - going with or against the music, dance as a voice 
+  - playing with the music
+  - genres: tango, vals, milonga, (and modern/alternative)
+- following/leading
+  - keeping the connection
+  - lead-follow-follow
+  - having weight on single foot
+  - connecting with the sky/floor
+  - staying and extending
+  - playing with intensity during the move
+  - invisible energy/connection between the centers
 
 ## BibApp
 
@@ -738,6 +775,14 @@ Turn consist of two actions and one step
 - debora hay
   - each of the trillion cells in the human body focusses on the action
   - sense of direction and extension in the movement
+- misc
+  - tinkuy-class
+    - moving through the foot on the outside
+    - boxing-steps
+    - falling, without correcting with the lower part of the axis
+    - qi of rotation of arms
+    - using the center axis for moving the arms
+    - warmup rotation of joints
 - lindy hop
   - remember small steps
   - louie
