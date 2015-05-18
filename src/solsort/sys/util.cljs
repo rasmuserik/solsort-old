@@ -98,7 +98,6 @@
 (defn run-once [f]
   (let [do-run (atom true)]
     (fn [& args]
-      (log 'run-once @do-run)
       (when @do-run
         (reset! do-run false)
         (apply f args)))))

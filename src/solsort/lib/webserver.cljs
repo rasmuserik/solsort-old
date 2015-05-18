@@ -22,9 +22,10 @@
         #js{:error "not-implemented"}))
     (route "default-route" default-route)
     (defn process-result [result]
-      (if (= "html" (:type result))
-        (html->http result)
-        (clj->js result)))
+      (cond
+        (nil? result) #js{:http-headers #js{:Content-Type "text/plain"} :content "nil"}
+        (= "html" (:type result)) (html->http result)
+        :else (clj->js result)))
     (defn handler [req res]
       (go
         (let [t0 (js/Date.now)
