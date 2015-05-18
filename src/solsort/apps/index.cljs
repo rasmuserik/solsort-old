@@ -3,7 +3,7 @@
   (:require
     [solsort.sys.mbox :refer [route log]]
     [solsort.lib.html :refer [normalise-str hex-color]]
-    [solsort.sys.platform :refer [is-browser fs exit is-nodejs]]
+    [solsort.sys.platform :refer [is-browser fs exit is-nodejs read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -87,6 +87,11 @@
 (add-entry "Rasmus Erik Voel Jensen"
            ["developer" "company owner" "computer scientist"]
            "/rasmuserik.html")
+
+(add-entry "BibData"
+           ["2015"]
+           "/bibdata/isbn/9788700398368")
+
 (add-entry "Barefoot Tango"
            ["2015"]
            "/notes/barefoot-tango")
@@ -169,3 +174,8 @@
            ["2011" "unfinished" "game" "unfinished"]
            "http://solsort.com/cute-engine")
 
+
+(def cached-file (memoize read-file-sync))
+(route "icons"
+       (fn []
+        #js{:http-headers #js{:Content-Type "text/plain"} :content (cached-file "../webroot/icons/white.png")}))
