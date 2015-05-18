@@ -52,7 +52,7 @@
       "lid" [:a {:href (str "http://bibliotek.dk/linkme.php?rec.id=870970-basis:" (first vs))}
              "bibliotek.dk"]
       "related" [:div.spaceabove "Related:" (into [:ul]
-        (<! (go<!-seq (map related-link (take 10 (rest vs))))))]
+        (<! (go<!-seq (map related-link (take 100 (rest vs))))))]
       [:div k (str vs)])))
 
 (defn entry [lid]
