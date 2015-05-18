@@ -14,17 +14,24 @@
    :creator ["Creator1" "Creator2"]})
 
 (defn entry [obj]
-  (log 'bibentry sample)
-  [:div
-   [:h1 (first (obj :title))]
-   ])
+  (log 'bibentry obj)
+  {:type "html"
+   :title "bibdata - solsort.com"
+   :css {"body" {"margin" "5%"}}
+   :html [:div
+          [:h1 (first (obj "title"))]
+          ]})
 
 (route "bibdata"
-       (fn []
-         {:type "html"
-          :title "bibdata - solsort.com"
-          :css {}
-          :html (entry sample)}))
+       (fn [kind id] 
+         (go
+           (log 'bibdata kind id)
+           (case kind
+             "isbn" 
+             (do
+               (entry (js->clj (<! (fetch :bibdata (<! (fetch :isbn id)))))))
+             "lid" (entry (<! (fetch :bibdata id)))
+             (entry sample)))))
 
 (def process 
   (run-once
