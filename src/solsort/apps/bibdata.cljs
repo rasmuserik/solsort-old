@@ -30,15 +30,21 @@
     (let [o (js->clj (<! (fetch :bibdata lid)))]
       (if o
         [:li
-      [:a {:href (str "/bibdata/lid/" lid)
-           }
-       (first (or (o "title") [""]))
-       (conj (into [:span " ("]
-             (interpose " & " (or (o "creator") [])))
-       ")")
-       ]]
-      nil))))
+         [:a {:href (str "/bibdata/lid/" lid)
+              }
+          (first (or (o "title") [""]))
+          (conj (into [:span " ("]
+                      (interpose " & " (or (o "creator") [])))
+                ")")
+          ]]
+        nil))))
 
+
+(def biblioteker
+  [["bibliotek.dk" "http://bibliotek.dk/linkme.php?rec.id=870970-basis:"]
+   ["Horsens" "https://horsensbibliotek.dk/ting/object/870970-basis:"]
+   ["Vejle" "https://vejlebib.dk/ting/object/870970-basis:"]
+   ])
 
 (defn html-for-type [[k vs o]]
   (go
@@ -48,28 +54,33 @@
                       (interpose 
                         " & " 
                         (map (fn [v] [:span {:itemProp "creator"} v])
-                                             vs)))
+                             vs)))
       "date" [:div (first (o "type")) " udgivet " [:span {:itemProp "datePublished"} (first vs)]]
       "classification" [:div "DK5: " (string/join " & " vs)]
       "type" [:div "type: " (first vs)]
       "isbn" [:div "ISBN: " [:span {:itemProp "isbn"} (first vs)]]
-      "lid" [:a {:href (str "http://bibliotek.dk/linkme.php?rec.id=870970-basis:" (first vs))
-                 :itemProp "sameAs"}
-             "bibliotek.dk"]
-      "related" [:div.spaceabove "Related:" (into [:ul]
-        (<! (go<!-seq (map related-link (take 100 (rest vs))))))]
+      "lid" (into [:div.spaceabove "Bibliotek-links: "]
+                  (interpose " "
+                             (map (fn [[bib url]]
+                                    (log 'bibdata bib url)
+                                    [:a {:href (str url (first vs))
+                                         :itemProp "sameAs"}
+                                     bib])
+                                  biblioteker)))
+      "related" [:div.spaceabove "Related: " (into [:ul]
+                                                   (<! (go<!-seq (map related-link (take 100 (rest vs))))))]
       [:div k (str vs)])))
 
 (defn itemtype [t]
   (str "http://schema.org/"
-  (case (first t)
-    "Bog" "Book"
-    "Billedbog" "Book"
-    "Dvd" "Movie"
-    "Tidskriftasaf" "Article"
-    (do
-      (log 'bibdata 'warning-missing-itemtype t)
-      "CreativeWork"))))
+       (case (first t)
+         "Bog" "Book"
+         "Billedbog" "Book"
+         "Dvd" "Movie"
+         "Tidskriftasaf" "Article"
+         (do
+           (log 'bibdata 'warning-missing-itemtype t)
+           "CreativeWork"))))
 (defn entry [lid]
   (go
     (let [obj (or (js->clj (<! (fetch :bibdata lid))) {})
@@ -93,9 +104,9 @@
               (into [:div {:itemScope "itemscope"
                            :itemType (itemtype (obj "type"))}]
                     (filter identity
-                    (<! (go<!-seq
-                          (map html-for-type
-                               (map #(list % (obj %) obj) ks))))))
+                            (<! (go<!-seq
+                                  (map html-for-type
+                                       (map #(list % (obj %) obj) ks))))))
               ;[:hr]
               ;[:div (string/join " " ks)]
               ;[:div (string/join " " (keys obj))]
