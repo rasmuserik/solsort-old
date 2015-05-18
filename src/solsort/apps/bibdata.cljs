@@ -28,10 +28,10 @@
 (defn related-link [lid]
   (go
     (let [o (js->clj (<! (fetch :bibdata lid)))]
-      (log 'related-link o)
       (if o
         [:li
-      [:a {:href (str "/bibdata/lid/" lid)}
+      [:a {:href (str "/bibdata/lid/" lid)
+           }
        (first (or (o "title") [""]))
        (conj (into [:span " ("]
              (interpose " & " (or (o "creator") [])))
@@ -43,18 +43,33 @@
 (defn html-for-type [[k vs o]]
   (go
     (case k
-      "title" [:h1 (first vs)]
-      "creator" (into [:h2 "af "] (interpose " & " vs))
+      "title" [:h1 {:itemProp "name"} (first vs)]
+      "creator" (into [:h2 "af "] 
+                      (interpose 
+                        " & " 
+                        (map (fn [v] [:span {:itemProp "creator"} v])
+                                             vs)))
+      "date" [:div (first (o "type")) " udgivet " [:span {:itemProp "datePublished"} (first vs)]]
       "classification" [:div "DK5: " (string/join " & " vs)]
       "type" [:div "type: " (first vs)]
-      "date" [:div (first (o "type")) " udgivet: " (string/join " & " vs)]
-      "isbn" [:div "ISBN: " (first vs)]
-      "lid" [:a {:href (str "http://bibliotek.dk/linkme.php?rec.id=870970-basis:" (first vs))}
+      "isbn" [:div "ISBN: " [:span {:itemProp "isbn"} (first vs)]]
+      "lid" [:a {:href (str "http://bibliotek.dk/linkme.php?rec.id=870970-basis:" (first vs))
+                 :itemProp "sameAs"}
              "bibliotek.dk"]
       "related" [:div.spaceabove "Related:" (into [:ul]
         (<! (go<!-seq (map related-link (take 100 (rest vs))))))]
       [:div k (str vs)])))
 
+(defn itemtype [t]
+  (str "http://schema.org/"
+  (case (first t)
+    "Bog" "Book"
+    "Billedbog" "Book"
+    "Dvd" "Movie"
+    "Tidskriftasaf" "Article"
+    (do
+      (log 'bibdata 'warning-missing-itemtype t)
+      "CreativeWork"))))
 (defn entry [lid]
   (go
     (let [obj (or (js->clj (<! (fetch :bibdata lid))) {})
@@ -66,7 +81,6 @@
                           ;"serieTitle"
                           "isbn" "lid" "related"])
           ]
-      (log 'bibentry obj)
       {:type "html"
        :title (str (first (obj "title"))
                    " "
@@ -76,7 +90,8 @@
              ".spaceabove" {"margin-top" "1ex"}
              "ul" {"margin-top" "0"}}
        :html [:div
-              (into [:div]
+              (into [:div {:itemScope "itemscope"
+                           :itemType (itemtype (obj "type"))}]
                     (filter identity
                     (<! (go<!-seq
                           (map html-for-type
@@ -91,7 +106,6 @@
 (route "bibdata"
        (fn [kind id] 
          (go
-           (log 'bibdata kind id)
            (case kind
              "isbn" (<! (entry (<! (fetch :isbn id))))
              "lid" (<! (entry id))
