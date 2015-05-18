@@ -51,7 +51,7 @@
                     ]
                 (log 'bib-data 'update data)
                 (when (data "isbn")
-                  (<! (store :isbn (first (data "isbn")) lid)))
+                  (doall (map #(store :isbn % lid) (data "isbn"))))
                 (<! (store :bibdata lid (clj->js data)))))
             (when (rest lids)
               (recur (first lids) (rest lids)))))))))
