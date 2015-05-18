@@ -178,4 +178,4 @@
 (def cached-file (memoize read-file-sync))
 (route "icons"
        (fn []
-        #js{:http-headers #js{:Content-Type "text/plain"} :content (cached-file "../webroot/icons/white.png")}))
+        #js{:http-headers #js{:Content-Type "text/plain"} :content (cached-file "misc/white.png")}))
