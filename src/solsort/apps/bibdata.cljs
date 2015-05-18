@@ -64,7 +64,7 @@
                              (map (fn [[bib url]]
                                     (log 'bibdata bib url)
                                     [:a {:href (str url (first vs))
-                                         :itemProp "sameAs"}
+                                         :itemProp "mainEntityOfPage"}
                                      bib])
                                   biblioteker)))
       "related" [:div.spaceabove "Related: " (into [:ul]
