@@ -93,7 +93,7 @@
                                          :itemProp "sameAs"}
                                      bib])
                                   biblioteker)))
-      "related" [:div.spaceabove "Related: " (into [:ul]
+      "related" [:div.spaceabove "Anbefalinger: " (into [:ul]
                                                    (<! (go<!-seq (map related-link (take 30 (rest vs))))))]
       [:div k (str vs)])))
 
@@ -140,13 +140,36 @@
               ;[:div (str obj)]
               ]})))
 
+(def sample-lids
+  ["28511663" "28902239" "27999441" "27541062" "25862031"
+   "20411724" "23917076" "29541167" "20476079" "29815860" 
+   "27594506" "25523911" "07203659" "44764873"])
+(defn sample-lid [lid]
+  (go
+    [:li [:a {:href (str "/bibdata/lid/" lid)} lid] 
+     " " (first ((<! (bibobj lid)) "title"))]))
+
+(defn default []
+  (go
+    {:type "html"
+     :title " bibdata - solsort.com"
+     :css {"body" {"margin" "5%"}
+           ".spaceabove" {"margin-top" "1ex"}
+           "ul" {"margin-top" "0"}}
+     :html [:div 
+            [:h1 "BibData"]
+            "Eksempler:"
+            (into [:ul] (<! (go<!-seq (map sample-lid sample-lids))))
+            [:small "Eksemplerne er udvalgt som 1., 10., 100., 1.000., 10.000., 20.000., 30.000., 40.000., 50.000., 60.000., 70.000., 80.000., 90.000., og 100.000. mest populære bog."]
+            ]}))
+
 (route "bibdata"
        (fn [kind id] 
          (go
            (case kind
              "isbn" (<! (entry (<! (fetch :isbn id))))
              "lid" (<! (entry id))
-             nil))))
+             (<! (default))))))
 (def process 
   (run-once
     (fn []

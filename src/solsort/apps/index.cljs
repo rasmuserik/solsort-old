@@ -90,7 +90,7 @@
 
 (add-entry "BibData"
            ["2015"]
-           "/bibdata/isbn/9788700398368")
+           "/bibdata/")
 
 (add-entry "Barefoot Tango"
            ["2015"]
