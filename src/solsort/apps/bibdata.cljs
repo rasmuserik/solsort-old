@@ -94,7 +94,7 @@
                                      bib])
                                   biblioteker)))
       "related" [:div.spaceabove "Related: " (into [:ul]
-                                                   (<! (go<!-seq (map related-link (take 100 (rest vs))))))]
+                                                   (<! (go<!-seq (map related-link (take 10 (rest vs))))))]
       [:div k (str vs)])))
 
 (defn itemtype [t]
