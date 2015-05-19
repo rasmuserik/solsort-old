@@ -1506,3 +1506,30 @@ Wifi access point
 http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-point/
 
 
+## Udviklernetværk
+### Oplæg 2015-05-20
+
+- Nationalbibliografien er nu åbne data :)
+  - Har været i dialog med kulturstyrelsen de sidste måneder, - konklusion på plads nu.
+  - "Kulturministeriet og Kulturstyrelsen finder, at du frit og uden betingelser kan anvende de nationalbibliografiske data, som ministeriet ifølge den nationalbibliografiske aftale har ejendomsretten til."
+  - Er igang med at udtrække data, tak til Simon (Vejle) for dev.vejlebib.dk-webservice, og tak til DBC for ADHL ved Hack4dk, tak til Kulturministeriet og Kulturstyrelsen, tak til PSI-direktivet.
+  - Hvorfor/perspektiv
+    - Åbner op for frie initiativer - ie. giver mig lov til at lege med data :)
+    - Lægger det ud semantisk opmarkeret, kan måske gøre bibliotekerne mere synlige på nettet.
+    - Kunne også bruges til datamining, eksperimenter med søgning, etc.
+- Anbefalingsservice
+  - Produktionsklar cloud-hosted webservice - I er velkomne til at bruge den til relations-visualiseringen.
+  - Teknisk parat til at modtage lånstatistik, - mangler databehandleraftale og opsætning på bibliotekerne. Anbefalingerne er stadigt statiske.
+- Semantisk opmarkering af HTML
+  - formål: maskinlæsbar html
+    - søgemaskiner
+    - gøre data tilgængelig på standardvis
+  - microdata vs rdfa
+    - microdata, html5+searchengines, only w3c note
+    - RDFa, more complete probably most futuresafe
+  - schema.org
+    - standard vocabular, including CreativeWorks, suchas Book, Movie, Article...
+  - example http://solsort.com/bibdata/faust/...
+  - example [https://developers.google.com/structured-data/testing-tool/](https://developers.google.com/structured-data/testing-tool/)
+  
+

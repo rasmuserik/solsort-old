@@ -11,6 +11,32 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
+(defn bibobj [lid]
+  (go
+    (let [o (js->clj (<! (fetch :bibdata lid)))]
+      (if o
+        o
+        (let [url (str 
+                    "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/870970-basis:" 
+                    lid)
+              data (js->clj (or (parse-json-or-nil (<! (ajax url))) []))
+              data 
+              (reduce 
+                (fn [mm [k v]]
+                  (if (mm k)
+                    (assoc mm k (conj (mm k) v))
+                    (assoc mm k [v])))
+
+                {}
+                (for [{p "property" v "value"} data] [p v]))
+              ]
+          (log 'bib-data 'update data)
+          (when (data "isbn")
+            (doall (map #(store :isbn % lid) (data "isbn"))))
+          (<! (store :bibdata lid (clj->js data)))
+          data
+          )))))
+
 (def sample
   {:title ["Title"]
    :creator ["Creator1" "Creator2"]})
@@ -27,7 +53,7 @@
 
 (defn related-link [lid]
   (go
-    (let [o (js->clj (<! (fetch :bibdata lid)))]
+    (let [o (<! (bibobj lid))]
       (if o
         [:li
          [:a {:href (str "/bibdata/lid/" lid)
@@ -83,12 +109,12 @@
            "CreativeWork"))))
 (defn entry [lid]
   (go
-    (let [obj (or (js->clj (<! (fetch :bibdata lid))) {})
+    (let [obj (or (<! (bibobj lid)) {})
           obj (conj obj ["lid" [lid]])
           obj (conj obj ["related" (map 
                                      #(% "lid")
                                      (js->clj (<! (get-related lid))))])
-          ks (filter obj ["title" "creator" "classification" "date"
+          ks (filter obj ["title" "creator" "date" "classification"
                           ;"serieTitle"
                           "isbn" "lid" "related"])
           ]
@@ -129,25 +155,7 @@
         (let [lids (seq (.split (str (read-file-sync "misc/lids")) "\n"))]
           (loop [lid (first lids)
                  lids (rest lids)]
-            (when (not (<! (fetch :bibdata lid)))
-              (let [url (str 
-                          "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/870970-basis:" 
-                          lid)
-                    data (js->clj (parse-json-or-nil (<! (ajax url))))
-                    data 
-                    (reduce 
-                      (fn [mm [k v]]
-                        (if (mm k)
-                          (assoc mm k (conj (mm k) v))
-                          (assoc mm k [v])))
-
-                      {}
-                      (for [{p "property" v "value"} data] [p v]))
-                    ]
-                (log 'bib-data 'update data)
-                (when (data "isbn")
-                  (doall (map #(store :isbn % lid) (data "isbn"))))
-                (<! (store :bibdata lid (clj->js data)))))
+            (<! (bibobj lid))
             (when (rest lids)
               (recur (first lids) (rest lids)))))))))
 
