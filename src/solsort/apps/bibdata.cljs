@@ -68,8 +68,8 @@
 
 (def biblioteker
   [["bibliotek.dk" "http://bibliotek.dk/linkme.php?rec.id=870970-basis:"]
-   ["Horsens" "https://horsensbibliotek.dk/ting/object/870970-basis:"]
-   ["Vejle" "https://vejlebib.dk/ting/object/870970-basis:"]
+   ;["Horsens" "https://horsensbibliotek.dk/ting/object/870970-basis:"]
+   ;["Vejle" "https://vejlebib.dk/ting/object/870970-basis:"]
    ])
 
 (defn html-for-type [[k vs o]]
