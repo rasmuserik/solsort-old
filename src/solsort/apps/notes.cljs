@@ -21,7 +21,7 @@
        (if markdown (process-daylog markdown)))))
 
 (defn canonize-string [s]
-  (.replace (.trim (.toLowerCase s)) (js/RegExp. "[^a-z0-9]" "g") ""))
+  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
 
 (def all-notes 
   (memoize 
