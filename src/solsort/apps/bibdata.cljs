@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.mbox :refer [route log]]
+    [solsort.sys.util :refer [go<!-seq]]
     [solsort.lib.kvdb :refer [fetch store]]
     [solsort.lib.net :refer [ajax]]
     [solsort.apps.bib-related :refer [get-related]]
@@ -41,15 +42,6 @@
   {:title ["Title"]
    :creator ["Creator1" "Creator2"]})
 
-
-(defn go<!-seq [cs]
-  (go
-    (loop [acc []
-           cs cs]
-      (if (first cs)
-        (recur (conj acc (<! (first cs)))
-               (rest cs))
-        acc))))
 
 (defn related-link [lid]
   (go

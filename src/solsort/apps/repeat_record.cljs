@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.mbox :refer [route log]]
+    [solsort.sys.util :refer [run-once]]
     [solsort.sys.platform :refer [is-browser fs exit is-nodejs global]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -79,12 +80,7 @@
             (aset (js/document.getElementById "save") "onclick" #(download-url src "video.webm"))
             (<! (status-wait "playback" @loop-time))))
         (recur)))))
-(defn run-once [f]
-  (let [has-run (atom false)]
-    (fn [] (when-not @has-run (reset! has-run true) (f)))))
-
 (def video-record (run-once video-record-non-reentrant))
-
 (defn supported-platform []
   (and (exists? js/window)
        (exists? js/MediaRecorder)

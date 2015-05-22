@@ -2,6 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.mbox :refer [route warn log]]
+    [solsort.sys.util :refer [canonize-string]]
     [solsort.sys.platform :refer [is-browser fs exit is-nodejs set-immediate]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -19,9 +20,6 @@
              (.readFileSync fs "/home/rasmuserik/notes/daylog.md" "utf8")
              (catch js/Object e nil))]
        (if markdown (process-daylog markdown)))))
-
-(defn canonize-string [s]
-  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
 
 (def all-notes 
   (memoize 

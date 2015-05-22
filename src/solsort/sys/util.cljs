@@ -101,3 +101,17 @@
       (when @do-run
         (reset! do-run false)
         (apply f args)))))
+
+(defn canonize-string [s]
+  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
+
+(defn go<!-seq [cs]
+  (go
+    (loop [acc []
+           cs cs]
+      (if (first cs)
+        (recur (conj acc (<! (first cs)))
+               (rest cs))
+        acc))))
+
+

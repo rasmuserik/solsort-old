@@ -5,5 +5,4 @@
     [solsort.sys.platform :refer [is-browser fs exit is-nodejs]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
-
 (route "server-time" (fn [] (.toISOString (js.Date.))))
