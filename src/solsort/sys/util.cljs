@@ -7,6 +7,8 @@
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
+
+; js-json
 (defn parse-json-or-nil [str]
   (try
     (js/JSON.parse str)
@@ -16,7 +18,6 @@
           #(nil? (parse-json-or-nil "this is not json")))
 (testcase 'parse-json-or-nil-2 
           #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
-
 
 (defn jsextend [target source]
   (let [ks (js/Object.keys source)]
@@ -29,10 +30,28 @@
               (js->clj (jsextend #js{:foo 1 :bar 1} #js{:bar 2}))))
 
 
+; async channels
+(defn chan? [c] (instance? ManyToManyChannel c))
+
+(testcase 'chan?-1 #(chan? (chan)))
+
+(testcase 'chan?-2 #(not (chan? true)))
+
+(defn go<!-seq [cs]
+  (go
+    (loop [acc []
+           cs cs]
+      (if (first cs)
+        (recur (conj acc (<! (first cs)))
+               (rest cs))
+        acc))))
+
 (defn print-channel [c]
   (go (loop [msg (<! c)]
         (if msg (do (print msg) (recur (<! c)))))))
 
+
+; transducers
 (defn by-first [xf]
   (let [prev-key (atom nil)
         values (atom '())]
@@ -84,34 +103,25 @@
     by-first
     (map (fn [[k v]] [k (map (fn [[s]] s) v)]))))
 
-(defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
 
-(defn chan? [c] (instance? ManyToManyChannel c))
-(testcase 'chan?-1 #(chan? (chan)))
-(testcase 'chan?-2 #(not (chan? true)))
-
+; string
 (defn parse-path [path] (.split (.slice path 1) #"[/.]"))
 
 (def -unique-id-counter (atom 0))
 (defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
 
+(defn canonize-string [s]
+  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
+
+(defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
+
+
+; functions
 (defn run-once [f]
   (let [do-run (atom true)]
     (fn [& args]
       (when @do-run
         (reset! do-run false)
         (apply f args)))))
-
-(defn canonize-string [s]
-  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
-
-(defn go<!-seq [cs]
-  (go
-    (loop [acc []
-           cs cs]
-      (if (first cs)
-        (recur (conj acc (<! (first cs)))
-               (rest cs))
-        acc))))
 
 
