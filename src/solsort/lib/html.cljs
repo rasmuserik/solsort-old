@@ -11,7 +11,27 @@
 (defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
 
 
+
+(defn parse-classes [head prop]
+  (let []
+    prop
+  ))
+(defn clj->react [node]
+  (if-not (sequential? node)
+    node
+    (let [has-properties (map? (second node))
+          tail (if has-properties
+                 (drop 2 node)
+                 (drop 1 node))
+          head (name (first node))
+          tail (map clj->react tail)
+          prop (if has-properties (second node) {})
+          prop (parse-classes head prop)]
+      (apply js/React.createElement head (clj->js prop) tail)
+      )))
+
 (defn html->http [o]
+  (clj->react  (:html o))
   #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
       :content
       (str
