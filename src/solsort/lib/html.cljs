@@ -53,7 +53,7 @@
       )))
 
 (testcase 'clj->react-1
-          #(= (js/React.renderComponentToStaticMarkup
+          #(= (js/React.renderToStaticMarkup
                 (clj->react
                   [:div.foo [:span#foo "hello"]]))
               "<div class=\"foo\"><span id=\"foo\">hello</span></div>"
