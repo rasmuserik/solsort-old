@@ -3,7 +3,9 @@
   (:require
     [solsort.lib.css :refer [js->css]]
     [solsort.sys.mbox :refer [log]]
+    [solsort.sys.test :refer [testcase]]
     [reagent.core :as reagent]
+    [clojure.string :refer [split join]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
@@ -13,9 +15,29 @@
 
 
 (defn parse-classes [head prop]
-  (let []
-    prop
-  ))
+  (let [
+        tagname (re-find #"^[^.#]*" head)
+        [_ id] (re-find #"[#]([^.#]*)" head)
+        prop (if id (assoc prop "id" id) prop)
+        prop 
+        (if (re-find #"[.]" head)
+          (let
+            [classes #{}
+             classes (into classes (split (or (prop "className") "") " "))
+             classes (into classes (map second (re-seq #"[.]([^.#]*)" head)))
+             classes (join " " classes)]
+            (assoc prop "className" classes))
+          prop)
+        ]
+    (log 'parse-classes head id prop)
+    [tagname prop]
+    ))
+
+(testcase 'parse-class-none
+          #(= (parse-classes "foo" {}) ["foo" {}]))
+(testcase 'parse-class
+          #(= (parse-classes "foo.bar#baz.Quux" {"className" "hi lo"}) ["foo" {"className" "hi lo bar Quux" "id" "baz"}]))
+
 (defn clj->react [node]
   (if-not (sequential? node)
     node
@@ -26,12 +48,19 @@
           head (name (first node))
           tail (map clj->react tail)
           prop (if has-properties (second node) {})
-          prop (parse-classes head prop)]
+          [head prop] (parse-classes head prop)]
       (apply js/React.createElement head (clj->js prop) tail)
       )))
 
+(testcase 'clj->react-1
+          #(= (js/React.renderComponentToStaticMarkup
+                (clj->react
+                  [:div.foo [:span#foo "hello"]]))
+              "<div class=\"foo\"><span id=\"foo\">hello</span></div>"
+              ))
+
 (defn html->http [o]
-  (clj->react  (:html o))
+  ;(clj->react  (:html o))
   #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
       :content
       (str

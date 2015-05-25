@@ -1490,6 +1490,7 @@ an tango master was dancing the whole night, with a wonderful ease and beautiful
   - squats
   - armbøj + op på én arm m. anden løftet
 - stå på hænder, lær vejrmølle+gå-på-hænder
+- rullefald
 - kolbøtte-forlæns
 - glid/rul på gulv
 - alternating nose breathing
