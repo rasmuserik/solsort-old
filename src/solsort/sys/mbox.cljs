@@ -15,7 +15,7 @@
 (declare processes)
 
 
-;; private utility functions
+;; utility functions
 (def -writer (transit/writer :json))
 (def -reader (transit/reader :json))
 (defn -route-error [msg]
@@ -25,12 +25,10 @@
     (if rbox
       (post (aget info "rpid") rbox nil))))
 (def -mboxes "mboxes for local process" (atom {}))
-(def -unique-id-counter (atom 0))
-(defn -unique-id [] (str "id" (swap! -unique-id-counter inc)))
 (defn -local-handler [msg] 
   ((get @-mboxes (aget msg "mbox") @route-error-fn) msg))
-
-
+(def -unique-id-counter (atom 0))
+(defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
 (defn transit-read [o] (transit/read -reader o))
 (defn transit-write [o] (transit/write -writer o))
 
@@ -68,7 +66,7 @@
 ;; high level api
 (defn call-timeout [max-wait pid mbox & args] 
   (let [c (chan)
-        rbox (-unique-id)
+        rbox (unique-id)
         handler 
         (fn [msg]
           (unhandle rbox)

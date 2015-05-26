@@ -2,11 +2,10 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.test :refer [testcase]]
-    [solsort.sys.mbox :refer [log]]
+    [solsort.sys.mbox :as mbox :refer [log]]
     [clojure.string :as string :refer [split]]
     [cljs.core.async.impl.channels :refer [ManyToManyChannel]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
-
 
 ; js-json
 (defn parse-json-or-nil [str]
@@ -107,13 +106,14 @@
 ; string
 (defn parse-path [path] (.split (.slice path 1) #"[/.]"))
 
-(def -unique-id-counter (atom 0))
-(defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
-
+(def unique-id mbox/unique-id)
 (defn canonize-string [s]
-  (.replace (.replace (.trim (.toLowerCase s)) (js/RegExp. "%[0-9a-fA-F][0-9a-fA-F]", "g") "")(js/RegExp. "[^a-z0-9]" "g") ""))
-
+  (.replace (.trim (.toLowerCase s)) (js/RegExp. "(%[0-9a-fA-F][0-9a-fA-F]|[^a-z0-9])+", "g") "-"))
 (defn swap-trim  [[a b]] [(string/trim b) (string/trim a)])
+
+
+; integers
+(defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
 
 
 ; functions

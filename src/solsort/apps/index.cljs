@@ -2,7 +2,7 @@
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
     [solsort.sys.mbox :refer [route log]]
-    [solsort.lib.html :refer [normalise-str hex-color]]
+    [solsort.sys.util :refer [canonize-string hex-color]]
     [solsort.sys.platform :refer [is-browser fs exit is-nodejs read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -25,7 +25,7 @@
                  :boxShadow (str "0px 0px 2px #000, "
                                  "3px 3px 10px rgba(0,0,0,0.4)")
                  }}
-     [:img {:src (str "/icons/" (normalise-str title) "")
+     [:img {:src (str "/icons/" (canonize-string title) "")
             :style { :width circle-size
                     :height circle-size
                     :backgroundColor "#fff"

@@ -10,10 +10,6 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
-; remove or move to util
-(defn normalise-str [s] (.join (.split (.toLowerCase s) #"[^a-zA-Z0-9]+") "-"))
-(defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
-
 ; html components and events
 (def renders (atom {}))
 (def handlers (atom {}))

@@ -2,6 +2,7 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
+    [solsort.sys.util :refer [unique-id]]
     [solsort.sys.mbox :refer [log]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
@@ -37,8 +38,6 @@
 
 ; jsonp
 (when is-browser
-  (def -unique-id-counter (atom 0))
-  (defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
   (defn jsonp [url]
     (let [c (chan)    
           id (unique-id)]
