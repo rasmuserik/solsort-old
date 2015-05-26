@@ -4,6 +4,7 @@
     [cljsjs.react]
     [solsort.lib.css :refer [js->css]]
     [solsort.sys.mbox :refer [log]]
+    [solsort.sys.platform :refer [is-browser]]
     [solsort.sys.test :refer [testcase]]
     [clojure.string :refer [split join]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
@@ -18,13 +19,40 @@
 (def handlers (atom {}))
 (defn render [path f] (swap! renders assoc path f))
 (defn events [path f] (swap! renders assoc path f))
-; (render "foo" (fn [state] [:div "foo"]))
+; (render "foo" (fn [state obj] [:div "foo"]))
 ; NB: if event happens during render, cancel render
 ;
 ; (events "foo" (fn [state kvs] [state kvs]))
 ; NB: rerender after event done
 ;
 
+
+; handle user-mutable state
+(def root (atom nil))
+(def values (atom {}))
+(declare render-html)
+(defn inputchange [event]
+  (this-as 
+    elem
+    (let [target (aget event "target")
+          name (aget target "name")
+          value (aget target "value")]
+      (swap! values assoc name value)
+      (log 'html 'assoc name value)
+      (render-html @root)
+      )))
+(defn input-handler[state [input o & children]]
+  (let [name (:name o)
+        value (@values name)
+        o (if value (assoc o "value" value) o)]
+    (into [input (assoc o "onChange" inputchange)] children)
+    ))
+
+
+(when is-browser
+  (render "input" input-handler)
+  (render "textarea" input-handler)
+  (render "select" input-handler))
 
 ; transformation of html-sexpr to react
 (defn parse-classes [head prop]
@@ -53,14 +81,18 @@
 (defn clj->react [node]
   (if-not (sequential? node)
     node
-    (let [has-properties (map? (second node))
+    (let [
+          has-properties (map? (second node))
           tail (if has-properties
                  (drop 2 node)
                  (drop 1 node))
-          head (name (first node))
           tail (map clj->react tail)
           prop (if has-properties (second node) {})
-          [head prop] (parse-classes head prop)]
+          head (name (first node))
+          [head prop] (parse-classes head prop)
+          render (@renders head)
+          [head prop & tail] ((or render (fn [a b] b)) {} (into [head prop] tail))
+          ]
       (apply js/React.createElement head (clj->js prop) tail)
       )))
 
@@ -96,6 +128,7 @@
         "<script src=\"/solsort.js\"></script>"
         "</body></html>")})
 (defn render-html [o]
+  (reset! root o)
   (if (:css o)
     (let [style-elem 
           (or (js/document.getElementById "style")
