@@ -9,11 +9,24 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
+; remove or move to util
 (defn normalise-str [s] (.join (.split (.toLowerCase s) #"[^a-zA-Z0-9]+") "-"))
 (defn hex-color [n] (str "#" (.slice (.toString (bit-or 0x1000000 (bit-and 0xffffff n)) 16) 1)))
 
+; html components and events
+(def renders (atom {}))
+(def handlers (atom {}))
+(defn render [path f] (swap! renders assoc path f))
+(defn events [path f] (swap! renders assoc path f))
+; (render "foo" (fn [state] [:div "foo"]))
+; NB: if event happens during render, cancel render
+;
+; (events "foo" (fn [state kvs] [state kvs]))
+; NB: rerender after event done
+;
 
 
+; transformation of html-sexpr to react
 (defn parse-classes [head prop]
   (let [
         tagname (re-find #"^[^.#]*" head)
@@ -59,6 +72,8 @@
               "<div class=\"foo\"><span id=\"foo\">hello</span></div>"
               ))
 
+
+; html-document to http/browser
 (defn html->http [o]
   ;(clj->react  (:html o))
   #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
@@ -77,8 +92,6 @@
         (or (:rawhtml o) (reagent/render-to-static-markup (:html o)))
         "<script src=\"/solsort.js\"></script>"
         "</body></html>")})
-
-
 (defn render-html [o]
   (log 'render-html)
   (if (:css o)
