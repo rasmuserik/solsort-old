@@ -4,7 +4,6 @@
     [solsort.lib.css :refer [js->css]]
     [solsort.sys.mbox :refer [log]]
     [solsort.sys.test :refer [testcase]]
-    [reagent.core :as reagent]
     [clojure.string :refer [split join]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -42,7 +41,6 @@
             (assoc prop "className" classes))
           prop)
         ]
-    (log 'parse-classes head id prop)
     [tagname prop]
     ))
 
@@ -89,11 +87,12 @@
         "<link href=/style.css rel=stylesheet>"
         "<style id=style>" (if (:css o) (js->css (clj->js (:css o)))) "</style>"
         "</head><body>"
-        (or (:rawhtml o) (reagent/render-to-static-markup (:html o)))
+        (or (:rawhtml o) 
+            (js/React.renderToStaticMarkup (clj->react (:html o)))
+            )
         "<script src=\"/solsort.js\"></script>"
         "</body></html>")})
 (defn render-html [o]
-  (log 'render-html)
   (if (:css o)
     (let [style-elem 
           (or (js/document.getElementById "style")
@@ -107,7 +106,7 @@
       (aset style-elem "innerHTML" css-str)))
   (if (:rawhtml o)
     (aset js/document.body "innerHTML" (:rawhtml o))
-    (reagent/render (:html o) js/document.body))
+    (js/React.render (clj->react (:html o)) js/document.body))
   (if (:title o)
     (aset (aget (js/document.getElementsByTagName "title") 0) "innerHTML" (:title o)))
   true)
