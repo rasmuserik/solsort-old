@@ -1,6 +1,7 @@
 (ns solsort.lib.html
   (:require-macros [cljs.core.async.macros :refer [go go-loop alt!]])
   (:require
+    [cljsjs.react]
     [solsort.lib.css :refer [js->css]]
     [solsort.sys.mbox :refer [log]]
     [solsort.sys.test :refer [testcase]]
