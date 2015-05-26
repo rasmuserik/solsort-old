@@ -21,6 +21,6 @@ do
   echo NETWORK:  >> ../webroot/solsort.appcache
   echo "*" >> ../webroot/solsort.appcache
   sleep 5
-  curl -s http://localhost:9999/index.html > build/webroot/index.html
+  curl -s http://localhost:9999/index.html > ../webroot/index.html
   wait $NODE_PID
 done
