@@ -32,15 +32,12 @@
 (def values (atom {}))
 (declare render-html)
 (defn inputchange [event]
-  (this-as 
-    elem
-    (let [target (aget event "target")
-          name (aget target "name")
-          value (aget target "value")]
-      (swap! values assoc name value)
-      (log 'html 'assoc name value)
-      (render-html @root)
-      )))
+  (let [target (aget event "target")
+        name (aget target "name")
+        value (aget target "value")]
+    (swap! values assoc name value)
+    (render-html @root)
+    ))
 (defn input-handler[state [input o & children]]
   (let [name (:name o)
         value (@values name)
