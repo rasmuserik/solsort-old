@@ -81,7 +81,7 @@
    ])
 
 
-(route "index" (fn [] {:type "html" :title "solsort.com" :html (home-html)}))
+(route "index" (fn [] {:offline true :type "html" :title "solsort.com" :html (home-html)}))
 
 ; state: unfinished|alpha|beta|done
 (add-entry "Rasmus Erik Voel Jensen"

@@ -78,7 +78,9 @@
   #js{:http-headers #js{"Content-Type" "text/html;charset=UTF-8"}
       :content
       (str
-        "<!DOCTYPE html><html manifest=\"/solsort.appcache?" (rem (js/Math.abs (hash (:title o))) 1000) "\"><head>"
+        "<!DOCTYPE html><html"
+        (if (:offline o) " manifest=\"/solsort.appcache\"" "")
+        "><head>"
         "<title>" (or (:title o) "solsort.com") "</title>"
         "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\">"
         "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\">"

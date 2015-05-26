@@ -89,6 +89,7 @@
 (route "rasmuserik"
        (fn []
          {:type "html"
+          :offline true
           :title "Rasmus Erik - solsort.com"
           :css {:h1 {:fontWeight :normal
                      :marginTop 0}
