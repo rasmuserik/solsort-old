@@ -2,98 +2,6 @@
 
 solsort.com platform, site, widgets and apps
 
-# backlog
-
-- prune backlog/changelog/notes/readme
-- plan next tasks
-
-## 0.5
-
-- √mbox reimplementation
-- √fix dispatch for multiparam browser hashes
-- √ajax (on both node and browser)
-- bibapp
-  - √use reagent
-  - √single /bib function
-  - √css uncapitalise->dash
-  - basic bib webapp w/ ui
-  - design/choose pages
-- test+deploy
-  - √automatic test with comparison of site
-  - √automatic browser test
-  - √travis-ok -> auto git pull / deploy
-
-## Soon
-
-- kvdb should handle binary data (typed arrays), and clojure data structures
-- network graph
-- update routing
-- reimplement kvdb on indexeddb
-
-- version id (checksum of unchecked .min.js)
-
-## Later
-
-- webworkers
-- solsort slide show
-- uccorg watcher
-- distributed DB
-- package as real clojure modules
-- loader
-- on-need loading of javascript modules (through cdn or distributed db)
-
-- platforms
-  - √node.js server
-  - √html5 client
-  - firefox addon client
-  - chrome addon client
-  - cordova client
-  - cordova kiosk/
-  - nashorn server
-
-## Roadmap
-
-- apps/widgets
-  - ddb-cms module - new version of recommendation/visualisation
-  - tinkuy widget - event signup
-  - wordpress widget - compbigame
-  - facebook friend graph interconnects
-
-# changelog
-
-- new implementation of kvdb
-
-## 0.4 /notes
-
-- update changelog/backlog
-- canonize string for notes and in general
-- notes (migrate notes)
-
-## 0.3 /index, /rasmuserik, mboxes, websockets, render jsonhtml
-
-- mboxes, erlang inspired message system
-- /index, /rasmuserik
-- use websockets for communication with clients
-- render jsonhtml
-
-## 0.2 autorestarting, webserver, routes
-
-- webserver+router
-- autorestarting dev-server
-
-## 0.1 travis, uccorg-restarter, nginx
-
-- travis test
-- basic uccorg restarter
-- nginx 
-- logging
-
-## 0.0 kvdb, related-webservice
-
-- kvdb - leveldb/indexeddb wrapper
-- related webservice
-
-
 # notes
 
 - sys
@@ -249,5 +157,96 @@ Distributed system
   - map - run named function w/ optional data along
   - reduce incl.  - get-all - get-all-keys - get-all-values
   - subscribe
+
+
+
+# backlog
+
+- live webstat connects/hour, guest-ips, ..
+- history on webstat
+- visual dashboard with statistics
+
+## Next Apps
+
+- primary
+  - Tinkuy-event-signup
+  - DDB-CMS plugin
+  - live webstat guestlist+location+connection-status w/history
+    - wordpress app
+      - run wordpress-blog on blog.solsort.com
+    - facebook app
+    - android app
+- secondary
+  - BibApp
+  - Kbhff
+
+## Soon
+
+- update routing
+- distributed DB
+- kvdb should handle binary data (typed arrays), and clojure data structures
+- network graph
+- webworkers
+- package as real clojure modules
+- on-need loading of javascript modules (through cdn or distributed db)
+- platforms - √node.js server - √html5 client - wordpress - android - ios - facebook - firefox addon - chrome addon - nashorn - cordova-kiosk
+
+
+# changelog
+## jun1
+## may2 /bibdata, remove-reagent, 
+
+- plan next tasks
+- prune backlog/changelog/notes/readme
+- remove reagent
+- /bibdata app
+- nationalbibliografi-data from dev.vejlebib.dk
+
+## may1 ÷
+
+## apr2 new kvdb implementation
+
+- kvdb new implementation
+
+## apr1 repeat-record video recorder, refactoring
+
+- refactor/restructure
+- repeat-record video recorder
+
+## mar2 browser-test, new mbox-implementation, ajax
+
+- ajax
+- browser-test
+- new mbox implementation
+
+## mar1 /notes
+
+- update changelog/backlog
+- canonize string for notes and in general
+- notes (migrate notes)
+
+## feb2 /index, /rasmuserik, mboxes, websockets, render jsonhtml
+
+- mboxes, erlang inspired message system
+- /index, /rasmuserik
+- use websockets for communication with clients
+- render jsonhtml
+
+## feb1 autorestarting, webserver, routes
+
+- webserver+router
+- autorestarting dev-server
+
+## jan2 travis, uccorg-restarter, nginx
+
+- travis test
+- basic uccorg restarter
+- nginx 
+- logging
+
+## jan1 kvdb, related-webservice
+
+- kvdb - leveldb/indexeddb wrapper
+- related webservice
 
 
