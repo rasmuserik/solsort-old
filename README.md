@@ -172,11 +172,17 @@ Distributed system
   - Tinkuy-event-signup
   - DDB-CMS plugin
   - live webstat guestlist+location+connection-status w/history
-    - wordpress app
+    - app/widget on wordpress
       - run wordpress-blog on blog.solsort.com
-    - facebook app
-    - android app
+    - app/widget on facebook
+    - app/widget on android
 - secondary
+  - nested list manager
+    - simple dom-based
+      - expand/collapse
+      - edit
+      - minheight
+    - github-integration
   - BibApp
   - Kbhff
 
