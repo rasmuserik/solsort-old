@@ -1297,3 +1297,25 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - example [https://developers.google.com/structured-data/testing-tool/](https://developers.google.com/structured-data/testing-tool/)
   
 
+## Writing notes
+
+- remember
+  - focus on a single idea
+  - catchy title/intro
+  - skimmable - contain lists etc.
+  - state intended purpose, effect, communication, and audience (at bottom of page)
+  - reread and rewrite
+  - maybe relevant photo
+  - remember Elements of Style
+  - relevant tags
+- topics
+  - strategic vs tactical, ie. coding etc.
+  - regular reviews - weekly/biweekly review, calendar/diary
+  - self-development inspirations
+  - the chakras
+  - how I code - backlog in readme, being in flow
+  - Opinioated guide to programming languages
+  - Choice of blogging platform
+  - The power of Clojure
+  - why write regularly - pro/con - superorganism-thinking, market-oneself/company, practise/self-development, inspire others - social anxiety and persona
+
