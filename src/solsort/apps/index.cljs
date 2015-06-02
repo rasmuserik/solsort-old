@@ -88,6 +88,9 @@
            ["developer" "company owner" "computer scientist"]
            "/rasmuserik.html")
 
+(add-entry "Blog"
+           ["2015"]
+           "/blog/")
 (add-entry "BibData"
            ["2015"]
            "/bibdata/")
