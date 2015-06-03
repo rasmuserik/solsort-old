@@ -36,28 +36,9 @@
     (aget global "Worker")))
 
 
-; jsonp
-(when is-browser
-  (defn jsonp [url]
-    (let [c (chan)    
-          id (unique-id)]
-      (aset global id 
-            (fn [o]
-              ;(log 'call-jsonp id o)
-              (if o 
-                (put! c (js/JSON.stringify o))
-                (close! c))
-              (goog.object.remove global id)))
-      (let [tag (js/document.createElement "script")]
-        (aset tag "src" (str url id))
-        (js/document.head.appendChild tag))
-      c)))
-
-
 ; react
 (when (and is-nodejs (not is-browser)) 
   (aset global "React" (js/require "react")))
-
 
 ;; File system
 (def fs (if is-nodejs (js/require "fs")))
