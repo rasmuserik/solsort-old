@@ -10,10 +10,8 @@
 
 
 ;; WebSocket connections
-(def pid local)
 (def pids (atom {}))
 (defn broadcast [mbox data]
-  (log 'broadcast mbox data)
   (doseq [pid (keys @pids)]
     (post pid mbox data)))
 (defn send-message [msg] 
@@ -40,7 +38,7 @@
       (.on wss "connection" 
            (fn [ws]
              (log 'ws 'incoming-connection ws)
-             (.send ws (js/JSON.stringify  #js{:pid pid}))
+             (.send ws (js/JSON.stringify  #js{:pid local}))
              (.on ws "message" 
                   (fn [data flags]
                     (let [data (js/JSON.parse data)
@@ -81,7 +79,7 @@
     (log 'ws 'connect)
     (let
       [ws (js/WebSocket. socket-server)]
-      (aset ws "onopen" (fn [e] (.send ws (js/JSON.stringify #js{:pid pid}))))
+      (aset ws "onopen" (fn [e] (.send ws (js/JSON.stringify #js{:pid local}))))
       (aset ws "onerror" 
             (fn [e] 
               (log 'ws 'error) 
