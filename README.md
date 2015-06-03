@@ -162,9 +162,14 @@ Distributed system
 
 # backlog
 
-- live webstat connects/hour, guest-ips, ..
-- history on webstat
-- visual dashboard with statistics
+- next task
+  - refactor net, duplicate code on client/server
+  - status-API with info on current clients
+  - simple dashboard page listing currently connected clients
+- major
+  - live webstat connects/hour, guest-ips, ..
+  - history on webstat
+  - visual dashboard with statistics
 
 ## Next Apps
 
