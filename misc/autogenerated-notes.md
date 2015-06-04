@@ -1316,6 +1316,5 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - how I code - backlog in readme, being in flow
   - Opinioated guide to programming languages
   - Choice of blogging platform
-  - The power of Clojure
-  - why write regularly - pro/con - superorganism-thinking, market-oneself/company, practise/self-development, inspire others - social anxiety and persona
+  - cooking
 
