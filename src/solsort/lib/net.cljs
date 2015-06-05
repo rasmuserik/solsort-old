@@ -16,21 +16,25 @@
     (post pid mbox data)))
 (defn send-message [msg] 
   (.send (@pids (aget msg "pid")) (js/JSON.stringify msg)))
+(defn add-connection [pid ws]
+  (swap! processes assoc pid send-message)
+  (swap! pids assoc pid ws)
+  (log 'ws 'added-connection pid @pids))
+(defn close-connection [id] 
+  (fn []
+    (log 'ws id 'close)
+    (swap! processes dissoc id)
+    (swap! pids dissoc id)))
+(defn handle-message [pid] 
+  (fn [msg]
+    (let [msg (js/JSON.parse msg)]
+      (aset msg "src" (str "ws:" pid))
+      (post msg)
+      (log 'ws pid 'msg msg))))
 
 
 (when is-nodejs
   (def ws (js/require "ws"))
-  (defn handle-message [pid] 
-    (fn [msg]
-      (let [msg (js/JSON.parse msg)]
-        (aset msg "src" (str "ws:" pid))
-        (post msg)
-        (log 'ws pid 'msg msg))))
-  (defn close-connection [id] 
-    (fn []
-      (log 'ws id 'close)
-      (swap! processes dissoc id)
-      (swap! pids dissoc id)))
   (defn start-websocket-server [http-server]
     (log 'ws 'start)
     (let [ws (js/require "ws")
@@ -48,16 +52,13 @@
                           (.removeAllListeners ws "message")
                           (.on ws "message" (handle-message pid))
                           (.on ws "close" (close-connection pid))
-                          (swap! processes assoc pid send-message)
-                          (swap! pids assoc pid ws)
-                          (log 'ws 'added-client pid @pids)
+                          (add-connection pid ws)
                           )
                         (log 'ws 'error-unexpected-first-message data)
                         ))))
              ))
       ))
   )
-
 
 (when is-browser
   (comment keep-alive loop)
@@ -80,10 +81,7 @@
     (let
       [ws (js/WebSocket. socket-server)]
       (aset ws "onopen" (fn [e] (.send ws (js/JSON.stringify #js{:pid local}))))
-      (aset ws "onerror" 
-            (fn [e] 
-              (log 'ws 'error) 
-              (js/console.log e)))
+      (aset ws "onerror" (fn [e] (log 'ws 'error) (js/console.log e)))
       (aset ws "onclose" 
             (fn [e] 
               (log 'ws 'close e)
@@ -98,23 +96,12 @@
                     pid (aget data "pid")]
                 (if pid
                   (do
-                    (aset ws "onmessage" 
-                          (fn [e]
-                            (let [msg (js/JSON.parse (aget e "data"))]
-                              (aset msg "src" (str "ws:" pid))
-                              (post msg)
-                              (log 'ws pid 'msg msg))))
+                    (aset ws "onmessage" (fn [e] (handle-message (aget e "data"))))
                     (aset ws "onclose" 
                           (fn [e] 
-                            (log 'ws 'close e pid)
-                            (swap! pids dissoc pid)
-                            (swap! processes dissoc pid)
+                            (close-connection pid)
                             (set-immediate ws-connect)))
-
-                    (swap! pids assoc pid ws)
-                    (swap! processes assoc pid send-message)
-                    (log 'ws 'added-client pid @pids)
-                    )
+                    (add-connection pid ws))
                   (log 'ws 'error-unexpected-first-message data)
                   ))))
       ))
