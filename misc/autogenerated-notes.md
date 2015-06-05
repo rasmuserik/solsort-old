@@ -1309,7 +1309,6 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - remember Elements of Style
   - relevant tags
 - topics
-  - strategic vs tactical, ie. coding etc.
   - regular reviews - weekly/biweekly review, calendar/diary
   - self-development inspirations
   - the chakras

@@ -162,10 +162,11 @@ Distributed system
 
 # backlog
 
-- next task
-  - refactor net, duplicate code on client/server
-  - status-API with info on current clients
-  - simple dashboard page listing currently connected clients
+- √nginx config for php/wordpress
+- √refactor net, duplicate code on client/server
+- status-API with info on current clients
+- simple dashboard page listing currently connected clients
+
 - major
   - live webstat connects/hour, guest-ips, ..
   - history on webstat
