@@ -15,23 +15,24 @@
         ;(<! (timeout 60000))
         ))))
 
+(def status (atom nil))
+(route "uccorg-status" (fn [] 
+                         (log 'uccorg 'status @status)
+                         @status))
 (defn start []
   (log 'uccorg "starting uccorg monitor")
   (go
     (dev-proxy)
     (while true
-      (let [status  (parse-json-or-nil (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))]
-        (log 'uccorg 'ok)
-        ; TODO include status again when less verbose (log 'uccorg 'ok status)
-        (if status
-          (<! (timeout 60000))
-          (do
-            (print 'uccorg "uccorg restart service")
-            (print (js/Date.))
-            (print (<! (exec  "ssh uccorganism@93.165.158.107 'killall VBoxHeadless; launchctl load Library/LaunchAgents/apiserver.plist; launchctl start apiserver'")))
-            (<! (timeout 60000))
-            (print "uccorg status:")
-            (print (js/Date.))
-            (print (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))
-            ))))))
+      (reset! status (parse-json-or-nil (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'"))))
+      ; TODO include status again when less verbose (log 'uccorg 'ok status)
+      (when-not @status
+        (print 'uccorg "uccorg restart service")
+        (print (js/Date.))
+        (print (<! (exec  "ssh uccorganism@93.165.158.107 'killall VBoxHeadless; launchctl load Library/LaunchAgents/apiserver.plist; launchctl start apiserver'")))
+        (<! (timeout 60000))
+        (print "uccorg status:")
+        (print (js/Date.))
+        (print (<! (exec "ssh uccorganism@93.165.158.107 'curl -s localhost:8080/status'")))))
+    (<! (timeout 60000))))
 (route "uccorg-monitor" start)

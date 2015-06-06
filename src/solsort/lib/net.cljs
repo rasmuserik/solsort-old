@@ -45,21 +45,20 @@
              (.send ws (js/JSON.stringify  #js{:pid local}))
              (.on ws "message" 
                   (fn [data flags]
+                    (log 'net 'message data)
                     (let [data (js/JSON.parse data)
                           pid (aget data "pid") ]
-                      (if pid
-                        (swap! conj children pid)
-                        (do
-                          (.removeAllListeners ws "message")
-                          (.on ws "message" (handle-message pid))
-                          (.on ws "close" 
+                      (log 'ws 'HERE pid)
+                      (when pid
+                        (swap! children conj pid)
+                        (.removeAllListeners ws "message")
+                        (.on ws "message" (handle-message pid))
+                        (.on ws "close" 
                                (fn []
-                                 (swap! disj children pid)
+                                 (swap! children disj pid)
                                  (close-connection pid)))
-                          (add-connection pid ws)
-                          )
-                        (log 'ws 'error-unexpected-first-message data)
-                        ))))))))) 
+                          (add-connection pid ws))
+                      (when-not pid (log 'ws 'error-unexpected-first-message data)))))))))) 
 
 
 (when is-browser
@@ -95,17 +94,18 @@
             (fn [e] 
               (log 'ws 'message)
               (let [data (js/JSON.parse (aget e "data"))
-                    pid (aget data "pid")]
+                    pid (aget data "pid")
+                    message-handler (handle-message pid)]
                 (if pid
                   (do
-                    (aset ws "onmessage" (fn [e] (handle-message (aget e "data"))))
+                    (aset ws "onmessage" (fn [e] (message-handler (aget e "data"))))
                     (aset ws "onclose" 
                           (fn [e] 
                             (close-connection pid)
-                            (swap! parent nil)
+                            (reset! parent nil)
                             (set-immediate ws-connect)))
                     (add-connection pid ws)
-                    (swap! parent pid))
+                    (reset! parent pid))
                   (log 'ws 'error-unexpected-first-message data)
                   ))))
       ))
