@@ -55,8 +55,8 @@
 
 ;; processes / pid-list
 (def local (if (exists? js/process) js/process.pid (bit-or 0 (+ 65536 (* (js/Math.random) (- 1000000 65536))))))
-(def parent (atom 0))
-(def clients (atom #{}))
+(def parent (atom nil))
+(def children (atom #{}))
 (def workers (atom #{}))
 (def peers (atom #{}))
 (def processes "mapping from from reachable pids to function that receive messages" 

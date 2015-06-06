@@ -3,7 +3,7 @@
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.test :refer [testcase]]
-    [solsort.sys.mbox :refer [post local msg log processes]]
+    [solsort.sys.mbox :refer [post local msg log processes parent children]]
     [solsort.sys.platform :refer [is-nodejs is-browser set-immediate XHR global]]
     [solsort.sys.util :refer [unique-id]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
@@ -48,17 +48,19 @@
                     (let [data (js/JSON.parse data)
                           pid (aget data "pid") ]
                       (if pid
+                        (swap! conj children pid)
                         (do
                           (.removeAllListeners ws "message")
                           (.on ws "message" (handle-message pid))
-                          (.on ws "close" (close-connection pid))
+                          (.on ws "close" 
+                               (fn []
+                                 (swap! disj children pid)
+                                 (close-connection pid)))
                           (add-connection pid ws)
                           )
                         (log 'ws 'error-unexpected-first-message data)
-                        ))))
-             ))
-      ))
-  )
+                        ))))))))) 
+
 
 (when is-browser
   (comment keep-alive loop)
@@ -100,8 +102,10 @@
                     (aset ws "onclose" 
                           (fn [e] 
                             (close-connection pid)
+                            (swap! parent nil)
                             (set-immediate ws-connect)))
-                    (add-connection pid ws))
+                    (add-connection pid ws)
+                    (swap! parent pid))
                   (log 'ws 'error-unexpected-first-message data)
                   ))))
       ))
