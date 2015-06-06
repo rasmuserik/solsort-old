@@ -45,10 +45,8 @@
              (.send ws (js/JSON.stringify  #js{:pid local}))
              (.on ws "message" 
                   (fn [data flags]
-                    (log 'net 'message data)
                     (let [data (js/JSON.parse data)
                           pid (aget data "pid") ]
-                      (log 'ws 'HERE pid)
                       (when pid
                         (swap! children conj pid)
                         (.removeAllListeners ws "message")
