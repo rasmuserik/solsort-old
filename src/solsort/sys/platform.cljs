@@ -25,29 +25,6 @@
                  (.hasOwnProperty js/global.process "title")))
 
 
-;; Browser API
-(def origin (if is-nodejs "http://localhost:9999" js/location.origin))
-(def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
-(def set-immediate ; "execute function immediately after event-handling"
-  (if (exists? js/setImmediate)
-    js/setImmediate ; node.js and IE (IE might be buggy)
-    (fn [f] (js/setTimeout f 0))))
-
-(def worker 
-  (if is-nodejs 
-    (aget (js/require "webworker-threads") "Worker")
-    (aget global "Worker")))
-
-
-; react
-(when (and is-nodejs (not is-browser)) 
-  (aset global "localStorage" 
-        (let [module (js/require "node-localstorage")
-              LocalStorage (aget module "LocalStorage")]
-          (ensure-dir "./dbs/")
-          (LocalStorage. "./dbs/localstorage")))
-  (aset global "React" (js/require "react")))
-
 ;; File system
 (def fs (if is-nodejs (js/require "fs")))
 (defn ensure-dir [dirname] (if (not (.existsSync fs dirname)) (.mkdirSync fs dirname)))
@@ -97,4 +74,27 @@
     (log 'system 'exit errcode)
     (if is-nodejs
       (js/process.exit errcode))))
+
+;; Browser API
+(def origin (if is-nodejs "http://localhost:9999" js/location.origin))
+(def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
+(def set-immediate ; "execute function immediately after event-handling"
+  (if (exists? js/setImmediate)
+    js/setImmediate ; node.js and IE (IE might be buggy)
+    (fn [f] (js/setTimeout f 0))))
+
+(def worker 
+  (if is-nodejs 
+    (aget (js/require "webworker-threads") "Worker")
+    (aget global "Worker")))
+
+
+; react
+(when (and is-nodejs (not is-browser)) 
+  (aset global "localStorage" 
+        (let [module (js/require "node-localstorage")
+              LocalStorage (aget module "LocalStorage")]
+          (ensure-dir "./dbs/")
+          (LocalStorage. "./dbs/localstorage")))
+  (aset global "React" (js/require "react")))
 
