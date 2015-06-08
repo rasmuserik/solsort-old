@@ -7,6 +7,9 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
 (enable-console-print!)
+(declare ensure-dir)
+
+
 
 ;; Global+predicates
 (def global 
@@ -41,6 +44,7 @@
   (aset global "localStorage" 
         (let [module (js/require "node-localstorage")
               LocalStorage (aget module "LocalStorage")]
+          (ensure-dir "./dbs/")
           (LocalStorage. "./dbs/localstorage")))
   (aset global "React" (js/require "react")))
 

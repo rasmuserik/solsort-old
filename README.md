@@ -165,11 +165,12 @@ Distributed system
 
 - √nginx config for php/wordpress
 - √refactor net, duplicate code on client/server
-- log storage to database
-  - append to array, write bulks to db, with sequential numbering
+- √log to database
+  - √append to array, write bulks to db, with sequential numbering
+  - √disabled by default, to save disk
   - flush on exit
-- sync-db
 - mbox multiple subscribers, do not overwrite
+- sync-db
 - live stat
   - minute / hour / day aggregate
 - status-API with info on current clients
