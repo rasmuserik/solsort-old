@@ -43,4 +43,3 @@
                    [:div [:a {:href "#hello/bar"} "bar"]]
                    ]}))
 )
-(js/localStorage.setItem "foo" "bar")
