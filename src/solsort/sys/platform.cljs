@@ -38,6 +38,10 @@
 
 ; react
 (when (and is-nodejs (not is-browser)) 
+  (aset global "localStorage" 
+        (let [module (js/require "node-localstorage")
+              LocalStorage (aget module "LocalStorage")]
+          (LocalStorage. "./dbs/localstorage")))
   (aset global "React" (js/require "react")))
 
 ;; File system
