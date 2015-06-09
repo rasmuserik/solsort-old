@@ -31,7 +31,7 @@
                 {}
                 (for [{p "property" v "value"} data] [p v]))
               ]
-          (log 'bib-data 'update data)
+          (log 'bib-data 'update url data)
           (when (data "isbn")
             (doall (map #(store :isbn % lid) (data "isbn"))))
           (<! (store :bibdata lid (clj->js data)))
