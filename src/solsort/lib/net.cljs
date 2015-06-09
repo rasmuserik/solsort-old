@@ -52,10 +52,10 @@
                         (.removeAllListeners ws "message")
                         (.on ws "message" (handle-message pid))
                         (.on ws "close" 
-                               (fn []
-                                 (swap! children disj pid)
-                                 (close-connection pid)))
-                          (add-connection pid ws))
+                             (fn []
+                               (swap! children disj pid)
+                               (close-connection pid)))
+                        (add-connection pid ws))
                       (when-not pid (log 'ws 'error-unexpected-first-message data)))))))))) 
 
 
