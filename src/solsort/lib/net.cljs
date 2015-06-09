@@ -21,10 +21,9 @@
   (swap! pids assoc pid ws)
   (log 'ws 'added-connection pid @pids))
 (defn close-connection [id] 
-  (fn []
     (log 'ws id 'close)
     (swap! processes dissoc id)
-    (swap! pids dissoc id)))
+    (swap! pids dissoc id))
 (defn handle-message [pid] 
   (fn [msg]
     (let [msg (js/JSON.parse msg)]
