@@ -77,14 +77,23 @@
       "classification" [:div "DK5: " (string/join " & " vs)]
       "type" [:div "type: " (first vs)]
       "isbn" [:div "ISBN: " [:span {:itemProp "isbn"} (first vs)]]
-      "lid" (into [:div.spaceabove "Bibliotek-links: "]
+      "lid" (into [:div.spaceabove "Links: "
+                   (if (o "isbn")
+                     (let [isbn (first (o "isbn"))]
+                     [:span
+                      [:a {:href (str "http://www.worldcat.org/isbn/" isbn)
+                           :itemProp "sameAs"} "WorldCat"] " "
+                      [:a {:href (str "http://www.bogpriser.dk/Search/Result?isbn=" isbn)} "bogpriser.dk" ] " "
+                      [:a {:href (str "https://books.google.dk/books?vid=ISBN" isbn)
+                           :itemProp "sameAs"} "GoogleBøger"] " "]) 
+                     " ")]
                   (interpose " "
                              (map (fn [[bib url]]
-                                    (log 'bibdata bib url)
                                     [:a {:href (str url (first vs))
                                          :itemProp "sameAs"}
                                      bib])
-                                  biblioteker)))
+                                  biblioteker)
+                             ))
       "related" [:div.spaceabove "Anbefalinger: " (into [:ul]
                                                    (<! (go<!-seq (map related-link (take 30 (rest vs))))))]
       [:div k (str vs)])))
@@ -114,7 +123,7 @@
        :title (str (first (obj "title"))
                    " "
                    (seq (obj "creator"))
-                   " bibdata - solsort.com")
+                   " - bibdata - solsort.com")
        :css {"body" {"margin" "5%"}
              ".spaceabove" {"margin-top" "1ex"}
              "ul" {"margin-top" "0"}}
