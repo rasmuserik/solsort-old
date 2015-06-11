@@ -128,12 +128,16 @@
              ".spaceabove" {"margin-top" "1ex"}
              "ul" {"margin-top" "0"}}
        :html [:div
-              (into [:div {:itemScope "itemscope"
+              (concat [:div {:itemScope "itemscope"
                            :itemType (itemtype (obj "type"))}]
                     (filter identity
                             (<! (go<!-seq
                                   (map html-for-type
-                                       (map #(list % (obj %) obj) ks))))))
+                                       (map #(list % (obj %) obj) ks)))))
+                    [[:hr]
+                     [:div [:small 
+                            "Dette er et eksperiment med at lægge data om bøger online med semantisk opmarkering. Grunddata er en del af de nationalbibliografiske data som Kulturstyrelsen og Kulturministeriet stiller til fri brug. Anbefalingerne er baseret på lånstatistik som DBC frigjorde på hackathonen Hack4DK. Dette site, kildekode og anbefalingsalgoritme er lavet af solsort.com" ]]]
+                    )
               ;[:hr]
               ;[:div (string/join " " ks)]
               ;[:div (string/join " " (keys obj))]
