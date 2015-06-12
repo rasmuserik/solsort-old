@@ -26,8 +26,18 @@
       (post (aget info "rpid") rbox nil))))
 (def -mboxes "mboxes for local process" (atom {}))
 (defn -local-handler [msg] 
-  ((get @-mboxes (aget msg "mbox") @route-error-fn) msg))
+  ((first (seq (get @-mboxes (aget msg "mbox") [@route-error-fn]))) msg))
 (def -unique-id-counter (atom 0))
+(defn -change-mbox [id f]
+  (swap! -mboxes
+         (fn [mboxes]
+           (let [mbox (mboxes id)
+                 mbox (or mbox #{})
+                 mbox (f mbox)]
+             (if (< 0 (count mbox))
+               (assoc mboxes id mbox)
+               (dissoc mboxes id))))))
+
 (defn unique-id [] (str "id" (swap! -unique-id-counter inc)))
 (defn transit-read [o] (transit/read -reader o))
 (defn transit-write [o] (transit/write -writer o))
@@ -47,8 +57,10 @@
   ([pid mbox data] (post (msg pid mbox data)))
   ([pid mbox data info] (post (msg pid mbox data info))))
 (defn handle "register a local handler for messages"
-  [mbox handler] (swap! -mboxes assoc mbox handler))
-(defn unhandle [mbox] (swap! -mboxes dissoc mbox))
+  [mbox handler] (-change-mbox mbox (fn [mbox] (conj mbox handler))))
+(defn unhandle 
+  ([mbox f] (-change-mbox mbox (fn [mbox] (dissoc mbox f))))
+  ([mbox] (-change-mbox mbox (fn [mbox] nil))))
 (defn local-mbox? [mbox] (contains? @-mboxes mbox))
 (defn local-mboxes [] (keys @-mboxes))
 
