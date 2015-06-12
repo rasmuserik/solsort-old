@@ -26,7 +26,11 @@
       (post (aget info "rpid") rbox nil))))
 (def -mboxes "mboxes for local process" (atom {}))
 (defn -local-handler [msg] 
-  ((first (seq (get @-mboxes (aget msg "mbox") [@route-error-fn]))) msg))
+  (let [id (aget msg "mbox")
+        fs (get @-mboxes id)]
+;    (when (not= id "log") (log 'local-handler id (map (fn [[k v]] [k (count v)]) @-mboxes)))
+    (when (not fs) (log 'local-handler 'no-handler msg))
+    (doall (for [f fs] (f msg))))) 
 (def -unique-id-counter (atom 0))
 (defn -change-mbox [id f]
   (swap! -mboxes
