@@ -163,23 +163,16 @@ Distributed system
 
 # backlog
 
-- √nginx config for php/wordpress
-- √refactor net, duplicate code on client/server
-- √log to database
-  - √append to array, write bulks to db, with sequential numbering
-  - √disabled by default, to save disk
-  - flush on exit
-- mbox multiple subscribers, do not overwrite
-- sync-db
-- live stat
-  - minute / hour / day aggregate
-- status-API with info on current clients
-- simple dashboard page listing currently connected clients
-
-- major
-  - live webstat connects/hour, guest-ips, ..
-  - history on webstat
-  - visual dashboard with statistics
+- primary
+  - pub/sub db with remote subscribers
+  - stored-client-id
+  - simple dashboard 
+    - list currently connected clients via pub/sub db
+    - list uccorg-status via pub/sub db
+- secondary
+  - install/run tinkuy ruby code locally
+  - mirrored distributed db 
+  - log-to-db: flush on exit
 
 ## Next Apps
 
@@ -188,7 +181,6 @@ Distributed system
   - DDB-CMS plugin
   - live webstat guestlist+location+connection-status w/history
     - app/widget on wordpress
-      - run wordpress-blog on blog.solsort.com
     - app/widget on facebook
     - app/widget on android
 - secondary
@@ -214,7 +206,18 @@ Distributed system
 
 
 # changelog
-## jun1
+## jun2
+## jun1 improve /bibdata, mbox-multiple-subscriber, refactor-net, nginx:redirect+php/wordpress-support
+- √nginx config for php/wordpress
+- √refactor net, duplicate code on client/server
+- √log to database
+  - √append to array, write bulks to db, with sequential numbering
+  - √disabled by default, to save disk
+- √run wordpress-blog on solsort.com/blog
+- √mbox multiple subscribers, do not overwrite
+- √+nginx permanent redirect to solsort.com as main site
+- √+more info+links in bibdata
+- √localstorage on node
 ## may2 /bibdata, remove-reagent, 
 
 - plan next tasks
