@@ -6,7 +6,7 @@
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
 
-(def img-height 120)
+(def img-height 160)
 (def small-size 12)
 (def activity-height 130)
 (defn html []
@@ -19,7 +19,7 @@
     [:img {:src "/icons/rasmus-erik-voel-jensen"
            :style {:height img-height
                    :width img-height
-                   :borderRadius (/ img-height 2)
+                   :borderRadius (/ img-height 10)
                    :verticalAlign :middle
                    :marginRight (/ img-height 8)
                    :marginLeft (/ img-height 8)

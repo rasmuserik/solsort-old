@@ -1297,6 +1297,8 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - example [https://developers.google.com/structured-data/testing-tool/](https://developers.google.com/structured-data/testing-tool/)
   
 
+## Wishlist / buylist
+
 ## Writing notes
 
 - remember
