@@ -3,7 +3,7 @@
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.test :refer [testcase]]
-    [solsort.sys.mbox :refer [post local msg log processes parent children]]
+    [solsort.sys.mbox :refer [post local msg log processes parent children handle]]
     [solsort.sys.platform :refer [is-nodejs is-browser set-immediate XHR global]]
     [solsort.sys.util :refer [unique-id]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
@@ -19,11 +19,14 @@
 (defn add-connection [pid ws]
   (swap! processes assoc pid send-message)
   (swap! pids assoc pid ws)
-  (log 'ws 'added-connection pid @pids))
+  (post local "connect" pid)
+ ; (log 'ws 'added-connection pid @pids)
+  )
 (defn close-connection [id] 
-    (log 'ws id 'close)
+    ;(log 'ws id 'close)
     (swap! processes dissoc id)
-    (swap! pids dissoc id))
+    (swap! pids dissoc id)
+    (post local "disconnect" id))
 (defn handle-message [pid] 
   (fn [msg]
     (let [msg (js/JSON.parse msg)]
@@ -139,4 +142,10 @@
                     (close! c))))))
       (.send req)
       c)))
+
+
+
+; debug
+(handle "connect" (fn [msg] (log 'connect msg)))
+(handle "disconnect" (fn [msg] (log 'disconnect msg)))
 
