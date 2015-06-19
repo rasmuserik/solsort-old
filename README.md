@@ -164,11 +164,9 @@ Distributed system
 # backlog
 
 - primary
-  - pub/sub db with remote subscribers
-  - stored-client-id
-  - simple dashboard 
-    - list currently connected clients via pub/sub db
-    - list uccorg-status via pub/sub db
+  - state for dashboard-status
+  - subscribe + push state to clients
+  - refactor into clojars-modules
 - secondary
   - install/run tinkuy ruby code locally
   - mirrored distributed db 

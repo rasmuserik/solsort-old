@@ -3,7 +3,6 @@
   (:require
     [cljsjs.react]
     [solsort.lib.css :refer [js->css]]
-    [solsort.sys.mbox :refer [log]]
     [solsort.sys.platform :refer [is-browser]]
     [solsort.sys.test :refer [testcase]]
     [clojure.string :refer [split join]]
