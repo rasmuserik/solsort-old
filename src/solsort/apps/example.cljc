@@ -1,9 +1,11 @@
 (ns solsort.example
   #?(:cljs
+      
     (:require-macros 
            [cljs.core.async.macros :refer [go go-loop alt!]]
           ; [solsort.example :refer [hello-swap]]
-           )
+           ))
+    #?(:cljs
     (:require
            [solsort.sys.mbox :as mbox :refer [route log]]
            [solsort.sys.platform :refer [is-browser fs exit is-nodejs]]
@@ -14,11 +16,13 @@
 #?(:clj (macroexpand (hello-swap str 'a 'b)))
 
 #?(:cljs
+    (do
   (defprotocol TestProtocol
     (hello [this]))
   (extend-protocol TestProtocol
     string
     (hello [this] (str this "hullo" this)))
+
 
   (deftype Blah [x]
     TestProtocol
@@ -42,4 +46,4 @@
                    [:div [:a {:href "#hello/foo"} "foo"]]
                    [:div [:a {:href "#hello/bar"} "bar"]]
                    ]}))
-)
+))
