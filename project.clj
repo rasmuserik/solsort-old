@@ -4,7 +4,6 @@
 
   :dependencies [[org.clojure/clojure "1.7.0-RC1"]
                  [org.clojure/clojurescript "0.0-3308"]
-                 [com.solsort/hello-module "0.0.1-SNAPSHOT"]
                  [cljsjs/react "0.13.3-0"]
                  [com.cognitect/transit-cljs "0.8.220"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]]

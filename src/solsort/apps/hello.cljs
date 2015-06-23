@@ -5,7 +5,6 @@
            )
     (:require
            [solsort.sys.mbox :as mbox :refer [route log]]
-           [solsort.hello-module :refer [hello]]
            [solsort.sys.platform :refer [is-browser fs exit is-nodejs]]
            [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -16,7 +15,6 @@
     {:type "html"
      :html 
      [:form
-       [:span "hello-module: " (hello)]
        [:input {:name "hello"}]
        [:textarea {:name "here"}]
        [:select {:name "hoo"}
