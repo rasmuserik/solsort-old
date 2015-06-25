@@ -1310,12 +1310,20 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - maybe relevant photo
   - remember Elements of Style
   - relevant tags
-- topics
-  - regular reviews - weekly/biweekly review, calendar/diary
+- General topics
+  - biweekly review, calendar/diary
   - self-development inspirations
-  - the chakras
-  - how I code - backlog in readme, being in flow
-  - Opinioated guide to programming languages
-  - Choice of blogging platform
   - cooking
+  - Learningfull experience
+  - Relate about inspirational person
+  - Interesting idea
+  - Personal approach to life
+- Concrete topics
+  - Choice of blogging platform
+  - How I code - backlog in readme, being in flow
+  - Hierachical review
+  - Overview of the chakras
+  - Clothing
+  - Personal economy - statistics over 6 months
+  - Where I consume
 
