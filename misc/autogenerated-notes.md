@@ -1325,5 +1325,4 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - Overview of the chakras
   - Clothing
   - Personal economy - statistics over 6 months
-  - Where I consume
 
