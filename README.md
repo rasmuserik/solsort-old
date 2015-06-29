@@ -166,8 +166,10 @@ Distributed system
 # backlog
 
 - primary
-  - state for dashboard-status
-  - subscribe + push state to clients
+  - save statistics into database
+    - netclient info about connection url, uuid, etc.
+      - log to DB
+    - client-api for get more info if unknown uuid.
   - refactor into clojars-modules
 - secondary
   - install/run tinkuy ruby code locally
