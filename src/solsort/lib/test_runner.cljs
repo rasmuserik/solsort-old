@@ -3,7 +3,7 @@
   (:require
     [solsort.sys.test :refer [testcases testcase]]
     [solsort.sys.mbox :refer [log route]]
-    [solsort.sys.platform :refer [is-browser]]
+    [solsort.sys.platform :refer [is-browser exit]]
     [solsort.sys.util :refer [chan?]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close! pipe]]))
 
@@ -17,7 +17,7 @@
           (do
             (log 'test id 'failed)
             (js/console.log "TEST FAIL" (name id))
-            (solsort.sys.platform.exit 1))))
+            (exit 1))))
       (if (first tests)
         (recur (first tests) (rest tests))))
     (log 'test "tests done")
@@ -30,9 +30,9 @@
            (<! (run-tests))
            (<! (timeout 30000))
            (log 'test 'timeout)
-           (solsort.sys.platform/exit 1)
+           (exit 1)
            true)))
-(route "test-ok" #(solsort.sys.platform/exit 0))
+(route "test-ok" #(exit 0))
 (route "test-client"
        (fn []
          (if is-browser

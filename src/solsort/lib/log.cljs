@@ -2,7 +2,7 @@
   (:require-macros 
     [cljs.core.async.macros :refer [go alt!]])
   (:require
-    [solsort.sys.platform :as platform :refer [ensure-dir fs is-nodejs is-browser exec]]
+    [solsort.sys.platform :refer [ensure-dir fs is-nodejs is-browser exec]]
     [solsort.sys.mbox :refer [log handle]]
     [clojure.string :as string]
     [solsort.lib.kvdb :refer [store]]
