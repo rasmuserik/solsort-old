@@ -3,7 +3,7 @@
   :url "http://solsort.com"
 
   :dependencies 
-  [[org.clojure/clojure "1.7.0-RC1"]
+  [[org.clojure/clojure "1.7.0"]
    [org.clojure/clojurescript "0.0-3308"]
    [cljsjs/react "0.13.3-0"]
    [solsort/util "0.0.1-SNAPSHOT"]
