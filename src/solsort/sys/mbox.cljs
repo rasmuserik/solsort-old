@@ -1,5 +1,5 @@
 (ns solsort.sys.mbox
-  (:require-macros 
+  (:require-macros
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [cognitect.transit :as transit]
@@ -25,12 +25,12 @@
     (if rbox
       (post (aget info "rpid") rbox nil))))
 (def -mboxes "mboxes for local process" (atom {}))
-(defn -local-handler [msg] 
+(defn -local-handler [msg]
   (let [id (aget msg "mbox")
         fs (get @-mboxes id)]
 ;    (when (not= id "log") (log 'local-handler id (map (fn [[k v]] [k (count v)]) @-mboxes)))
     (when (not fs) (log 'local-handler 'no-handler msg))
-    (doall (for [f fs] (f msg))))) 
+    (doall (for [f fs] (f msg)))))
 (def -unique-id-counter (atom 0))
 (defn -change-mbox [id f]
   (swap! -mboxes
@@ -51,7 +51,7 @@
 (def route-error-fn (atom -route-error))
 (defn msg "construct a message object"
   ([pid mbox data] (msg pid mbox data #js{:src local}))
-  ([pid mbox data info] 
+  ([pid mbox data info]
    #js{:info info :data data :mbox mbox :pid pid}))
 (defn post "send a message to a mbox"
   ([msg] (let [pid (aget msg "pid")
@@ -63,7 +63,7 @@
   ([pid mbox data info] (post (msg pid mbox data info))))
 (defn handle "register a local handler for messages"
   [mbox handler] (-change-mbox mbox (fn [mbox] (conj mbox handler))))
-(defn unhandle 
+(defn unhandle
   ([mbox f] (-change-mbox mbox (fn [mbox] (dissoc mbox f))))
   ([mbox] (-change-mbox mbox (fn [mbox] nil))))
 (defn local-mbox? [mbox] (contains? @-mboxes mbox))
@@ -76,15 +76,15 @@
 (def children (atom #{}))
 (def workers (atom #{}))
 (def peers (atom #{}))
-(def processes "mapping from from reachable pids to function that receive messages" 
+(def processes "mapping from from reachable pids to function that receive messages"
   (atom {local -local-handler}))
 
 
 ;; high level api
-(defn call-timeout [max-wait pid mbox & args] 
+(defn call-timeout [max-wait pid mbox & args]
   (let [c (chan)
         rbox (unique-id)
-        handler 
+        handler
         (fn [msg]
           (unhandle rbox)
           (let [data (transit-read (aget msg "data"))]
@@ -97,8 +97,8 @@
     c))
 (defn call [pid mbox & args] (apply call-timeout false pid mbox args))
 (defn route [mbox f]
-  (handle 
-    mbox 
+  (handle
+    mbox
     (fn [msg]
       (go
         (let [result (apply f (or (transit-read (aget msg "data")) []))

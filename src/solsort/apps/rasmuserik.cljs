@@ -37,9 +37,9 @@
      [:div {:style {:fontSize "100%"}}
       "CEO\u00a0" [:a {:href "/" :style {:fontSize "130%" :marginBottom 10}} "solsort.com"] "\u00a0ApS" [:br][:br]
       "Tingskrivervej\u00a021,\u00a03tv \u00a0 2400\u00a0København\u00a0NV \u00a0 \u00a0" [:br]
-      "+45\u00a060703081 \u00a0 hej@solsort.com" 
+      "+45\u00a060703081 \u00a0 hej@solsort.com"
       ]]]
-   [:div 
+   [:div
     [:div {:style {:display :inline-block
                    :width 320
                    :verticalAlign :top
@@ -48,7 +48,7 @@
      [:h1 "Professional"]
      [:h2 "Current"]
      [:ul {:style {:minHeight activity-height}}
-      [:li "Write " [:a {:href "//github.com/rasmuserik"} "open source code"] 
+      [:li "Write " [:a {:href "//github.com/rasmuserik"} "open source code"]
        ", focus on HTML5 Apps in ClojureScript"]
       [:li "Design and create solutions in collaboration with non-technical stakeholders"]
       [:li "Run " [:a {:href "//solsort.com"} "my own company"]
@@ -65,7 +65,7 @@
      [:h2 "Current"]
      [:ul {:style {:minHeight activity-height}}
       [:li "Fatherhood - I am the father of a wonderful 2½ year old boy"]
-      [:li 
+      [:li
        [:a {:href "http://www.swingshoes.dk/kalender-swingarrangementer/"} "Lindy Hop"] ", "
        [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
        "Argentinsk\u00a0Tango" ", "
@@ -81,8 +81,8 @@
      [:div {:style {:marginBottom 60}}
       "Toastmasters • photography • kbhff • mythology/religion/mysticism/energy • events • nature • massage • couchsurfing • music/jam • mensa • højskole"]]
     ]
-   [:div {:style {:fontSize small-size}} 
-    "I very rarely use  social media (linkedin/facebook/twitter/...) so catch me in real life instead :)" 
+   [:div {:style {:fontSize small-size}}
+    "I very rarely use  social media (linkedin/facebook/twitter/...) so catch me in real life instead :)"
     [:br] "Updated Spring 2015"]]
   )
 

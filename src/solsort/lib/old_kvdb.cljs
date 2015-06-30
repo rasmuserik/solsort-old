@@ -16,11 +16,11 @@
     (defn lock [id]
       (go
         ;  (print 'locking id)
-        (while @locked 
+        (while @locked
           (<! (timeout 100)))
         ;  (print 'lock id)
         (reset! locked true)))
-    (defn unlock [id] 
+    (defn unlock [id]
       ; (print 'unlock id)
       (reset! locked false))
     (defn open-db []
@@ -41,7 +41,7 @@
           (set! (.-onerror req) #(do
                                    (unlock 'a1)
                                    (js/console.log 'error %)))
-          (set! (.-onsuccess req) 
+          (set! (.-onsuccess req)
                 (fn [req]
                   (unlock 'a2)
                   (reset! db (.-result (.-target req)))
@@ -50,7 +50,7 @@
 
     (defn ensure-store [storage]
       (go
-        (if (not (@stores storage)) 
+        (if (not (@stores storage))
           (let [store-list (read-string (or (.getItem js/localStorage "keyval-db") "#{}"))]
             (swap! stores assoc storage {})
             (.setItem js/localStorage "keyval-db" (str (conj store-list storage)))
@@ -58,7 +58,7 @@
           (while (not @db) (<! (timeout 100))))))
 
     (defn commit [storage]
-      (go 
+      (go
 
         (if (< 0 (count (@stores storage)))
           (do
@@ -68,24 +68,24 @@
                   objStore (.objectStore trans storage)]
               (doall (for [[k v] (@stores storage)]
                        (.put objStore v k)))
-              (set! (.-oncomplete trans)  
-                    #(do (unlock 'b1) 
+              (set! (.-oncomplete trans)
+                    #(do (unlock 'b1)
                          (put! c true)))
-              (set! (.-onerror trans)  
-                    #(do 
+              (set! (.-onerror trans)
+                    #(do
                        (unlock 'b2)
-                       (print "commit error") 
+                       (print "commit error")
                        (close! c)))
-              (set! (.-onabort trans)  
-                    #(do 
+              (set! (.-onabort trans)
+                    #(do
                        (unlock 'b3)
-                       (print "commit abort") 
+                       (print "commit abort")
                        (close! c)))
               (swap! stores assoc storage {})
               (<! c))))))
 
-    (defn multifetch [storage ids] 
-      (go 
+    (defn multifetch [storage ids]
+      (go
         (<! (ensure-store storage))
         (<! (commit storage))
         (<! (lock 'c))
@@ -95,22 +95,22 @@
               object-store (.objectStore transaction storage)]
           (doall (for [id ids]
                    (let [request (.get object-store id)]
-                     (set! (.-onsuccess request) 
+                     (set! (.-onsuccess request)
                            (fn [] (aset @result id (.-result request)))))))
-          (set! (.-oncomplete transaction)  
-                (fn [] 
+          (set! (.-oncomplete transaction)
+                (fn []
                   (put! c @result)))
           (let [return-value (<! c)]
             (unlock 'c)
             return-value)
           )))
 
-    (defn fetch [storage id] 
-      (go 
+    (defn fetch [storage id]
+      (go
         (aget (or (<! (multifetch storage #js[id])) #js{}) id)
         ))
 
-(defn store [storage id value] 
+(defn store [storage id value]
   (go
     (if (< 1000 (count (@stores storage))) (<! (commit storage)))
     (<! (ensure-store storage))
@@ -139,17 +139,17 @@
       (or (get @dbs id)
           (do
             (ensure-dir "./dbs")
-            (get 
+            (get
               (reset! dbs (assoc @dbs id
-                                 ((js/require "levelup") 
+                                 ((js/require "levelup")
                                   (str "./dbs/" (.replace (str id) #"[^a-zA-Z0-9]" "_") ".leveldb")
-                                  #js{"valueEncoding" "json"}))) 
+                                  #js{"valueEncoding" "json"})))
               id))))
 
     (defn commit [storage] (go))
-    (defn fetch [storage id] 
+    (defn fetch [storage id]
       (let [c (chan 1)]
-        (.get (get-db storage) 
+        (.get (get-db storage)
               id
               (fn [err value]
                 (if err
@@ -157,7 +157,7 @@
                   (put! c value))))
         c))
 
-    (defn multifetch [storage ids]  
+    (defn multifetch [storage ids]
       (let [c (chan 1)
             result #js{}
             cnt (atom (count ids))]
@@ -173,7 +173,7 @@
 
     (defn store [storage id value]
       (let [c (chan 1)]
-        (.put (get-db storage) 
+        (.put (get-db storage)
               id
               value
               (fn [err]
@@ -185,8 +185,8 @@
 
 ;; Generic functions
 (defn store-channel [db c]
-  (go-loop 
-    [key-val (<! c)] 
+  (go-loop
+    [key-val (<! c)]
     (if key-val
       (let [[k v] key-val]
         (<! (store db k (clj->js v)))

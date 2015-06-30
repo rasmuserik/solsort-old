@@ -16,7 +16,7 @@
         ))))
 
 (def status (atom nil))
-(route "uccorg-status" (fn [] 
+(route "uccorg-status" (fn []
                          (log 'uccorg 'status @status)
                          @status))
 (defn start []

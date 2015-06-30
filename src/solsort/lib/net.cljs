@@ -1,5 +1,5 @@
 (ns solsort.lib.net
-  (:require-macros 
+  (:require-macros
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.test :refer [testcase]]
@@ -14,7 +14,7 @@
 (defn broadcast [mbox data]
   (doseq [pid (keys @pids)]
     (post pid mbox data)))
-(defn send-message [msg] 
+(defn send-message [msg]
   (.send (@pids (aget msg "pid")) (js/JSON.stringify msg)))
 (defn add-connection [pid ws]
   (swap! processes assoc pid send-message)
@@ -22,12 +22,12 @@
   (post local "connect" pid)
  ; (log 'ws 'added-connection pid @pids)
   )
-(defn close-connection [id] 
+(defn close-connection [id]
     ;(log 'ws id 'close)
     (swap! processes dissoc id)
     (swap! pids dissoc id)
     (post local "disconnect" id))
-(defn handle-message [pid] 
+(defn handle-message [pid]
   (fn [msg]
     (let [msg (js/JSON.parse msg)]
       (aset msg "src" (str "ws:" pid))
@@ -41,11 +41,11 @@
     (log 'ws 'start)
     (let [ws (js/require "ws")
           wss (ws.Server. #js{:server http-server})]
-      (.on wss "connection" 
+      (.on wss "connection"
            (fn [ws]
              (log 'ws 'incoming-connection ws)
              (.send ws (js/JSON.stringify  #js{:pid local}))
-             (.on ws "message" 
+             (.on ws "message"
                   (fn [data flags]
                     (let [data (js/JSON.parse data)
                           pid (aget data "pid") ]
@@ -53,17 +53,17 @@
                         (swap! children conj pid)
                         (.removeAllListeners ws "message")
                         (.on ws "message" (handle-message pid))
-                        (.on ws "close" 
+                        (.on ws "close"
                              (fn []
                                (swap! children disj pid)
                                (close-connection pid)))
                         (add-connection pid ws))
-                      (when-not pid (log 'ws 'error-unexpected-first-message data)))))))))) 
+                      (when-not pid (log 'ws 'error-unexpected-first-message data))))))))))
 
 
 (when is-browser
   (comment keep-alive loop)
-  (go 
+  (go
     (loop []
       (<! (timeout 55000))
       (broadcast "keep-alive" nil)
@@ -83,15 +83,15 @@
       [ws (js/WebSocket. socket-server)]
       (aset ws "onopen" (fn [e] (.send ws (js/JSON.stringify #js{:pid local}))))
       (aset ws "onerror" (fn [e] (log 'ws 'error) (js/console.log e)))
-      (aset ws "onclose" 
-            (fn [e] 
+      (aset ws "onclose"
+            (fn [e]
               (log 'ws 'close e)
               ; TODO exponential delay reconnect if server to connect to
               (go
                 (<! (timeout 1000))
                 (ws-connect))))
-      (aset ws "onmessage" 
-            (fn [e] 
+      (aset ws "onmessage"
+            (fn [e]
               (log 'ws 'message)
               (let [data (js/JSON.parse (aget e "data"))
                     pid (aget data "pid")
@@ -99,8 +99,8 @@
                 (if pid
                   (do
                     (aset ws "onmessage" (fn [e] (message-handler (aget e "data"))))
-                    (aset ws "onclose" 
-                          (fn [e] 
+                    (aset ws "onclose"
+                          (fn [e]
                             (close-connection pid)
                             (reset! parent nil)
                             (set-immediate ws-connect)))
@@ -121,7 +121,7 @@
           id (unique-id)]
       (aset global id
             (fn [o]
-              (if o 
+              (if o
                 (put! c (js/JSON.stringify o))
                 (close! c))
               (goog.object.remove global id)))
@@ -148,4 +148,3 @@
 ; debug
 (handle "connect" (fn [msg] (log 'connect msg)))
 (handle "disconnect" (fn [msg] (log 'disconnect msg)))
-

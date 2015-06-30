@@ -43,13 +43,13 @@
                :lineHeight (str circle-size "px")
                :textAlign :center
                :fontWeight :bold
-               :color :black; (hex-color (bit-and 0x3f3f3f (hash title))) 
+               :color :black; (hex-color (bit-and 0x3f3f3f (hash title)))
                :backgroundColor "rgba(255,255,255,0.3)"
                :borderRadius (/ circle-size 2)
                :textShadow "2px 2px 10px #fff, 2px -2px 10px #fff, -2px 2px 10px #fff, -2px -2px 10px #fff"
                :fontSize (bit-or 0 (* circle-size 0.16))
                }}
-      [:span 
+      [:span
        {:style {:display "inline-block"
                 :verticalAlign "middle"
                 :width circle-size
@@ -65,7 +65,7 @@
     [:img {:src "/icons/solsort.png"
            :style {:height 64 :width 64}}]
     [:div
-     [:span {:style {:fontSize "150%"}} 
+     [:span {:style {:fontSize "150%"}}
       " solsort.com "]
      "ApS"]
     [:div

@@ -24,7 +24,7 @@
           writes-left (atom (count stores))
           ]
       (when (= 0 (count stores)) (close! c))
-      (doall 
+      (doall
         (for [query (seq stores)]
           (let [db-name (first query)
                 db (get @dbs db-name)
@@ -34,18 +34,18 @@
                     (fn [err]
                       (when err (log 'kvdb 'get 'error err))
                       (when (= 0 (swap! writes-left dec)) (close! c)))))))
-      (doall 
+      (doall
         (for [query queries]
           (let [db-name (first query)
                 db (get @dbs db-name)
                 kvs (second query)]
-            (doall 
+            (doall
               (for [[k listeners] (seq kvs)]
-                (.get db k 
+                (.get db k
                       (fn [err result]
                         (when (and err (not= (aget err "type") "NotFoundError"))
                           (log 'kvdb 'get 'error err))
-                        (doall 
+                        (doall
                           (for [listener listeners]
                             (if result
                               (put! listener result)
@@ -65,16 +65,16 @@
       (reset! dbs store-list)
       (.setItem js/localStorage "kvdbs" (str store-list))
       (set! (.-onupgradeneeded req)
-            (fn [req]          
+            (fn [req]
               (let [db (.-result (.-target req))]
                 (doall (for [store store-list]
                          (if (not (.contains (.-objectStoreNames db) store))
                            (.createObjectStore db store)))))))
-      (set! (.-onerror req) 
+      (set! (.-onerror req)
             (fn [err]
               (log 'kvdb 'upgrade-error)
               (js/console.log 'error err)))
-      (set! (.-onsuccess req) 
+      (set! (.-onsuccess req)
             (fn [req]
               (reset! indexed-db (.-result (.-target req)))
               (close! c)))
@@ -83,16 +83,16 @@
     (let [c (chan)
           read-only (= 0 (count stores))
           dbs (into (into #{} (keys queries)) (keys stores))
-          transaction (.transaction @indexed-db 
+          transaction (.transaction @indexed-db
                                     (clj->js (seq dbs))
                                     (if read-only "readonly" "readwrite"))
           ]
-      (doall 
+      (doall
         (for [query stores]
           (let [db (first query)
                 kvs (second query)
                 object-store (.objectStore transaction db)]
-            (doall 
+            (doall
               (for [[k v] (seq kvs)]
                 (let [req (.put object-store v k)]
                   (aset req "onabort"
@@ -102,18 +102,18 @@
                         (fn []
                           (log 'kvdb 'put-error db k v)))
                   ))))))
-      (doall 
+      (doall
         (for [query queries]
           (let [db (first query)
                 kvs (second query)
                 object-store (.objectStore transaction db)]
-            (doall 
+            (doall
               (for [[k listeners] (seq kvs)]
                 (let [req (.get object-store k)]
                   (aset req "onsuccess"
                         (fn []
                           (let [result (.-result req)]
-                            (doall 
+                            (doall
                               (for [listener listeners]
                                 (if result
                                   (put! listener result)
@@ -124,7 +124,7 @@
 (declare commit)
 (def cache (atom {})) ; stores enqueuede
 (def store-count (atom 0)) ; number of unexecuted stores
-(def queries (atom {})) 
+(def queries (atom {}))
 (def transaction-listeners (atom []))
 
 (def prev-cache (atom {})) ; stores currently being executed
@@ -203,7 +203,7 @@
 
 (defn bench []
   (go
-    (<! (time-async 
+    (<! (time-async
           "writes"
           #(go
              (loop [i 10000]
@@ -211,16 +211,16 @@
                (when (< 0 i)
                  (recur (dec i))))
              (<! (commit)))))
-    (<! (time-async 
+    (<! (time-async
           "reads"
           #(go
-             (log 'kvdb-bench 'sum 
+             (log 'kvdb-bench 'sum
                   (loop [i 1000 sum 0]
                     (when (< 0 i)
                       (recur (dec i) (+ sum (<! (fetch 'kvdb-bench (str i))))))))
              )))
     ))
-(route "kvdb" 
+(route "kvdb"
        #(go
           (log 'kvdb 'test-start)
           (log 'kvdb 'ab0 (<! (fetch "a" 'b)))
@@ -250,9 +250,9 @@
         (recur (<! c)))
       (<! (commit)))))
 
-(defn multifetch [storage ids]  
-  (let [c (chan 1)      
-        result #js{}      
+(defn multifetch [storage ids]
+  (let [c (chan 1)
+        result #js{}
         cnt (atom (count ids))]
     (if (= 0 @cnt)
       (close! c)
@@ -263,5 +263,3 @@
                         (if (<= (swap! cnt dec) 0)
                           (put! c (js->clj result))))))))
     c))
-
-

@@ -10,13 +10,13 @@
 
 (defn ting [lid bibid]
   (go
-    (let [info (js->clj (or (parse-json-or-nil 
+    (let [info (js->clj (or (parse-json-or-nil
                               (<! (ajax (str "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/" bibid ":" lid)
                                         :jsonp true)))
                             #js[]))]
       {:type "html"
-       :html 
-       [:div 
+       :html
+       [:div
         [:div (str info)]]})))
 
 (defn bib [sub & args]

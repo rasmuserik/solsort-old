@@ -52,7 +52,7 @@
         tagname (re-find #"^[^.#]*" head)
         [_ id] (re-find #"[#]([^.#]*)" head)
         prop (if id (assoc prop "id" id) prop)
-        prop 
+        prop
         (if (re-find #"[.]" head)
           (let
             [classes #{}
@@ -114,7 +114,7 @@
         "<link href=/style.css rel=stylesheet>"
         "<style id=style>" (if (:css o) (js->css (clj->js (:css o)))) "</style>"
         "</head><body>"
-        (or (:rawhtml o) 
+        (or (:rawhtml o)
             (js/React.renderToStaticMarkup (clj->react (:html o)))
             )
         "<script src=\"/solsort.js\"></script>"
@@ -122,7 +122,7 @@
 (defn render-html [o]
   (reset! root o)
   (if (:css o)
-    (let [style-elem 
+    (let [style-elem
           (or (js/document.getElementById "style")
               (let [elem (js/document.createElement "style")]
                 (aset elem "id" "style")

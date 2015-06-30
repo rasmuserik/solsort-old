@@ -10,9 +10,9 @@
     [solsort.sys.platform :refer [is-nodejs set-immediate read-file-sync]]
     [cljs.core.async :refer [>! <! chan put! take! timeout close!]]))
 
-(comment is-nodejs) 
-(if is-nodejs 
-  (do 
+(comment is-nodejs)
+(if is-nodejs
+  (do
     ;cljs-bug (go (let [a :ok] (print #js{:bug a} {:no-bug a})))
     (def cached-file (memoize read-file-sync))
     (defn default-route [& args]
@@ -36,7 +36,7 @@
                         (cons body arglist)
                         arglist)
               [route arglist]
-              (if (local-mbox? route) 
+              (if (local-mbox? route)
                 [route arglist]
                 ["default-route" (into [route] arglist)])
               callback (aget query "callback")
@@ -48,12 +48,12 @@
               (.send res (aget result "content")))
             (do
               (.set res "Content-Type" "application/javascript")
-              (.send res 
+              (.send res
                      (if callback
-                       (str callback "(" (js/JSON.stringify result) ")") 
+                       (str callback "(" (js/JSON.stringify result) ")")
                        (js/JSON.stringify result)))))
-          (log 'web 
-               (.-url req) 
+          (log 'web
+               (.-url req)
                (str (- (js/Date.now) t0) "ms")
                (aget (.-headers req) "x-solsort-remote-addr")
                (.-body req)
@@ -74,4 +74,4 @@
         (start-websocket-server http-server-instance)
         (log 'webserver 'starting host port)))
     (set-immediate -start-server)
-    (comment end is-nodejs))) 
+    (comment end is-nodejs)))

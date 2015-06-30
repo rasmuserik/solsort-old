@@ -62,7 +62,7 @@
             ))))
 
 (defn into-file [filename channel]
-  (go 
+  (go
     (let [fs (js/require "fs")
           out (.createWriteStream fs filename)
           ]

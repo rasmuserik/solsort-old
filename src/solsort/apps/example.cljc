@@ -1,7 +1,7 @@
 (ns solsort.example
   #?(:cljs
-      
-    (:require-macros 
+
+    (:require-macros
            [cljs.core.async.macros :refer [go go-loop alt!]]
           ; [solsort.example :refer [hello-swap]]
            ))
@@ -33,11 +33,11 @@
     (hello [this] (str this "hihi" x))
     )
 
-  (route "example" 
+  (route "example"
          (fn [a b]
            {:type "html"
             :html [:div
-                   "Does it work? " 
+                   "Does it work? "
                    (hello "world")
                    (hello (Blah. "foo"))
                    (hello (Blap. "foo"))

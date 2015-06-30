@@ -10,7 +10,7 @@
 
 (route "dev-server"
        (fn []
-         (go 
+         (go
            (log 'dev-server 'start)
            (solsort.apps.uccorg-monitor/start)
            (<! (timeout 1000))

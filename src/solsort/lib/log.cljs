@@ -1,5 +1,5 @@
 (ns solsort.log
-  (:require-macros 
+  (:require-macros
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.platform :refer [ensure-dir fs is-nodejs is-browser exec]]
@@ -46,11 +46,11 @@
 
 
 (comment handle mbox log)
-(handle 
+(handle
   "log"
   (fn [o]
     (let [msg (str (six-digits (aget (aget o "info") "src")) " "
-                   (timestamp-string) " " 
+                   (timestamp-string) " "
                    (aget o "data"))]
       (if is-nodejs
         (let [date (date-string)

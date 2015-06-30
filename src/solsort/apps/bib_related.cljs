@@ -31,14 +31,14 @@
                                             (conj acc [(second coloan) (first coloan) ]))
                                      acc))
               weighted (->> coloans
-                            (map (fn [[[lid total] cooccur]] 
+                            (map (fn [[[lid total] cooccur]]
                                    [(bit-or (* 1000 (/ cooccur (.sqrt js/Math (+ 10 total)))) 0)
                                     lid cooccur total]))
                             (sort)
                             (reverse)
                             (take 100)
-                            (map (fn [[weight lid cooccur total]] 
-                                   {:lid lid :weight weight 
+                            (map (fn [[weight lid cooccur total]]
+                                   {:lid lid :weight weight
                                     ; :cooccur cooccur :total total
                                     }))
                             (clj->js))]
@@ -48,8 +48,8 @@
 (def data-path "../visual_relation_server")
 
 (defn make-tmp-dir []
-  (go 
-    (if (not (.existsSync (js/require "fs") "tmp")) 
+  (go
+    (if (not (.existsSync (js/require "fs") "tmp"))
       (<! (exec "mkdir tmp")))))
 
 (defn generate-coloans-by-lid-csv []
@@ -115,7 +115,7 @@
     (if (<! (kvdb/fetch :lids "93044142"))
       (log 'bib "ensured lids-database")
       (<! (transduce-file-to-db
-            "tmp/coloans-by-lid.csv" :lids 
+            "tmp/coloans-by-lid.csv" :lids
             (comp
               (map #(string/split % #","))
               (map swap-trim)

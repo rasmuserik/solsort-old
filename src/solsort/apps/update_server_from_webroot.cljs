@@ -13,5 +13,5 @@
     "git pull &&"
     "cp solsort.js ../solsort/solsort.js"))
 
-(route "update-server-from-webroot" 
+(route "update-server-from-webroot"
        #(go (log 'update-server (<! (exec shell-commands)))))

@@ -24,7 +24,7 @@
     true
     ))
 
-(route "test-server" 
+(route "test-server"
        (fn []
          (go
            (<! (run-tests))
@@ -39,6 +39,6 @@
            (go (if (<! (run-tests))
                  (aset js/location "href" "/test-ok"))))
          true))
-(route "solsort" 
+(route "solsort"
        #(go (clj->js {:http-headers {:Content-Type "application/javascript"}
                       :content (.readFileSync (js/require "fs") "solsort.js" "utf8")})))

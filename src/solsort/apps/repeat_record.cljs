@@ -95,7 +95,7 @@
    [:div "Unfortunately your browser doesn't support video recording with the MediaRecorder API, and thus this app will not work."]
    [:div "The MediaRecorder and navigator.mediaDevices API are emerging HTML5 capabilities, - currently(April 2015) only available on Firefox.  \"MediaStream Recording\" is a working draft of W3C"]])
 
-(route "repeat-record" 
+(route "repeat-record"
        (fn [a]
          (when (supported-platform)
            (reset! loop-time (or (js/parseInt a 10) 10))

@@ -13,9 +13,9 @@
     (js/JSON.parse str)
     (catch :default _ nil)))
 
-(testcase 'parse-json-or-nil-1 
+(testcase 'parse-json-or-nil-1
           #(nil? (parse-json-or-nil "this is not json")))
-(testcase 'parse-json-or-nil-2 
+(testcase 'parse-json-or-nil-2
           #(= (js->clj #js{:hello "world"}) (js->clj (parse-json-or-nil "{\"hello\":\"world\"}"))))
 
 (defn jsextend [target source]
@@ -24,7 +24,7 @@
       (let [k (.pop ks)] (aset target k (aget source k)))))
   target)
 
-(testcase 'jsextend 
+(testcase 'jsextend
           #(= {"foo" 1 "bar" 2}
               (js->clj (jsextend #js{:foo 1 :bar 1} #js{:bar 2}))))
 
@@ -54,9 +54,9 @@
 (defn by-first [xf]
   (let [prev-key (atom nil)
         values (atom '())]
-    (fn 
-      ([result] 
-       (if (< 0 (count @values)) 
+    (fn
+      ([result]
+       (if (< 0 (count @values))
          (do
            (xf result [@prev-key @values])
            (reset! values '())))
@@ -64,7 +64,7 @@
       ([result input]
        (if (= (first input) @prev-key)
          (swap! values conj (rest input))
-         (do 
+         (do
            (if (< 0 (count @values)) (xf result [@prev-key @values]))
            (reset! prev-key (first input))
            (reset! values (list (rest input)))))))))
@@ -73,7 +73,7 @@
   (fn [xf]
     (let [prev-time (atom 0)
           cnt (atom 0)]
-      (fn 
+      (fn
         ([result]
          (apply log (concat s (list 'done)))
          (xf result))
@@ -88,13 +88,13 @@
 (defn transducer-accumulate [initial]
   (fn [xf]
     (let [acc (atom initial)]
-      (fn 
+      (fn
         ([result]
          (if @acc (do
                     (xf result @acc)
                     (reset! acc nil)))
          (xf result))
-        ([result input] 
+        ([result input]
          (swap! acc conj input))))))
 
 (def group-lines-by-first
@@ -123,5 +123,3 @@
       (when @do-run
         (reset! do-run false)
         (apply f args)))))
-
-

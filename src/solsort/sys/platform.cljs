@@ -1,5 +1,5 @@
 (ns solsort.sys.platform
-  (:require-macros 
+  (:require-macros
     [cljs.core.async.macros :refer [go alt!]])
   (:require
     [solsort.sys.util :refer [unique-id]]
@@ -12,7 +12,7 @@
 
 
 ;; Global+predicates
-(def global 
+(def global
   (cond
     (exists? js/window) js/window
     (exists? js/global) js/global
@@ -83,18 +83,17 @@
     js/setImmediate ; node.js and IE (IE might be buggy)
     (fn [f] (js/setTimeout f 0))))
 
-(def worker 
-  (if is-nodejs 
+(def worker
+  (if is-nodejs
     (aget (js/require "webworker-threads") "Worker")
     (aget global "Worker")))
 
 
 ; react
-(when (and is-nodejs (not is-browser)) 
-  (aset global "localStorage" 
+(when (and is-nodejs (not is-browser))
+  (aset global "localStorage"
         (let [module (js/require "node-localstorage")
               LocalStorage (aget module "LocalStorage")]
           (ensure-dir "./dbs/")
           (LocalStorage. "./dbs/localstorage")))
   (aset global "React" (js/require "react")))
-

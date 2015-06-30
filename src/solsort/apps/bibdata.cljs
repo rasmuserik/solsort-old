@@ -17,12 +17,12 @@
     (let [o (js->clj (<! (fetch :bibdata lid)))]
       (if o
         o
-        (let [url (str 
-                    "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/870970-basis:" 
+        (let [url (str
+                    "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/870970-basis:"
                     lid)
               data (js->clj (or (parse-json-or-nil (<! (ajax url))) []))
-              data 
-              (reduce 
+              data
+              (reduce
                 (fn [mm [k v]]
                   (if (mm k)
                     (assoc mm k (conj (mm k) v))
@@ -68,9 +68,9 @@
   (go
     (case k
       "title" [:h1 {:itemProp "name"} (first vs)]
-      "creator" (into [:h2 "af "] 
-                      (interpose 
-                        " & " 
+      "creator" (into [:h2 "af "]
+                      (interpose
+                        " & "
                         (map (fn [v] [:span {:itemProp "creator"} v])
                              vs)))
       "date" [:div (first (o "type")) " udgivet " [:span {:itemProp "datePublished"} (first vs)]]
@@ -85,7 +85,7 @@
                            :itemProp "sameAs"} "WorldCat"] " "
                       [:a {:href (str "http://www.bogpriser.dk/Search/Result?isbn=" isbn)} "bogpriser.dk" ] " "
                       [:a {:href (str "https://books.google.dk/books?vid=ISBN" isbn)
-                           :itemProp "sameAs"} "GoogleBøger"] " "]) 
+                           :itemProp "sameAs"} "GoogleBøger"] " "])
                      " ")]
                   (interpose " "
                              (map (fn [[bib url]]
@@ -112,7 +112,7 @@
   (go
     (let [obj (or (<! (bibobj lid)) {})
           obj (conj obj ["lid" [lid]])
-          obj (conj obj ["related" (map 
+          obj (conj obj ["related" (map
                                      #(% "lid")
                                      (js->clj (<! (get-related lid))))])
           ks (filter obj ["title" "creator" "date" "classification"
@@ -135,7 +135,7 @@
                                   (map html-for-type
                                        (map #(list % (obj %) obj) ks)))))
                     [[:hr]
-                     [:div [:small 
+                     [:div [:small
                             "Dette er et eksperiment med at lægge data om bøger online med semantisk opmarkering. Grunddata er en del af de nationalbibliografiske data som Kulturstyrelsen og Kulturministeriet stiller til fri brug. Anbefalingerne er baseret på lånstatistik som DBC frigjorde på hackathonen Hack4DK. Dette site, kildekode og anbefalingsalgoritme er lavet af solsort.com" ]]]
                     )
               ;[:hr]
@@ -147,11 +147,11 @@
 
 (def sample-lids
   ["28511663" "28902239" "27999441" "27541062" "25862031"
-   "20411724" "23917076" "29541167" "20476079" "29815860" 
+   "20411724" "23917076" "29541167" "20476079" "29815860"
    "27594506" "25523911" "07203659" "44764873"])
 (defn sample-lid [lid]
   (go
-    [:li [:a {:href (str "/bibdata/lid/" lid)} lid] 
+    [:li [:a {:href (str "/bibdata/lid/" lid)} lid]
      " " (first ((<! (bibobj lid)) "title"))]))
 
 (defn default []
@@ -161,7 +161,7 @@
      :css {"body" {"margin" "5%"}
            ".spaceabove" {"margin-top" "1ex"}
            "ul" {"margin-top" "0"}}
-     :html [:div 
+     :html [:div
             [:h1 "BibData"]
             "Eksempler:"
             (into [:ul] (<! (go<!-seq (map sample-lid sample-lids))))
@@ -169,13 +169,13 @@
             ]}))
 
 (route "bibdata"
-       (fn [kind id] 
+       (fn [kind id]
          (go
            (case kind
              "isbn" (<! (entry (<! (fetch :isbn id))))
              "lid" (<! (entry id))
              (<! (default))))))
-(def process 
+(def process
   (run-once
     (fn []
       (go
@@ -188,4 +188,3 @@
               (recur (first lids) (rest lids)))))))))
 
 (route "bibdata-process" process)
-
