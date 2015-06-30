@@ -6,6 +6,7 @@
   [[org.clojure/clojure "1.7.0-RC1"]
    [org.clojure/clojurescript "0.0-3308"]
    [cljsjs/react "0.13.3-0"]
+   [solsort/util "0.0.1-SNAPSHOT"]
    [com.cognitect/transit-cljs "0.8.220"]
    [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
 
@@ -15,12 +16,12 @@
    [lein-bikeshed "0.2.0"] ]
 
   :source-paths 
-  ["src", "macros"]
+  ["src"]
 
   :cljsbuild 
   {:builds 
    [ #_{:id "debug"
-        :source-paths ["src", "macros"]
+        :source-paths ["src"]
         :compiler {
                    :output-to "debug/debug.js"
                    :output-dir "debug/"
@@ -28,7 +29,7 @@
                    :pretty-print true
                    :source-map "debug/debug.map"}}
     {:id "solsort"
-     :source-paths ["src", "macros"]
+     :source-paths ["src"]
      :compiler {
                 :output-to "solsort.js"
                 :output-dir "solsort.js-build/"
