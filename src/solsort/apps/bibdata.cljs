@@ -15,8 +15,7 @@
 (defn bibobj [lid]
   (go
     (let [o (js->clj (<! (fetch :bibdata lid)))]
-      (if o
-        o
+      (or o
         (let [url (str
                     "https://dev.vejlebib.dk/ting-visual-relation/get-ting-object/870970-basis:"
                     lid)
@@ -25,7 +24,7 @@
               (reduce
                 (fn [mm [k v]]
                   (if (mm k)
-                    (assoc mm k (conj (mm k) v))
+                    (update-in mm [k] conj v)
                     (assoc mm k [v])))
 
                 {}
@@ -46,7 +45,7 @@
 (defn related-link [lid]
   (go
     (let [o (<! (bibobj lid))]
-      (if o
+      (when o
         [:li
          [:a {:href (str "/bibdata/lid/" lid)
               }
@@ -54,8 +53,7 @@
           (conj (into [:span " ("]
                       (interpose " & " (or (o "creator") [])))
                 ")")
-          ]]
-        nil))))
+          ]]))))
 
 
 (def biblioteker
