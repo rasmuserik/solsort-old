@@ -67,7 +67,7 @@
           out (.createWriteStream fs filename)
           ]
       (loop [msg (<! channel)]
-        (if msg (do (.write out (str (js/JSON.stringify (clj->js msg)) "\n")) (recur (<! channel)))))
+        (when msg (.write out (str (js/JSON.stringify (clj->js msg)) "\n")) (recur (<! channel))))
       (.end out))))
 
 
