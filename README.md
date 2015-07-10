@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/solsort/solsort.png?label=ready&title=Ready)](https://waffle.io/solsort/solsort)
 [![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
 [![Dependencies Status](http://jarkeeper.com/solsort/solsort/status.png)](http://jarkeeper.com/solsort/solsort)
 
