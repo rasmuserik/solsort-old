@@ -13,8 +13,7 @@
 (defn get-related [lid]
   (go
     (let [cached (<! (kvdb/fetch :related lid))]
-      (if cached
-        cached
+      (or cached
         (let [
               patrons (.slice (or (<! (kvdb/fetch :lids lid)) #js[]) 0 1000)
               coloans (->> (or (<! (kvdb/multifetch :patrons patrons)) #js{})
