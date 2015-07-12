@@ -173,7 +173,6 @@ Distributed system
     - client-api for get more info if unknown uuid.
   - refactor into clojars-modules
 - secondary
-  - install/run tinkuy ruby code locally
   - mirrored distributed db 
   - log-to-db: flush on exit
 
