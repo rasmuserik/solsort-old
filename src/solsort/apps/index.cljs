@@ -167,7 +167,7 @@
 (add-entry "Presentation evaluation notes"
            ["2012" "done" "notes" "toastmasters"]
            "/notes/presentation-evaluation")
-(add-entry "NoteScore"
+#_(add-entry "NoteScore"
            ["2011" "beta" "app" "music" "edu"]
            "https://play.google.com/store/apps/details?id=dk.solsort.notescore")
 (add-entry "Danske Byer"
