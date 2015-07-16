@@ -64,11 +64,12 @@
      [:h1 "Personal"]
      [:h2 "Current"]
      [:ul {:style {:minHeight activity-height}}
-      [:li "Fatherhood - I am the father of a wonderful 2½ year old boy"]
+      [:li "Fatherhood - I am the father of a wonderful 3 year old boy"]
       [:li
        [:a {:href "http://www.swingshoes.dk/kalender-swingarrangementer/"} "Lindy Hop"] ", "
        [:a {:href "http://ci-cph.dk"} "Contact Impro"] ", "
        "Argentinsk\u00a0Tango" ", "
+       "Kizomba" ", "
        "Salsa" ", "
        "Yoga"
        ]
@@ -83,7 +84,7 @@
     ]
    [:div {:style {:fontSize small-size}}
     "I very rarely use  social media (linkedin/facebook/twitter/...) so catch me in real life instead :)"
-    [:br] "Updated Spring 2015"]]
+    [:br] "Updated Summer 2015"]]
   )
 
 (route "rasmuserik"
