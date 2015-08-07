@@ -6,6 +6,7 @@ bib
 bibdata
 notes
 
+uccorg-dashboard on :8080
 rasmuserik.html - redirect to /rasmuserik/
 icons - static on miss, autochoose png/jpg
 index, index.html - redirect to /

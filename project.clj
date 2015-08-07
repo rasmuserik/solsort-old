@@ -6,7 +6,6 @@
   [[org.clojure/clojure "1.7.0"]
    [org.clojure/clojurescript "0.0-3308"]
    [cljsjs/react "0.13.3-1"]
-   [solsort/util "0.0.1-SNAPSHOT"]
    [com.cognitect/transit-cljs "0.8.220"]
    [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
 
