@@ -1,4 +1,5 @@
 export PATH=/usr/local/bin:$PATH 
+cd /var/www/solsort
 install -d logs
 npm install >& logs/`hostname`-`date +%y%m%d-%H%M%S`.install
 
