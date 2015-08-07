@@ -35,7 +35,6 @@
 
      [:h1 {:style {:marginBottom 10}} "Rasmus\u00a0Erik Voel\u00a0Jensen"]
      [:div {:style {:fontSize "100%"}}
-     ; "CEO\u00a0" 
       [:a {:href "/" :style {:fontSize "130%" :marginBottom 10}} "solsort.com"] "\u00a0ApS" [:br][:br]
       "Tingskrivervej\u00a021,\u00a03tv \u00a0 2400\u00a0København\u00a0NV \u00a0 \u00a0" [:br]
       "+45\u00a060703081 \u00a0 hej@solsort.com"
