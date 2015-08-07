@@ -1299,6 +1299,20 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
 
 ## Wishlist / buylist
 
+I have most things that I need, 
+The problem with wishlists-lists are that when I realise that I miss 
+
+- Shoes: Vivo Barefoot RA II leather, size 45m, or giftcard for naturligfod.dk (I also need some winterboots, and this is where I usually buy shoes)
+- Stackable wide+deep+relatively-low transparent plastic boxes for organising stuff in the basement, ie. 
+- Low open trays/boxes for easy access in kitchen shelves, depth ca. <37cm, width ca. <24cm
+- Sangbogen 3
+- ca 1l glass storage bins, with lids, that are easy t clean, and fits well in the freezer (rectangular, height either 14cm or 10cm (or 7cm/4-5cm stackable)), and usable in mico-oven
+- Bitssæt - almindelige skruer - til bore/skrue-maskine
+- Black wool socks: sortesokker.dk uldsokker str 40-47 (I already use these, but are wearing them out, so need a larger supply, - by the way: super idea to only have the same kind of socks, as you never need to pair them)
+- something small with a story
+
+
+
 ## Writing notes
 
 - remember
@@ -1318,11 +1332,186 @@ http://cberner.com/2013/02/03/using-hostapd-on-ubuntu-to-create-a-wifi-access-po
   - Relate about inspirational person
   - Interesting idea
   - Personal approach to life
-- Concrete topics
-  - Choice of blogging platform
-  - How I code - backlog in readme, being in flow
-  - Hierachical review
-  - Overview of the chakras
-  - Clothing
-  - Personal economy - statistics over 6 months
+
+## Kitchen
+### Tasks
+
+- move stuff into new structure
+- magnetic knive holder above kitchen sink
+- hooks in wall for hanging kitchen utensils etc.
+- raise kitchen table, with built-in induction-heater
+- get glass-containers for fridge-storage
+- hang yoga on wall, w/ holder for speaker
+- mini-tables/shelves around fridge/oven
+- micro-oven
+- dishwashing machine
+
+### Shelves
+
+- High shelf
+  1. Towels, etc.
+  2. Bread, oil, dried fruits| small/medium flat plates,
+  3. Oat, vitamins, Honey, Raisins, camomile-tea, | Deep plates, rectangular containers for freezing
+  4. Fruit, some vegetables | tea+coffe+cacao
+  5. Flour, nuts, baking-stuff...  
+  6. Canned food
+- Left shelves
+  1. Drawer - kitchen tools
+  2. Low cooking tools
+  3. Tall large cooking tools
+- Right shelves
+  1. Drawer foil, baking paper, plastic bags, ...
+  2. Low bowls etc.
+  3. Tall Vegetables: potatoes, onions, carrots
+- Deep Shelves
+  1. Pots and pans
+  2. long-time storage: Rice, pasta, quinoa, lentils, coconut-flakes, nori sushi seaweed, soy-milk, vinegar, olives, crispbread, ...
+- Hanging shelves
+  1. Kinaskåle, containers
+  2. Glasses
+  3. Cups
+  4. Drawers: eating utensils and tools
+- Wall-hanging
+  - large kitchen utensils
+  - Spices - shelf for spices
+- Around fridge/oven
+
+### aaaaa Food stock
+
+- Fridge
+  - butter
+  - citrus
+  - eggs
+  - cold water
+- Fridge, only sometimes
+  - frided skyr
+  - cheese, cream
+  - cheese, emmental
+  - cheese, strong
+  - cream
+  - cucumber
+  - milk
+  - orange juice
+  - yeast
+- Freezer
+  - almond-data-banana cake mini triangles
+  - berries 
+  - butter
+  - hummus
+  - ice cubes
+  - parmasan cheese
+  - peas
+  - potato-lentil soup
+  - tomato-beluga-lentil sauce
+  - vegtables
+  - yeast
+- Freezer, only sometimes
+  - banana pieces
+  - corn
+  - fish cakes (fiskefrikadeller)
+  - fish, "kuller" or similar
+  - fish, salmond
+  - puff pastery
+  - rye bread
+  - spinach
+  - shrimps
+- Short time storage
+  - garlic
+  - apples
+  - bananas
+  - ginger
+  - onions
+  - potatoes
+  - rugbrød rye bread
+  - tomatoes
+- Short time storage, only sometimes
+  - avocados
+  - buns
+  - broccoli
+  - brussels sprouts (rosenkål)
+  - cabbage
+  - carrots
+  - cauliflower(blomkål)
+  - champignon
+  - dates
+  - grapes
+  - kiwi
+  - leek
+  - oranges
+  - pineapple
+  - pumpkin
+- Spices
+  - basil
+  - chili
+  - cinnamon 
+  - curry
+  - nutmeg
+  - parsley
+  - rosemary
+  - sage
+  - salt
+  - tabasco
+  - thyme
+  - vanilla
+- Dry
+  - baking powder
+  - cacao
+  - coconut flakes
+  - coffee
+  - cornstarch
+  - couscous
+  - flour, grahams
+  - flour, white wheat
+  - lentils, beluga
+  - lentils, red
+  - oat
+  - pasta, animals
+  - pasta, lasagne
+  - pasta, macaroni for soups
+  - pasta, noodles
+  - pasta, spaghetti
+  - quinoa
+  - rice, brown
+  - rice, porridge
+  - tea, black
+  - tea, camomile
+  - tea, herbal
+- Long time storage
+  - canned chickpeas
+  - canned coconut milk
+  - canned cod roe torskerogn
+  - canned macrel
+  - canned tomatoes
+  - canned tomato paste
+  - chocolate
+  - coconut oil
+  - dried dates
+  - dried raisins
+  - honey
+  - multivitamin
+  - nori sushi seaweed
+  - almonds
+  - cashew nuts
+  - oil, coconut
+  - oil, olive
+  - olives
+  - peanut butter
+  - soup boullion
+  - soy milk
+  - soy-sauce
+  - spring-roll-wraps
+  - vinegar
+- Long time storage, only sometimes
+  - biscuits
+  - crispbread (knækbrød)
+  - dried apple cubes
+  - dried cranberries
+  - dried figs
+  - dried mango
+  - noegg
+  - pine nuts
+  - walnuts
+  - sugar
+  - tofu
+
 
