@@ -4,7 +4,7 @@
 
   :dependencies 
   [[org.clojure/clojure "1.7.0"]
-   [org.clojure/clojurescript "0.0-3308"]
+   [org.clojure/clojurescript "1.7.58"]
    [cljsjs/react "0.13.3-1"]
    [com.cognitect/transit-cljs "0.8.220"]
    [org.clojure/core.async "0.1.346.0-17112a-alpha"]]
