@@ -1,6 +1,6 @@
-[![Stories in Ready](https://badge.waffle.io/solsort/solsort.png?label=ready&title=Ready)](https://waffle.io/solsort/solsort)
-[![Build Status](https://travis-ci.org/solsort/solsort.svg?branch=master)](https://travis-ci.org/solsort/solsort)
-[![Dependencies Status](http://jarkeeper.com/solsort/solsort/status.png)](http://jarkeeper.com/solsort/solsort)
+[![Stories in Ready](https://badge.waffle.io/rasmuserik/solsort.png?label=ready&title=Ready)](https://waffle.io/rasmuserik/solsort)
+[![Build Status](https://travis-ci.org/rasmuserik/solsort.svg?branch=master)](https://travis-ci.org/rasmuserik/solsort)
+[![Dependencies Status](http://jarkeeper.com/rasmuserik/solsort/status.png)](http://jarkeeper.com/rasmuserik/solsort)
 
 
 solsort.com platform, site, widgets and apps
