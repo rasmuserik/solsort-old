@@ -13,6 +13,6 @@ dbs/
 npm-debug.log
 lein.log
 tail.pid
-solsort.js*
+solsort.js-*
 solsort.map
 .lein-repl-history
