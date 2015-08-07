@@ -75,7 +75,7 @@
       (js/process.exit errcode))))
 
 ;; Browser API
-(def origin (if is-nodejs "http://localhost:9999" js/location.origin))
+(def origin (if is-nodejs "http://localhost:2222" js/location.origin))
 (def XHR (if is-nodejs (aget (js/require "xmlhttprequest") "XMLHttpRequest") js/XMLHttpRequest))
 (def set-immediate ; "execute function immediately after event-handling"
   (if (exists? js/setImmediate)

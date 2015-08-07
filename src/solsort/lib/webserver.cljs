@@ -64,13 +64,13 @@
           app (express)
           body-parser (js/require "body-parser")
           host (or (aget js/process.env "HOST") "localhost")
-          port (or (aget js/process.env "PORT") 9999)
+          port (or (aget js/process.env "PORT") 2222)
           http-server-instance (.createServer (js/require "http") app) ]
 
       (.use app ((aget body-parser "json")))
       (.use app ((aget body-parser "urlencoded")  #js{"extended" false}))
       (.all app "*" handler)
-      (.listen http-server-instance 9999)
+      (.listen http-server-instance 2222)
       (start-websocket-server http-server-instance)
       (log 'webserver 'starting host port)))
   (set-immediate -start-server)
