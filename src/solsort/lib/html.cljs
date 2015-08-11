@@ -118,7 +118,7 @@
             (js/React.renderToStaticMarkup (clj->react (:html o)))
             )
         "<script src=\"/solsort.js\"></script>"
-        "<script type=\"text/javascript\"> var _paq = _paq || []; _paq.push([\"setCookieDomain\", \"*.solsort.com\"]); _paq.push([\"setDomains\", [\"*.solsort.com\"]]); _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=\"/piwik/\"; _paq.push(['setTrackerUrl', u+'piwik.php']); _paq.push(['setSiteId', 2]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); })(); </script><noscript><p><img src=\"/piwik/piwik.php?idsite=2\" style=\"border:0;\" alt=\"\" /></p></noscript>"
+        "<script type=\"text/javascript\"> var _paq = _paq || []; _paq.push([\"setCookieDomain\", \"*.solsort.com\"]); _paq.push([\"setDomains\", [\"*.solsort.com\"]]); _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u=\"//blog.solsort.com/piwik/\"; _paq.push(['setTrackerUrl', u+'piwik.php']); _paq.push(['setSiteId', 2]); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s); })(); </script><noscript><p><img src=\"//blog.solsort.com/piwik/piwik.php?idsite=2\" style=\"border:0;\" alt=\"\" /></p></noscript>"
         "</body></html>")})
 (defn render-html [o]
   (reset! root o)
