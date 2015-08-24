@@ -75,7 +75,7 @@
       "classification" [:div "DK5: " (string/join " & " vs)]
       "type" [:div "type: " (first vs)]
       "isbn" [:div "ISBN: " [:span {:itemProp "isbn"} (first vs)]]
-      "lid" (into [:div.spaceabove "Links: "
+      "lid" (into [:div.spaceabove "links: "
                    (if (o "isbn")
                      (let [isbn (first (o "isbn"))]
                      [:span
@@ -172,6 +172,7 @@
            (case kind
              "isbn" (<! (entry (<! (fetch :isbn id))))
              "lid" (<! (entry id))
+             "info" (clj->js (<! (bibobj id)))
              (<! (default))))))
 (def process
   (run-once
