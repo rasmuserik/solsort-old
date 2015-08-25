@@ -172,7 +172,7 @@
            (case kind
              "isbn" (<! (entry (<! (fetch :isbn id))))
              "lid" (<! (entry id))
-             "info" (clj->js (<! (bibobj id)))
+             "info" (or (clj->js (<! (bibobj id))) #js {})
              (<! (default))))))
 (def process
   (run-once
